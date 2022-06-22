@@ -1,0 +1,300 @@
+  {% extends 'admin/master.html' %}
+
+  {% block body %}
+
+  <link rel="stylesheet" href="../../static/css/homeAdmin.css">
+
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    <div class="container-fluid py-4">
+      <div class="row">
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-header p-3 pt-2">
+              <div class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+                <i class="material-icons opacity-10 uil uil-percentage"></i>
+              </div>
+              <div class="text-end pt-1">
+                <p class="text-sm mb-0 text-capitalize">Quantidade de itens mais caros</p>
+                <!-- Insira aqui a porcentagem da diferença em media dos itens da mercostore com os concorrentes -->
+                <h4 class="mb-0">15%  do Total</h4>
+              </div>
+            </div>
+            <hr class="dark horizontal my-0">
+            <div class="card-footer p-3">
+              <!-- Insira dentro do span a diferença em porcentagem entre a media dessa semana e da semana passada -->
+              <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+55% </span>do que a semana passada</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+          <div class="card">
+            <div class="card-header p-3 pt-2">
+              <div class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
+                <i class="material-icons opacity-10 uil uil-percentage"></i>
+              </div>
+              <div class="text-end pt-1">
+                <p class="text-sm mb-0 text-capitalize">Média de Itens mais Baratos</p>
+                <h4 class="mb-0">20% do Total</h4>
+              </div>
+            </div>
+            <hr class="dark horizontal my-0">
+            <div class="card-footer p-3">
+              <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+5% </span>do que a semana passada</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+          <div class="card">
+            <div class="card-header p-3 pt-2">
+              <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                <i class="material-icons opacity-10 uil uil-box"></i>
+              </div>
+              <div class="text-end pt-1">
+                <p class="text-sm mb-0 text-capitalize">Total de Perdas</p>
+                <!-- Insira aqui a quantidade de itens mais caros -->
+                <h4 class="mb-0">R$ 3.000,00</h4>
+              </div>
+            </div>
+            <hr class="dark horizontal my-0">
+            <div class="card-footer p-3">
+              <!-- Insira a porcentagem dentro do span, que corresponde a diferença entre os itens mais baratos desse mes e do mes anterior -->
+              <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+3% </span>do que o mês passado</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+          <div class="card">
+            <div class="card-header p-3 pt-2">
+              <div class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                <i class="material-icons opacity-10 uil uil-box"></i>
+              </div>
+              <div class="text-end pt-1">
+                <p class="text-sm mb-0 text-capitalize">Total de Ganhos</p>
+                <!-- quantidade de itens mais baratos na tabela -->
+                <h4 class="mb-0">4.620,00</h4>
+              </div>
+            </div>
+            <hr class="dark horizontal my-0">
+            <div class="card-footer p-3">
+              <!-- Insira a porcentagem dentro do span, que corresponde a diferença entre os itens mais baratos desse mes e do mes anterior -->
+              <p class="mb-0"><span class="text-danger text-sm font-weight-bolder">-2% </span> do que o mês passado</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+<!-- Graficos -->
+        <div class="col-lg-3 mt-4 mb-4 grafico_pizza" >
+          <div class="card z-index-2 ">
+            <div class="  card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+              <div class="bg-secondary shadow-dark border-radius-lg py-3 pe-1">
+                <div class="chart">
+                  <canvas id="chart-line-media-barato" class="chart-canvas" height="170"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class=" bg-secondary card-body">
+              <h6 class="mb-0 ">Status dos produtos (Nesse Mês (%))</h6>
+              <hr class="dark horizontal">
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-9 col-md-4 mt-6 mb-6 grafico_linha">
+          <div class="card z-index-2 ">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+              <div class=" shadow-success border-radius-lg py-3 pe-1">
+                <div class="chart">
+                  <canvas id="chart-line-qntd-caro" class="chart-canvas" height="170"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <h6 class="mb-0 "> Status dos Produtos (Mensal)</h6>
+              <hr class="dark horizontal">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </main>
+
+  <!--   Core JS Files   -->
+  <script src="../static/js/core/popper.min.js"></script>
+  <script src="../static/js/core/bootstrap.min.js"></script>
+  <script src="../static/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="../static/js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="../static/js/plugins/chartjs.min.js"></script>
+
+
+  <script>
+    
+    // Grafico vermelho
+    var ctx2 = document.getElementById("chart-line-media-barato").getContext("2d");
+
+    new Chart(ctx2, {
+      type: "pie",
+      data: {
+        // Categorias que estão dando mais ganhos
+        labels: ["Ganhos", "Perdas", "Empate"],
+        datasets: [{
+          label: "Ganhos",
+          tension: 0.5,
+          borderWidth: 0,
+          borderRadius: 4,
+          borderSkipped: false,
+          backgroundColor: [
+          'rgba(33, 183, 11, 0.75)',
+          'rgba(255, 60, 31, 1)',
+          'rgba(255, 215, 12, 0.9)'
+          ],
+          // porcentagem de ganhos
+          data: [50, 30, 20], // valores em porcentagem de ganhos/ perdas / empate (nessa ordem)
+          maxBarThickness: 8
+      }]
+    
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false,
+          }
+        },
+        interaction: {
+          intersect: false,
+          mode: 'index',
+        },
+      },
+    });
+
+
+
+    // Grafico azul claro
+
+    var ctx4 = document.getElementById("chart-line-qntd-caro").getContext("2d")
+
+    new Chart(ctx4, {
+      type: "line",
+      data: {
+        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        datasets: [{
+          label: "Ganhos",
+          tension: 0,
+          borderWidth: 0,
+          pointRadius: 5,
+          pointBackgroundColor: "rgba(33, 183, 11, 0.75)",
+          pointBorderColor: "transparent",
+          borderColor: "rgba(33, 183, 11, 0.75",
+          borderWidth: 4,
+          backgroundColor: 'transparent',
+          fill: true,
+          // quantidade de itens mais caros
+          data: [50, 40, 300, 220, 500, 250, 400, 230, 550],// valores total no mes de produtos com ganho.
+          maxBarThickness: 6
+
+        },{
+          label: "Perdas",
+          tension: 0,
+          borderWidth: 0,
+          pointRadius: 5,
+          pointBackgroundColor: "rgba(255, 60, 31, 1)",
+          pointBorderColor: "transparent",
+          borderColor: "rgba(255, 60, 31, 1)",
+          borderWidth: 4,
+          backgroundColor: "transparent",
+          fill: true,
+          // quantidade de itens mais caros
+          data: [50, 40, 300, 220, 500, 250, 300, 500, 800],//  valores total no mes de produtos com perdas.
+          maxBarThickness: 6
+        },{
+          label: "Empate",
+          tension: 0,
+          borderWidth: 0,
+          pointRadius: 5,
+          pointBackgroundColor: 'rgba(255, 215, 12, 0.9)',
+          pointBorderColor: "transparent",
+          borderColor: "rgba(255, 215, 12, 0.9)",
+          borderWidth: 4,
+          backgroundColor: "transparent",
+          fill: true,
+          // quantidade de itens mais caros
+          data: [50, 40, 300, 220, 400, 200, 555, 300, 250],//  valores total no mes de produtos com empate.
+          maxBarThickness: 6
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false,
+          }
+        },
+        interaction: {
+          intersect: false,
+          mode: 'index',
+        },
+        scales: {
+          y: {
+            grid: {
+              drawBorder: false,
+              display: true,
+              drawOnChartArea: true,
+              drawTicks: false,
+              borderDash: [5, 5],
+              color: 'black'
+            },
+            ticks: {
+              display: true,
+              padding: 10,
+              color: 'black',
+              font: {
+                size: 14,
+                weight: 300,
+                family: "Roboto",
+                style: 'normal',
+                lineHeight: 2
+              },
+            }
+          },
+          x: {
+            grid: {
+              drawBorder: false,
+              display: false,
+              drawOnChartArea: false,
+              drawTicks: false,
+              borderDash: [5, 5]
+            },
+            ticks: {
+              display: true,
+              color: 'black',
+              padding: 10,
+              font: {
+                size: 14,
+                weight: 300,
+                family: "Roboto",
+                style: 'normal',
+                lineHeight: 2
+              },
+            }
+          },
+        },
+      },
+    });
+
+  </script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script>
+  
+  {% endblock %}
+  

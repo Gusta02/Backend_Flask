@@ -1,0 +1,54 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="https://hausz.com.br/"><img src="https://hausz.com.br/IMG/LogoHausz200.png" alt="Max-width 100%"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="{{url_for('index.home')}}">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{url_for('autenticacao.login_usuario')}}">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{url_for('uploads.upload_file')}}">Importação de estoques</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{url_for('relatoriosgraficos.retorna_index_relatorios')}}">Relatórios</a>
+        </li>
+      
+        
+        <li class="nav-item">
+          <a class="nav-link" href="/admin">Admin</a>
+        </li>
+        {% block conteudo %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Veja Mais
+          </a>
+         
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            
+            <a class="dropdown-item" href="{{url_for('relatoriosgraficos.retorna_index_relatorios')}}">Relatorios pedidos/logistica</a>
+            <a class="dropdown-item" href="{{url_for('relatorios.retorna_produtos')}}">Produtos</a>
+            <a class="dropdown-item" href="{{url_for('relatorios.prazos_marca')}}">Prazos por Produto</a>
+            <a class="dropdown-item" href="{{url_for('relatorios.retorna_produtos_coletas')}}">Produtos Coletados</a>
+            <a class="dropdown-item" href="{{url_for('relatorios.prazos_marca')}}">Prazos Marcas</a>
+            <a class="dropdown-item" href="{{url_for('relatorios.marcas_dinamicas')}}">Prazos Coleta Dinâmicas</a>
+            <a class="dropdown-item" href="{{url_for('uploads.upload_file')}}">upload Url Google</a>
+            <a class="dropdown-item" href="{{url_for('uploads.upload_file')}}">upload Urls Crawlers</a>
+            <a class="dropdown-item" href="{{url_for('uploads.upload_file')}}">Importar Informações</a>
+            <a class="dropdown-item" href="{{url_for('relatorios.retorna_marcas')}}">Marcas</a>
+            <a class="dropdown-item" href="{{url_for('relatorios.precos_google')}}">Google Shopping</a>
+            
+            <a class="dropdown-item" href="{{url_for('relatorios.retorna_produtos_coletas')}}">Novos Cadastros Coletados</a>
+            <a class="dropdown-item" href="/admin">Admin</a>
+
+         
+          </div>
+        </li>
+        {% endblock %}
+      </ul>
+    </div>
+  </nav>
