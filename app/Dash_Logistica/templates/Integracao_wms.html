@@ -1,0 +1,329 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <!-- ===============================================-->
+    <!--    Document Title-->
+    <!-- ===============================================-->
+    <title>Hausz | Integração WMS</title>
+
+    <!-- ===============================================-->
+    <!--    Favicons-->
+    <!-- ==============================================="../static/img/favicons/apple-touch-icon.png"-->
+    <!-- <link rel="apple-touch-icon" sizes="180x180" href="../static/img/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="72x72" href="../static/img/favicons/Icon_Hausz_72x72.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="../static/img/favicons/Icon_Hausz_96x96.png">
+    <link rel="shortcut icon" type="image/x-icon" href="../static/img/favicons/Icon_Hausz_96x96.png">
+    <link rel="manifest" href="img/favicons/manifest.json">
+    <meta name="msapplication-TileImage" content="../static/img/favicons/mstile-150x150.png">
+    <meta name="theme-color" content="#ffffff"> -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('wms.static', filename='img/favicons/apple-touch-icon.png')}}">
+    <link rel="icon" type="image/png" sizes="72x72" href="{{ url_for('wms.static', filename='img/favicons/Icon_Hausz_72x72.png')}}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{{ url_for('wms.static', filename='img/favicons/Icon_Hausz_96x96.png')}}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('wms.static', filename='img/favicons/Icon_Hausz_96x96.png')}}">
+    <link rel="manifest" href="{{ url_for('wms.static', filename='img/favicons/manifest.json')}}">
+    <meta name="msapplication-TileImage" content="{{ url_for('wms.static', filename='img/favicons/mstile-150x150.png')}}">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- ===============================================-->
+    <!--    Stylesheets-->
+    <!-- ===============================================-->
+    <script src="{{ url_for('wms.static', filename='js/config.navbar-vertical.js')}}"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+    <link href="{{ url_for('wms.static', filename='lib/perfect-scrollbar/perfect-scrollbar.css')}}" rel="stylesheet">
+    <link href="{{ url_for('wms.static', filename='lib/datatables-bs4/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+    <link href="{{ url_for('wms.static', filename='lib/datatables.net-responsive-bs4/responsive.bootstrap4.css')}}" rel="stylesheet">
+    <link href="{{ url_for('wms.static', filename='lib/leaflet/leaflet.css')}}" rel="stylesheet">
+    <link href="{{ url_for('wms.static', filename='lib/leaflet.markercluster/MarkerCluster.css')}}" rel="stylesheet">
+    <link href="{{ url_for('wms.static', filename='lib/leaflet.markercluster/MarkerCluster.Default.css')}}" rel="stylesheet">
+    <link href="{{ url_for('wms.static', filename='css/theme.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('wms.static', filename='css/dropdown_filter.css')}}">
+
+  </head>
+
+  <body>
+
+    <!-- ===============================================-->
+    <!--    Main Content-->
+    <!-- ===============================================-->
+    <main class="main" id="top">
+
+      <div class="container" data-layout="container">
+        <nav class="navbar navbar-vertical navbar-expand-xl navbar-light">
+          <div class="d-flex align-items-center">
+            <div class="toggle-icon-wrapper">
+
+              <button class="btn navbar-toggler-humburger-icon navbar-vertical-toggle" data-toggle="tooltip" data-placement="left" title="Menu"><span class="navbar-toggle-icon"><span class="toggle-line"></span></span></button>
+
+            </div><a class="navbar-brand" href="/">
+              <div class="d-flex align-items-center py-3"><img class="mr-2" src="{{ url_for('wms.static', filename='img/illustrations/Imagem4.png')}}" alt="" width="40" /><span class="text-sans-serif">Hausz</span>
+              </div>
+            </a>
+          </div>
+          <div class="collapse navbar-collapse" id="navbarVerticalCollapse">
+            <div class="navbar-vertical-content perfect-scrollbar scrollbar">
+              <ul class="navbar-nav flex-column">
+                <li class="nav-item"><a class="nav-link dropdown-indicator" href="#home" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="home">
+                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-chart-pie"></span></span><span class="nav-link-text">Home</span>
+                    </div>
+                  </a>
+                  <ul class="nav collapse " id="home" data-parent="#navbarVerticalCollapse">
+                    <li class="nav-item"><a class="nav-link" href="../index.html">Relatório Geral</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="../home/Relatorio_micro_logistica.html">Relatório Micro Logística</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="../home/Relatorio_micro_transporte.html">Relatório Micro Transportes</a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="nav-item"><a class="nav-link dropdown-indicator" href="#pages" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="pages">
+                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-copy"></span></span><span class="nav-link-text">Paginas</span>
+                    </div>
+                  </a>
+                  <ul class="nav collapse show" id="pages" data-parent="#navbarVerticalCollapse">
+                    <li class="nav-item"><a class="nav-link" href="Indicador_perf_logistica.html">Indicador de Performance - Logística</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="Indicador_perf_transporte.html">Indicador de Performance - Transportes</a>
+                    </li>
+                    <li class="nav-item active"><a class="nav-link" href="Integracao_wms.html">Integração WMS</a>
+                    </li>
+              </ul>
+          </div>
+        </nav>
+        <div class="content">
+          <nav class="navbar navbar-light navbar-glass navbar-top sticky-kit navbar-expand">
+
+            <button class="btn navbar-toggler-humburger-icon navbar-toggler mr-1 mr-sm-3" type="button" data-toggle="collapse" data-target="#navbarVerticalCollapse" aria-controls="navbarVerticalCollapse" aria-expanded="false" aria-label="Toggle Navigation"><span class="navbar-toggle-icon"><span class="toggle-line"></span></span></button>
+            <a class="navbar-brand mr-1 mr-sm-3" href="../index.html">
+              <div class="d-flex align-items-center"><img class="mr-2" src="{{ url_for('wms.static', filename='img/illustrations/falcon.png')}}" alt="" width="40" /><span class="text-sans-serif">Hausz</span>
+              </div>
+            </a>
+            <ul class="navbar-nav align-items-center d-none d-lg-block">
+              <li class="nav-item">
+                <div class="search-box">
+                  <form class="position-relative" data-toggle="search" data-display="static">
+
+                    <input class="form-control search-input" type="search" placeholder="Search..." aria-label="Search" />
+                    <span class="fas fa-search search-box-icon"></span>
+
+                  </form>
+
+                  <button class="close" type="button" data-dismiss="search"><span class="fas fa-times"></span></button>
+                </div>
+              </li>
+            </ul>
+          </nav>
+          <!-- CARDS -->
+          <div class="card-deck">
+            <!-- CARD1 -->
+            <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+              <div class="bg-holder bg-card">
+              </div>
+              <div class="card-body position-relative">
+                <h6> Rejeições do dia</h6>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-warning">{{ card1 }}</div>
+              </div>
+            </div>
+            <!-- FIM CARD -->
+            <!-- CARD2 -->
+            <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+              <div class="bg-holder bg-card">
+              </div>
+              <div class="card-body position-relative">
+                <h6>Percentual com base no dia anterior</h6>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-info">{{ card2 }}</div>
+              </div>
+            </div>
+            <!-- FIM CARD -->
+            <!-- CARD3 -->
+            <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+              <div class="bg-holder bg-card">
+              </div>
+              <div class="card-body position-relative">
+                <h6>Rejeições do dia anterior</h6>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif" >{{ card3 }}</div>
+              </div>
+            </div>
+            <!-- FIM CARD -->
+            <!-- CARD4 -->
+            <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+              <div class="bg-holder bg-card">
+              </div>
+              <div class="card-body position-relative">
+                <h6>Percentual com base no mes anterior</h6>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-warning">{{ card4[0]['quantidade_de_rejeicao'] }}</div>
+              </div>
+            </div>
+            <!-- FIM CARD -->
+            <!-- CARD5 -->
+            <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+              <div class="bg-holder bg-card">
+              </div>
+      
+              <div class="card-body position-relative">
+                <h6>Numero de rejeicoes do mes anterior</h6>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-info">{{ card5 }}</div>
+              </div>
+            </div>
+            <!-- FIM CARD -->
+            <!-- CARD6 -->
+            <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+              <div class="bg-holder bg-card">
+              </div>
+              <div class="card-body position-relative">
+                <h6> Pré Rejeições</h6>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif">{{ card6 }}</div>
+              </div>
+            </div>
+          </div>
+          <!-- FIM DOS CARDS -->
+          <!-- TABELA -->
+          <div class="card mb-3">
+            <div class="card-header">
+              <div class="row align-items-center justify-content-between">
+                <div class="col-6 col-sm-auto d-flex align-items-center pr-0">
+                  <h5 class="fs-0 mb-0 text-nowrap py-2 py-xl-0">Tabela Rejeições</h5>
+                </div>
+                <div class="col-6 col-sm-auto ml-auto text-right pl-0">
+                  <!-- <div id="dashboard-actions">
+                    <input type="text" class = 'mx-2'><span ata-fa-transform="shrink-3 down-2" ></span>
+                    <input type="text" class = 'mx-2'><span ata-fa-transform="shrink-3 down-2" ></span>
+                    <input type="text" class = 'mx-2'><span ata-fa-transform="shrink-3 down-2" ></span>
+                    <input type="text" class = 'mx-2'><span ata-fa-transform="shrink-3 down-2" ></span>
+                    <input type="text" class = 'mx-2'><span ata-fa-transform="shrink-3 down-2" ></span>
+                    <button class="btn btn-falcon-default btn-sm mx-2" type="button"><span class="fas fa-filter" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ml-1">Filter</span></button>
+                  </div> -->
+
+                  <form class="form-inline my-2 my-lg-0" method="POST">
+                    <div class="container my-4">  
+                        <div class="wrapper" >
+                            <div class="select_wrap">
+                              <ul class="default_option">
+                                <li>
+                                  <div class="option">
+                                    <p>
+                                      <span > Filtros</span>
+                                    </p>
+                                  </div>
+                                </li>
+                              </ul>
+                              <ul class="select_ul">
+                                <li>
+                                  <div class="option">
+                                    <input type="checkbox" name="Filtro_Uni" onchange="this.form.submit()" class="input" id="cb1">
+                                    <span class="checkmark"></span>
+                                    <span class="">Unidade</span>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div class="option">
+                                    <input type="checkbox" name="Filtro_data" onchange="this.form.submit()" class="input" id="cb2">
+                                    <span class="checkmark"></span>
+                                    <span class="text">Data</span>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div class="option">
+                                    <input type="checkbox" name="Filtro_cod" onchange="this.form.submit()" class="input" id="cb3">
+                                    <span class="checkmark"></span>
+                                    <span class="text">Codigo sePedido</span>
+                                  </div>
+                                </li>
+                                <li>
+                                    <div class="option">
+                                      <input type="checkbox" name="Filtro_Status" onchange="this.form.submit()" class="input" id="cb4">
+                                      <span class="checkmark"></span>
+                                      <span class="text">Status</span>
+                                    </div>
+                                  </li>
+                                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Exibir Filtros</button>
+                              </ul>
+                            </div>
+                          </div>
+                  </form>
+                  
+                </div>
+              </div>
+            </div>
+            <div class="card-body px-0 pt-0">
+              <div class="dashboard-data-table">
+                <table class="table table-sm table-dashboard fs--1 data-table border-bottom" data-options='{"responsive":false,"pagingType":"simple","lengthChange":false,"searching":false,"pageLength":8,"columnDefs":[{"targets":[0,6],"orderable":false}],"language":{"info":"_START_ to _END_ Items of _TOTAL_ — <a href=\"#!\" class=\"font-weight-semi-bold\"> view all <span class=\"fas fa-angle-right\" data-fa-transform=\"down-1\"></span> </a>"},"buttons":["copy","excel"]}'>
+                  <thead class="bg-200 text-900">
+                    <tr>
+                    
+                      <!-- Cabeçalho Tabela -->
+                      <th class="sort pr-1 align-middle">Cod. Pedido</th>
+                      <th class="sort pr-1 align-middle">Versão Pedido</th>
+                      <th class="sort pr-1 align-middle">SKU</th>
+                      <th class="sort pr-1 align-middle">Rejeisão ID</th>
+                      <th class="sort pr-1 align-middle">Quantidade</th>
+                      <th class="sort pr-1 align-middle">Quantidade Faltante</th>
+                      <th class="sort pr-1 align-middle">Data</th>
+
+                    </tr>
+                  </thead>
+                  <tbody id="purchases">
+                    <!-- LINHA TABELA -->
+                    {% for i in tabela %}
+
+                    <tr class="btn-reveal-trigger">
+                      <td class="align-middle">{{ i["CodigoPedido"] }}</td>
+                      <td class="align-middle">{{ i["PedidoCorpEM"] }}</td>
+                      <td class="align-middle">{{ i["sku"] }}</td>
+                      <td class="align-middle">{{ i["Id"] }}</td>
+                      <td class="align-middle">{{ i["Quantidade"] }}</td>
+                      <td class="align-middle">{{ i["Quantidade_faltante"] }}</td>
+                      <td class="align-middle">{{ i["Data"] }}</td>
+
+                    </tr>
+                    {% endfor %}
+                    <!-- FIM DA LINHA TABELA -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- ===============================================-->
+    <!--    End of Main Content-->
+    <!-- ===============================================-->
+
+    <!-- ===============================================-->
+    <!--    JavaScripts-->
+    <!-- ===============================================-->
+    <script src="{{ url_for('wms.static', filename='js/jquery.min.js')}}"></script>
+    <script srcc="{{ url_for('wms.static', filename='js/popper.min.js')}}"></script>
+    <script src="{{ url_for('wms.static', filename='js/bootstrap.min.js')}}"></script>
+    <script src="{{ url_for('wms.static', filename='lib/@fortawesome/all.min.js')}}"></script>
+    <script src="{{ url_for('wms.static', filename='lib/stickyfilljs/stickyfill.min.js')}}"></script>
+    <script src="{{ url_for('wms.static', filename='lib/sticky-kit/sticky-kit.min.js')}}"></script>
+    <script src="{{ url_for('wms.static', filename='lib/is_js/is.min.js')}}"></script>
+    <script src="{{ url_for('wms.static', filename='lib/lodash/lodash.min.js')}}"></script>
+    <script src="{{ url_for('wms.static', filename='lib/perfect-scrollbar/perfect-scrollbar.js')}}"></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,700%7cPoppins:100,200,300,400,500,600,700,800,900&amp;display=swap" rel="stylesheet">
+    <script src="{{ url_for('wms.static', filename='lib/chart.js/Chart.min.js')}}"></script>
+    <script src="{{ url_for('wms.static', filename='lib/datatables/js/jquery.dataTables.min.js')}}"></script>
+    <script src="{{ url_for('wms.static', filename='lib/datatables-bs4/dataTables.bootstrap4.min.js')}}"></script>
+    <script src="{{ url_for('wms.static', filename='lib/datatables.net-responsive/dataTables.responsive.js')}}"></script>
+    <script src="{{ url_for('wms.static', filename='lib/datatables.net-responsive-bs4/responsive.bootstrap4.js')}}"></script>
+    <script src="{{ url_for('wms.static', filename='lib/leaflet/leaflet.js')}}"></script>
+    <script src="{{ url_for('wms.static', filename='lib/leaflet.markercluster/leaflet.markercluster.js')}}"></script>
+    <script src="{{ url_for('wms.static', filename='lib/leaflet.tilelayer.colorfilter/leaflet-tilelayer-colorfilter.min.js')}}"></script>
+    <script src="{{ url_for('wms.static', filename='js/theme.js')}}"></script>
+    <script src="{{ url_for('wms.static', filename='js/dropdown_filter.js')}}"></script>
+    <script src="{{ url_for('wms.static', filename='js/select.js')}}"></script>
+
+  
+    <!-- <script src="js/Api_flask.js"></script> -->
+  </body>
+
+
+</html>

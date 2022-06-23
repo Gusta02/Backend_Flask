@@ -53,16 +53,18 @@ def create_app():
     with app.app_context():
         #imports Blueprints
         from .index.index import index
-        from .uploads.uploads import uploads
-        from .relatorios.relatorios import relatorios
-        from .admin_app.admin_app import admin_app
-        from .relatorios.relatorios_graficos import relatoriosgraficos
-        from .login.login import login
+        from .Dash_Logistica.Integracao_wms import wms
+        # from .uploads.uploads import uploads
+        # from .relatorios.relatorios import relatorios
+        # from .admin_app.admin_app import admin_app
+        # from .relatorios.relatorios_graficos import relatoriosgraficos
+        # from .login.login import login
 
         register_handlers(app)
 
         #app.register_blueprint(uploads)
         app.register_blueprint(index)
+        app.register_blueprint(wms)
         #app.register_blueprint(relatorios)
         #app.register_blueprint(admin_app)
         #app.register_blueprint(relatoriosgraficos)
