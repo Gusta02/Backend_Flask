@@ -191,69 +191,20 @@
                   <h5 class="fs-0 mb-0 text-nowrap py-2 py-xl-0">Tabela Rejeições</h5>
                 </div>
                 <div class="col-6 col-sm-auto ml-auto text-right pl-0">
-                  <!-- <div id="dashboard-actions">
+                   <div id="dashboard-actions">
                     <input type="text" class = 'mx-2'><span ata-fa-transform="shrink-3 down-2" ></span>
                     <input type="text" class = 'mx-2'><span ata-fa-transform="shrink-3 down-2" ></span>
                     <input type="text" class = 'mx-2'><span ata-fa-transform="shrink-3 down-2" ></span>
                     <input type="text" class = 'mx-2'><span ata-fa-transform="shrink-3 down-2" ></span>
                     <input type="text" class = 'mx-2'><span ata-fa-transform="shrink-3 down-2" ></span>
                     <button class="btn btn-falcon-default btn-sm mx-2" type="button"><span class="fas fa-filter" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ml-1">Filter</span></button>
-                  </div> -->
-
-                  <form class="form-inline my-2 my-lg-0" method="POST">
-                    <div class="container my-4">  
-                        <div class="wrapper" >
-                            <div class="select_wrap">
-                              <ul class="default_option">
-                                <li>
-                                  <div class="option">
-                                    <p>
-                                      <span > Filtros</span>
-                                    </p>
-                                  </div>
-                                </li>
-                              </ul>
-                              <ul class="select_ul">
-                                <li>
-                                  <div class="option">
-                                    <input type="checkbox" name="Filtro_Uni" onchange="this.form.submit()" class="input" id="cb1">
-                                    <span class="checkmark"></span>
-                                    <span class="">Unidade</span>
-                                  </div>
-                                </li>
-                                <li>
-                                  <div class="option">
-                                    <input type="checkbox" name="Filtro_data" onchange="this.form.submit()" class="input" id="cb2">
-                                    <span class="checkmark"></span>
-                                    <span class="text">Data</span>
-                                  </div>
-                                </li>
-                                <li>
-                                  <div class="option">
-                                    <input type="checkbox" name="Filtro_cod" onchange="this.form.submit()" class="input" id="cb3">
-                                    <span class="checkmark"></span>
-                                    <span class="text">Codigo sePedido</span>
-                                  </div>
-                                </li>
-                                <li>
-                                    <div class="option">
-                                      <input type="checkbox" name="Filtro_Status" onchange="this.form.submit()" class="input" id="cb4">
-                                      <span class="checkmark"></span>
-                                      <span class="text">Status</span>
-                                    </div>
-                                  </li>
-                                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Exibir Filtros</button>
-                              </ul>
-                            </div>
-                          </div>
-                  </form>
-                  
+                  </div>                   
                 </div>
               </div>
             </div>
             <div class="card-body px-0 pt-0">
               <div class="dashboard-data-table">
-                <table class="table table-sm table-dashboard fs--1 data-table border-bottom" data-options='{"responsive":false,"pagingType":"simple","lengthChange":false,"searching":false,"pageLength":8,"columnDefs":[{"targets":[0,6],"orderable":false}],"language":{"info":"_START_ to _END_ Items of _TOTAL_ — <a href=\"#!\" class=\"font-weight-semi-bold\"> view all <span class=\"fas fa-angle-right\" data-fa-transform=\"down-1\"></span> </a>"},"buttons":["copy","excel"]}'>
+                <table class="table table-sm table-dashboard fs--1" data-options='{"pageLength":10}'>
                   <thead class="bg-200 text-900">
                     <tr>
                     
@@ -286,6 +237,14 @@
                     <!-- FIM DA LINHA TABELA -->
                   </tbody>
                 </table>
+                <div class="align-middle">
+                  <th scope="row"><a href="/dashboard/logistica/integracao_wms/1" class="btn btn-outline-dark">Inicio</a></th>
+                  <th scope="row"><a href="{{page}}" class="btn btn-outline-dark">{{page}}</a></th>
+                  <th scope="row"><a href="{{page+1}}" class="btn btn-outline-dark">{{page+1}}</a></th>
+                  <th scope="row"><a href="{{page+2}}" class="btn btn-outline-dark">{{page+2}}</a></th>
+                  <th scope="row"><a href="{{page+3}}" class="btn btn-outline-dark">{{page+3}}</a></th>
+                  <th scope="row"><a href="{{page+4}}" class="btn btn-outline-dark">next</a></th>
+                </div>
               </div>
             </div>
           </div>

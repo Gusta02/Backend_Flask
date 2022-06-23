@@ -3,7 +3,6 @@ from ..controllers.controller_logistica import IntegracaoWms
 
 wms = Blueprint('wms', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
-
 def card1():
         rejeicaohj = IntegracaoWms.card_hoje()
         rejeicaohj = rejeicaohj[0]['quantidade_de_rejeicao']
@@ -55,11 +54,10 @@ def card6():
         return possivel_rejeicao
 
 @wms.route('/dashboard/logistica/integracao_wms/<int:page>', methods=["GET","POST"])
-def index(page = 1):
+def index(page= 1):
         page = page
-        tabela = IntegracaoWms.tabela_filtro(page)
+        tabela = IntegracaoWms.tabela_filtro1(page)
         
-
         card_1 = card1()
         card_2 = card2()
         card_3 = card3()
@@ -67,7 +65,7 @@ def index(page = 1):
         card_5 = card5()
         card_6 = card6()
 
-        return render_template("Integracao_wms.html", card1 = card_1, card2 = card_2 ,card3 = card_3, card4 = card_4, card5 = card_5, card6 = card_6, tabela = tabela)
+        return render_template("Integracao_wms.html", card1 = card_1, card2 = card_2 ,card3 = card_3, card4 = card_4, card5 = card_5, card6 = card_6, tabela = tabela, page = page)
 
 @wms.route('/dashboard/logistica/itengracao_wms/filtro/<int:page>', methods=["GET","POST"])
 def filtro_tabela(page, codigoPedido, SKU, RejeicaoID, DataFim, DataIni):
