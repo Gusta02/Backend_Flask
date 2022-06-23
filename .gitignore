@@ -1,0 +1,5 @@
+.env
+env
+.vscode
+__pycache__
+app\Dash_Logistica\__pycache__
