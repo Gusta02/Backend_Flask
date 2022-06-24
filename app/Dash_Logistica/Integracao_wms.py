@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from ..controllers.controller_logistica import IntegracaoWms
 
 wms = Blueprint('wms', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
@@ -57,25 +57,78 @@ def card6():
 def index(page= 1):
         page = page
         tabela = IntegracaoWms.tabela_filtro1(page)
-        
+
         card_1 = card1()
         card_2 = card2()
         card_3 = card3()
         card_4 = card4()
         card_5 = card5()
         card_6 = card6()
-
+        
         return render_template("Integracao_wms.html", card1 = card_1, card2 = card_2 ,card3 = card_3, card4 = card_4, card5 = card_5, card6 = card_6, tabela = tabela, page = page)
 
-@wms.route('/dashboard/logistica/itengracao_wms/filtro/<int:page>', methods=["GET","POST"])
-def filtro_tabela(page, codigoPedido, SKU, RejeicaoID, DataFim, DataIni):
+@wms.route('/dashboard/logistica/itengracao_wms/filtro/<int:page>', methods=["POST"])
+def filtro_tabela(codigoPedido = '', SKU = '', RejeicaoID = '', DataFim = '', DataIni = '', page = 1):
         page = page
+        codigoPedido = codigoPedido
+        SKU = SKU
+        RejeicaoID=RejeicaoID
+        DataFim = DataFim
+        DataIni = DataIni
+
+        if request.method == 'POST':
+               
+                codigoPedido = request.form['codigoPedido']
+
+                if codigoPedido == '':
+        
+                        codigoPedido = "''"
+                        print('Sem Codigo')
+        
+                SKU = request.form['SKU']
+
+                if SKU == '':
+        
+                        SKU = "''"
+                        print('Sem SKU')
+                
+                RejeicaoID = request.form['RejeicaoID']
+
+                if RejeicaoID == '':
+        
+                        RejeicaoID = "''"
+                        print('Sem RejeicaoID')
+        
+                DataFim = request.form['DataFim']
+                
+
+                if DataFim == '':
+        
+                        DataFim = "''"
+                        print('Sem DataFim')
+                else:
+                        DataFim = f"'{DataFim}'"
+
+                DataIni = request.form['DataIni']   
+
+                if DataIni == '':
+        
+                        DataIni = "''"
+                        print('Sem DataIni')
+                else:
+                        DataIni = f"'{DataIni}'"
+
+                print(DataFim)
+                print(DataIni)
+
+                tabela = IntegracaoWms.tabela_filtro(page, codigoPedido, SKU, RejeicaoID, DataFim, DataIni)
+
         card_1 = card1()
         card_2 = card2()
         card_3 = card3()
         card_4 = card4()
         card_5 = card5()
         card_6 = card6()
-        tabela = IntegracaoWms.tabela_filtro(page, codigoPedido, SKU, RejeicaoID, DataFim, DataIni)
+        
 
-        return render_template("Integracao_wms.html", card1 = card_1, card2 = card_2 ,card3 = card_3, card4 = card_4, card5 = card_5, card6 = card_6, tabela = tabela)
+        return render_template("Integracao_wms.html", card1 = card_1, card2 = card_2 ,card3 = card_3, card4 = card_4, card5 = card_5, card6 = card_6, tabela = tabela, page = page)
