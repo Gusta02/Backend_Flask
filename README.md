@@ -26,6 +26,10 @@
 
 - pip install -r requirements.txt
 
+ **Executa o Projeto**
+ 
+ -Abra o terminal e digite o comando ''py main.py''
+
 
 # Linux
 
@@ -45,4 +49,15 @@
 
 - pip install -r requirements.txt
 
+**Executa o Projeto**
+ 
+ -Abra o terminal e digite o comando ''py main.py''
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+- Se tiver faltado alguma biblioteca ao executar o programa, basta instalar pelo proprio terminal utilizando o pip (pip3)
+- site com todas as bibliotescas do python (https://pypi.org), caso ocorrra alguma duvida do comando para instalação.
+
 (Caso tenha algum problema nas instalações procure um responsavel pelo Projeto)
+
+
