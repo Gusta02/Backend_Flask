@@ -190,16 +190,29 @@
                 <div class="col-6 col-sm-auto d-flex align-items-center pr-0">
                   <h5 class="fs-0 mb-0 text-nowrap py-2 py-xl-0">Tabela Rejeições</h5>
                 </div>
-                <div class="col-6 col-sm-auto ml-auto text-right pl-0">
-                   <div id="dashboard-actions">
-                    <input type="text" class = 'mx-2'><span ata-fa-transform="shrink-3 down-2" ></span>
-                    <input type="text" class = 'mx-2'><span ata-fa-transform="shrink-3 down-2" ></span>
-                    <input type="text" class = 'mx-2'><span ata-fa-transform="shrink-3 down-2" ></span>
-                    <input type="text" class = 'mx-2'><span ata-fa-transform="shrink-3 down-2" ></span>
-                    <input type="text" class = 'mx-2'><span ata-fa-transform="shrink-3 down-2" ></span>
-                    <button class="btn btn-falcon-default btn-sm mx-2" type="button"><span class="fas fa-filter" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ml-1">Filter</span></button>
-                  </div>                   
-                </div>
+                <form class="form-inline" action="{{ url_for('wms.filtro_tabela', page=1) }}" method="POST">
+                  <div class="form-group mx-sm-3 mb-4">
+                    <label for="inputPassword2" class="sr-only">Codigo Pedido</label>
+                    <input type="text" class="form-control" id="inputPassword2" placeholder="Codigo Pedido" name="codigoPedido" for="codigoPedido">
+                  </div>
+                  <div class="form-group mx-sm-3 mb-4">
+                    <label for="inputPassword2" class="sr-only">SKU</label>
+                    <input type="text" class="form-control" id="inputPassword2" placeholder="SKU" name="SKU" for="SKU">
+                  </div>
+                  <div class="form-group mx-sm-3 mb-4">
+                    <label for="inputPassword2" class="sr-only">Rejeição ID</label>
+                    <input type="text" class="form-control" id="inputPassword2" placeholder="Rejeição ID" name="RejeicaoID" for="RejeicaoID">
+                  </div>
+                  <div class="form-group mx-sm-3 mb-4">
+              
+                    <label for="inputPassword2" class="sr-only">De:</label>
+                    <input type="date" name="DataIni" for="DataIni" class="form-control" placeholder="Data Inicio">
+                    <label for="inputPassword2" class="sr-only">Para:</label>
+                    <input type="date" name="DataFim" for="DataFim" class="form-control" placeholder="Data Fim">
+                  </div>
+                  <button class="btn btn-falcon-default mx-auto" type="submit"><span class="fas fa-filter" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ml-1">Filter</span></button>
+                  <button class="btn btn-falcon-default mx-auto" type="submit"><span class="fas fa-filter-slash" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ml-1">Limpa Filtro</span></button>
+                </form>
               </div>
             </div>
             <div class="card-body px-0 pt-0">
@@ -230,7 +243,7 @@
                       <td class="align-middle">{{ i["Id"] }}</td>
                       <td class="align-middle">{{ i["Quantidade"] }}</td>
                       <td class="align-middle">{{ i["Quantidade_faltante"] }}</td>
-                      <td class="align-middle">{{ i["Data"] }}</td>
+                      <td class="align-middle">{{ i["Data_Rejeicao"] }}</td>
 
                     </tr>
                     {% endfor %}
@@ -238,7 +251,7 @@
                   </tbody>
                 </table>
                 <div class="align-middle">
-                  <th scope="row"><a href="/dashboard/logistica/integracao_wms/1" class="btn btn-outline-dark">Inicio</a></th>
+                  <th scope="row"><a href="{{page-1}}" class="btn btn-outline-dark">Inicio</a></th>
                   <th scope="row"><a href="{{page}}" class="btn btn-outline-dark">{{page}}</a></th>
                   <th scope="row"><a href="{{page+1}}" class="btn btn-outline-dark">{{page+1}}</a></th>
                   <th scope="row"><a href="{{page+2}}" class="btn btn-outline-dark">{{page+2}}</a></th>

@@ -26,7 +26,7 @@ seguinte2 = seguinte.strftime('%Y-%m-%d')
 
 only_mes_passado = Mpassado.strftime('%Y-%m')
 
-def codigo():
+def codigoPedido():
     engine = get_connection()
     list_dicts = []
     with engine.connect() as conn:
@@ -415,3 +415,126 @@ def Pre_rejeicao():
             lista_pre.append(dict_cont)
 
     return lista_pre
+
+def select_wms_rejeicoes():
+    lista_dicts = []
+    engine = get_connection()
+    with engine.connect() as conn:
+        query_etapas_flexy = (text("""
+            select * from wms.T_Rejeicoes """))
+
+        execqueryetapas = conn.execute(query_etapas_flexy).all()
+        for exc in execqueryetapas:
+            dict_items = {}
+            for keys, values in exc.items():
+                dict_items[keys] = values
+            lista_dicts.append(dict_items)
+    
+    return lista_dicts
+
+def select_pedido_compra_nota_entrada():
+    lista_dicts = []
+    engine = get_connection()
+    with engine.connect() as conn:
+        query__pcentrada = ((text("""
+                SELECT pcentrada.[ChaveNF]
+                ,pcentrada.[CodigoPedidoCompra],pcentrada.[SKU],pcentrada.[DataInserido]
+                ,pcentrada.[bitAtivo],pcentrada.[Quantidade]
+                ,pcentrada.[NumNfOmie],pcentrada.[IdStatusItem]    
+                FROM [HauszMapa].[Pedidos].[PedidoCompraNotaEntrada] as pcentrada
+                where pcentrada.DataInserido like '%2022%'""")))
+        execquery__pcentrada = conn.execute(query__pcentrada).all()
+        for exc in execquery__pcentrada:
+            dict_items = {}
+            for keys, values in exc.items():
+                dict_items[keys] = values
+            lista_dicts.append(dict_items)
+    
+    return lista_dicts
+
+def select_logpedidos_compras_itens():
+    lista_dicts = []
+    engine = get_connection()
+    with engine.connect() as conn:
+        query_log_notaentrada = ((text("""
+                SELECT lpcitens.[CodigoPedidoCompra],lpcitens.[IdProduto],lpcitens.[DeStatusItem]
+                ,lpcitens.[ParaStatusItem],lpcitens.[Quantidade]
+                ,lpcitens.[QuantidadeColeta]as quantidadecoletadalog
+                ,lpcitens.[DataAtualizacao] as dataatualizacaolog ,lpcitens.[bitAtivo]
+                ,lpcitens.[TipoAlteracao] 
+                FROM [HauszMapa].[Pedidos].[LogPedidoCompraItens] as lpcitens
+                where ParaStatusItem in ('5')""")))
+
+        execquert_log_notaentrada = conn.execute(query_log_notaentrada).all()
+        for exc in execquert_log_notaentrada:
+            dict_items = {}
+            for keys, values in exc.items():
+                dict_items[keys] = values
+            lista_dicts.append(dict_items)
+    
+    return lista_dicts
+
+def select_produtos_sku():
+    lista_dicts = []
+    engine = get_connection()
+    with engine.connect() as conn:
+        query_produtos = ((text("""
+            SELECT pmarca.[Marca],pbasico.[SKU],pbasico.[CodOmie],pbasico.[NomeProduto]
+            ,pbasico.[EAN],pbasico.[EstoqueAtual],pbasico.[SaldoAtual]
+            ,pbasico.[bitAtualizadoPreco],pbasico.[bitPrecoAtualizado]
+            ,pbasico.[PesoCubado],pbasico.[Peso],pdetalhe.[TamanhoBarra],pdetalhe.[Unidade]
+            ,pdetalhe.[FatorVenda],pdetalhe.[FatorMultiplicador],pdetalhe.[FatorUnitario]
+            FROM [HauszMapa].[Produtos].[ProdutoBasico] as pbasico
+            join [HauszMapa].[Produtos].[ProdutoDetalhe] as pdetalhe
+            on pdetalhe.SKU = pbasico.SKU
+            join [HauszMapa].[Produtos].[Marca] as pmarca
+            on pmarca.IdMarca = pbasico.IdMarca""")))
+        execquery_produtos = conn.execute(query_produtos).all()
+
+        for exc in execquery_produtos:
+            dict_items = {}
+            for keys, values in exc.items():
+                dict_items[keys] = values
+            lista_dicts.append(dict_items)
+    
+    return lista_dicts
+
+def select_log_wms_pedidos():
+    lista_dicts = []
+    engine = get_connection()
+    with engine.connect() as conn:
+        query_log = (text("""
+                SELECT  lgpedido.[IdLog],lgpedido.[DeIdEtapaFlexy],lgpedido.[ParaIdEtapaFlexy]
+                ,lgpedido.[CodigoPedido],pflexy.DataInserido as datainserido
+                ,pflexy.DataInseridoOmie as datainseridoomie
+                ,pflexy.IdEtapaFlexy,etflexy.NomeEtapa,etflexy.NomeEtapaFlexy
+                ,pflexy.PrevisaoEntrega as previsaodeentrega
+                ,pflexy.StatusPedido,lgpedido.[EnviadoWpp]
+                ,lgpedido.[DataAtualizacao] as dataatualizacao
+                ,lgpedido.[DePrazo] ,lgpedido.[ParaPrazo]
+                ,lgpedido.[bitSplit],lgpedido.[TipoAlteracao],lgpedido.[IdUsuarioAlteracao]
+
+                FROM [HauszMapa].[Pedidos].[LogPedidos] as lgpedido
+
+                join [HauszMapa].[Pedidos].[PedidoFlexy] as pflexy
+                on pflexy.CodigoPedido = lgpedido.CodigoPedido
+
+                join [HauszMapa].[Pedidos].[EtapaFlexy] as etflexy
+                on etflexy.IdEtapa = pflexy.IdEtapaFlexy"""))
+            
+        excquerylog = conn.execute(query_log).all()
+        for exc in excquerylog:
+            dict_items = {}
+            for keys, values in exc.items():
+                
+                dict_items[keys] = values
+            lista_dicts.append(dict_items)
+    return lista_dicts
+
+def retorna_dataatual():
+    data = datetime.today().strftime('%Y-%m-%d')
+
+    return data
+
+
+
