@@ -26,77 +26,6 @@ seguinte2 = seguinte.strftime('%Y-%m-%d')
 
 only_mes_passado = Mpassado.strftime('%Y-%m')
 
-def codigoPedido():
-    engine = get_connection()
-    list_dicts = []
-    with engine.connect() as conn:
-        query_codigo=(text(f""" select CodigoPedido from HauszMapa.Wms.T_Rejeicoes """))
-        lista_codigo = conn.execute(query_codigo).all()
-        for codigo in lista_codigo:
-            dict_codigo = {}
-            for keys, values in codigo.items():
-                dict_codigo[keys] = values
-            list_dicts.append(dict_codigo)
-
-    return list_dicts
-
-def pedido():
-    engine = get_connection()
-    list_pedido = []
-    with engine.connect() as conn:
-        query_pedido = (text(f""" select PedidoCorpEM from HauszMapa.Wms.T_Rejeicoes """))
-        lista_pedido = conn.execute(query_pedido).all()
-        for pedido in lista_pedido:
-            dict_pedido = {}
-            for keys, values in pedido.items():
-                dict_pedido[keys] = values
-            list_pedido.append(dict_pedido)
-
-    return list_pedido
-
-def T_sku():
-    engine = get_connection()
-    list_sku = []
-    with engine.connect() as conn:
-        query_sku = (text(f""" select SKU from HauszMapa.Produtos.ProdutoBasico  """))
-        lista_sku = conn.execute(query_sku).all()
-        for sku in lista_sku:
-            dict_sku = {}
-            for keys, values in sku.items():
-                dict_sku[keys] = values
-            list_sku.append(dict_sku)
-
-    return list_sku
-
-def T_id():
-    engine = get_connection()
-    list_id =[]
-    with engine.connect() as conn:
-        query_id = (text(f"""
-         select RejeicaoId as Id from HauszMapa.Wms.T_Rejeicoes
-        """))
-        lista_id = conn.execute(query_id).all()
-        for id_t in lista_id:
-            dict_id = {}
-            for keys, values in id_t.items():
-                dict_id[keys] = values
-            list_id.append(dict_id)
-    
-    return list_id
-
-def quantidade():
-    engine = get_connection()
-    list_quant = []
-    with engine.connect() as conn:
-        query_quant = (text(f""" select Quantidade from HauszMapa.Wms.T_RejeicoesItens """))
-        lista_quant = conn.execute(query_quant).all()
-        for quant in lista_quant:
-            dict_quant = {}
-            for keys, values in quant.items():
-                dict_quant[keys] = values
-            list_quant.append(dict_quant)
-
-    return list_quant
 
 def tabela_filtro(Page,codigoPedido, SKU, RejeicaoID, DataFim, DataIni):
     engine = get_connection()
@@ -189,121 +118,6 @@ def tabela_filtro1(Page):
             
     return list_dicts
 
-def filtro_todos(CodigoPedido,Versao,sku, Id,Data_ini, Data_f):
-    engine = get_connection()
-    list_dicts = []
-    with engine.connect() as conn:
-        query_filtro = (text(f"""select 
-        Ri.CodigoPedido, 
-		RI.PedidoCorpEM,
-        pb.sku,
-		r.RejeicaoId as Id,
-        pb.NomeProduto as Produto,
-        RI.Quantidade,
-        RI.QuantidadeAtendida,
-        (RI.Quantidade - RI.QuantidadeAtendida) as Quantidade_faltante,
-        ri.data as Data
-        from HauszMapa.Wms.T_Rejeicoes r
-        inner join HauszMapa.Wms.T_RejeicoesItens ri on ri.RejeicaoItemId = r.RejeicaoId
-        left join HauszMapa.Produtos.ProdutoBasico pb on pb.SKU = ri.CodigoProduto
-        left join HauszMapa.Wms.T_Rejeicoes p on p.PedidoCorpEM =ri.PedidoCorpEM
-        where pb.BitAtivo = 1 and ri.CodigoPedido like '{CodigoPedido}' and ri.PedidoCorpEM like '{Versao}' and pb.sku like '{sku}'
-		and r.Id like '{Id}' and ri.data between '{Data_ini} 00:00:00' and '{Data_f} 00:00:00' 
-        """))
-        filtro_resultados = conn.execute(query_filtro).all()
-        for tabela in filtro_resultados:
-            dict_filtro={}
-            for keys, values in tabela.items():
-                dict_filtro[keys] = values 
-            list_dicts.append(dict_filtro)
-    
-    return list_dicts
-    
-" Filtros da Tabela "
-def CodigoPedido():
-    engine = get_connection()
-    lista_dicts = []
-    with engine.connect() as conn:
-        query_codigopedido= (text("""select 
-        Ri.CodigoPedido
-        from HauszMapa.Wms.T_Rejeicoes r
-        inner join HauszMapa.Wms.T_RejeicoesItens ri on ri.RejeicaoItemId = r.RejeicaoId
-        left join HauszMapa.Produtos.ProdutoBasico pb on pb.SKU = ri.CodigoProduto
-        left join HauszMapa.Wms.T_Rejeicoes p on p.PedidoCorpEM =ri.PedidoCorpEM
-        where pb.BitAtivo = 1 and ri.data between '2022-06-01 00:00:00' and '2022-06-08 00:00:00' """))
-        lista_codigopedido = conn.execute(query_codigopedido).all()
-        for codigopedido in lista_codigopedido:
-            dict_CodigoPedido = {}
-            for keys, values in codigopedido.items():
-                dict_CodigoPedido[keys] = values
-            lista_dicts.append(dict_CodigoPedido)
-
-    return lista_dicts
-
-def PedidoVersao():
-    engine =  get_connection()
-    lista_pedido =[]
-    with engine.connect() as conn:
-        query_versaopedido = (text("""select  
-		RI.PedidoCorpEM
-        from HauszMapa.Wms.T_Rejeicoes r
-        inner join HauszMapa.Wms.T_RejeicoesItens ri on ri.RejeicaoItemId = r.RejeicaoId
-        left join HauszMapa.Produtos.ProdutoBasico pb on pb.SKU = ri.CodigoProduto
-        left join HauszMapa.Wms.T_Rejeicoes p on p.PedidoCorpEM =ri.PedidoCorpEM
-        where pb.BitAtivo = 1 and ri.data between '2022-06-01 00:00:00' and '2022-06-08 00:00:00' 
-        """))
-
-        lista_versaopedido = conn.execute(query_versaopedido).all()
-        for lista in lista_versaopedido:
-            dict_Pedidoversao = {}
-            for keys, values in lista.items():
-                dict_Pedidoversao[keys] = values 
-            lista_pedido.append(dict_Pedidoversao)
-
-    return lista_pedido
-
-def SKU():
-    engine =  get_connection()
-    lista_sku = []
-    with engine.connect() as conn:
-        query_sku = (text("""select 
-        pb.sku
-        from HauszMapa.Wms.T_Rejeicoes r
-        inner join HauszMapa.Wms.T_RejeicoesItens ri on ri.RejeicaoItemId = r.RejeicaoId
-        left join HauszMapa.Produtos.ProdutoBasico pb on pb.SKU = ri.CodigoProduto
-        left join HauszMapa.Wms.T_Rejeicoes p on p.PedidoCorpEM =ri.PedidoCorpEM
-        where pb.BitAtivo = 1 and ri.data between '2022-06-01 00:00:00' and '2022-06-08 00:00:00'
-        """))
-        sku_lista = conn.execute(query_sku).all()
-        for lista in sku_lista:
-            dict_sku = {}
-            for keys, values in lista.items():
-                dict_sku[keys] = values
-            lista_sku.append(dict_sku)
-
-    return lista_sku
-
-def Cons_Id():
-    engine = get_connection()
-    lista_id = []
-    with engine.connect() as conn:
-        query_id = (text(f"""
-        select 
-		r.RejeicaoId as Id
-        from HauszMapa.Wms.T_Rejeicoes r
-        inner join HauszMapa.Wms.T_RejeicoesItens ri on ri.RejeicaoItemId = r.RejeicaoId
-        left join HauszMapa.Produtos.ProdutoBasico pb on pb.SKU = ri.CodigoProduto
-        left join HauszMapa.Wms.T_Rejeicoes p on p.PedidoCorpEM =ri.PedidoCorpEM
-        where pb.BitAtivo = 1 and ri.data between '2022-06-01 00:00:00' and '2022-06-08 00:00:00'
-        """))
-        id_lista = conn.execute(query_id).all()
-        for lista in id_lista:
-            dict_id={}
-            for keys, values in lista.items():
-                dict_id[keys] = values
-            lista_id.append(dict_id)
-
-    return lista_id
 
 #CARD DIA ATUAL
 def card_hoje():
@@ -415,6 +229,8 @@ def Pre_rejeicao():
             lista_pre.append(dict_cont)
 
     return lista_pre
+
+# CONSULTAS GUI
 
 def select_wms_rejeicoes():
     lista_dicts = []
