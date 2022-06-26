@@ -146,13 +146,13 @@ def filtraSelecionaPedidos():
 
         logpedidowms.loc[:,'ParaIdEtapaFlexy'] = logpedidowms.loc[:,'ParaIdEtapaFlexy'].astype(int)
 
-        logpedidowms = logpedidowms[(logpedidowms.loc[:,'ParaIdEtapaFlexy'] == 6) & (logpedidowms.loc[:,'dataatualizacao'].astype(str).str.contains(f'{data_atual}'))]
+        logpedidowms = logpedidowms[(logpedidowms.loc[:,'ParaIdEtapaFlexy'] == 6) & (logpedidowms.loc[:,'dataatualizacao'].astype(str).str.contains(f'{IntegracaoWms.retorna_dataatual()}'))]
         #logpedidowms = logpedidowms.sort_values('dataatualizacao', ascending=False)
         logpedidowms = logpedidowms.sort_values('dataatualizacao', ascending=False).drop_duplicates('CodigoPedido').sort_index()
         return logpedidowms
 
 def quantidade_pedidos_rejeicao():
-        rejeicoes = rejeicoes[(rejeicoes['Data'].astype(str).str.contains(f'{data_atual}'))]
+        rejeicoes = rejeicoes[(rejeicoes['Data'].astype(str).str.contains(f'{IntegracaoWms.retorna_dataatual()}'))]
 
         unificavalores = pd.merge(filtraSelecionaPedidos(),rejeicoes, on='CodigoPedido', how='left')
         unificavalores.loc[:,['CodigoPedido','StatusPedido','NomeEtapa','RejeicaoId','statusRejeicao']]
@@ -170,7 +170,7 @@ def status_pedido():
         logsgeral = IntegracaoWms.select_log_wms_pedidos()
         dfstatus = pd.DataFrame(logsgeral)
 
-        dfstatus = dfstatus[dfstatus.loc[:,'dataatualizacao'].astype(str).str.contains(f'{data_atual}')]
+        dfstatus = dfstatus[dfstatus.loc[:,'dataatualizacao'].astype(str).str.contains(f'{IntegracaoWms.retorna_dataatual()}')]
 
 
         etapas = dfstatus['NomeEtapa'].value_counts(normalize=True) * 100

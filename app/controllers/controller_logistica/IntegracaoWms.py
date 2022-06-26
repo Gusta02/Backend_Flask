@@ -231,7 +231,6 @@ def Pre_rejeicao():
     return lista_pre
 
 # CONSULTAS GUI
-
 def select_wms_rejeicoes():
     lista_dicts = []
     engine = get_connection()
