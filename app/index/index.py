@@ -1,9 +1,11 @@
+from turtle import position
 from flask import Blueprint, render_template,current_app, jsonify, request
 import os
-
+from ..controllers.relatorios_index_controller import (select_pedidos_data_atual)
 import pandas as pd
 from ..controllers.relatorios_index_controller import (select_resumo_infos, select_marca_prazo_fabricacao
 ,select_groupby_saldo_produto, vendas_mes_agrupado)
+from ..controllers.controller_logistica import IntegracaoWms
 
 
 def register_handlers(app):
@@ -46,29 +48,76 @@ def register_handlers(app):
         return render_template("error_405.html"), 405
 
 
+def leadtime():
+    tabela = IntegracaoWms.leadtime_log()
+    estado = IntegracaoWms.Estados()
+
+    medias = []
+
+    for index, row in estado.iterrows():
+
+        Estado = row['estado']
+
+        media = tabela.query(f'Estado=="{Estado}"')
+        media = media['Dias']
+        media = media.mean()
+        media = f'{media: .0f}'
+        medias.append(media)
+
+    Media = pd.DataFrame(medias, columns = ['Media'])
+    df =pd.concat([estado, Media], axis=1)
+
+
+    return df
+
+
+def percentual_atrasado():
+    df = IntegracaoWms.percentual()
+
+    codigo = df['CodigoPedido']
+    dataEntregue = df['DataEntrega']
+
+    tira_na = df['NovaPrevisao'].fillna(df['PrevisaoEntrega'])
+
+    df3 =  df['DataEntrega'] > tira_na 
+
+    Percentual_Entregues_Atrasado = (df3.value_counts()[0] / (df3.value_counts()[0] + df3.value_counts()[1]))
+    Percentual_Entregues_Atrasado = f'{Percentual_Entregues_Atrasado: .2%}'
+
+    return Percentual_Entregues_Atrasado
+
+def percentual_na_data():
+    df = IntegracaoWms.percentual()
+
+    codigo = df['CodigoPedido']
+    dataEntregue = df['DataEntrega']
+
+    tira_na = df['NovaPrevisao'].fillna(df['PrevisaoEntrega'])
+
+    df3 =  df['DataEntrega'] > tira_na 
+
+    Percentual_Entregas_no_prazo = (df3.value_counts()[1] / (df3.value_counts()[0] + df3.value_counts()[1]))
+    Percentual_Entregas_no_prazo = f'{Percentual_Entregas_no_prazo: .2%}'
+
+
+    return Percentual_Entregas_no_prazo
+
+
+
+
 index = Blueprint("index",__name__
         ,template_folder='templates',static_folder='static',static_url_path='/static/imagens')
         
 
 @index.route("/", methods=["GET","POST"])
 def home():
-        datas = vendas_mes_agrupado()
-
-        group_by_infos = select_resumo_infos()
-        group_by_infos = group_by_infos[['Marca','SKU','NomeEstoque']]
-        group_by_infos.groupby(['Marca','SKU','NomeEstoque']).size()
-        #group_by_infos = group_by_infos.groupby(['Marca','NomeEstoque']).size().reset_index(name="Frequencia")
-        #print(group_by_infos)
-        frequencia = group_by_infos.groupby(['NomeEstoque'])['Marca'].value_counts().rename("Frequencia").groupby(level = 0).transform(lambda x: x/float(x.sum())) * 100
-        frequencia = frequencia.reset_index(name='Frequencia')
-        frequencia['Frequencia'] = frequencia['Frequencia'].apply(lambda x: round(float(x),2))
-        jsons = frequencia.to_dict('records')
-      
-
-        marcasinfos = select_marca_prazo_fabricacao()
-
-        #return render_template("index2.html",produtos = jsons, marcas = marcasinfos,datas=datas)
-        return render_template("index.html")
+        tabela = leadtime()
+        tabela = tabela.to_dict('records')
+        Entregues_atraso = percentual_atrasado()
+        Entregues_prazo = percentual_na_data()
+       
+        
+        return render_template("index.html", Tabela = tabela, Entregues_atraso = Entregues_atraso, Entregues_prazo = Entregues_prazo)
 
 
 register_handlers(current_app)

@@ -3,6 +3,7 @@ from config import get_connection
 from sqlalchemy import text
 from datetime import datetime, timedelta,date
 from dateutil.relativedelta import *
+import pandas as pd
 
 
 #Horarios and mes
@@ -27,21 +28,17 @@ seguinte2 = seguinte.strftime('%Y-%m-%d')
 only_mes_passado = Mpassado.strftime('%Y-%m')
 
 
-def tabela_filtro(Page,codigoPedido, SKU, RejeicaoID, DataFim, DataIni):
+def tabela_filtro(codigoPedido, SKU, RejeicaoID, DataFim, DataIni):
     engine = get_connection()
     list_dicts = []
     with engine.connect() as conn:
         query_tabela=(text(f"""		
-        DECLARE @PageNumber as INT
-        DECLARE @RowsOfPage as INT
 		DECLARE @codigo as INT
 		DECLARE @sku as Varchar(30)
 		DECLARE @rejeicaoID as INT
 		DECLARE @DataIni as Varchar(23)
 		DECLARE @DataFim as Varchar(23)
 
-        SET @PageNumber = {Page}
-        SET @RowsOfPage = 10
 		SET @codigo = {codigoPedido}
 		SET @sku = {SKU}
 		SET @rejeicaoID = {RejeicaoID}
@@ -68,8 +65,7 @@ def tabela_filtro(Page,codigoPedido, SKU, RejeicaoID, DataFim, DataIni):
 		AND r.Data >= CASE @DataIni WHEN '' THEN '1900-01-01' ELSE @DataIni END
 		AND r.Data < CASE @DataFim WHEN '' THEN '2025-01-01' ELSE @DataFim END
 		order  by r.Data DESC 
-        OFFSET (@PageNumber-1)*@RowsOfPage ROWS
-        FETCH NEXT @RowsOfPage ROWS ONLY
+
         """))
         lista_tabela = conn.execute(query_tabela).all()
         for tabela in lista_tabela:
@@ -219,7 +215,7 @@ def Pre_rejeicao():
     engine = get_connection()
     lista_pre = []
     with engine.connect() as conn:
-        query_pre = (text(f"""select count(v.StatusItem) Pre_rejeicoes from V_Pedidos v where StatusItem like  '%Verificando%'
+        query_pre = (text(f"""select count(StatusItem) as Pre_rejeicoes from V_Pedidos where StatusItem like '%Verificando%'
           """))
         query_cont = conn.execute(query_pre).all()
         for contagem in query_cont:
@@ -351,5 +347,86 @@ def retorna_dataatual():
 
     return data
 
+def leadtime_log():
+    lista_dicts = []
+    engine = get_connection()
+    with engine.connect() as conn:
+        query_produtos = ((text("""
+            SELECT 
+            DISTINCT pf.CodigoPedido,
+            est.Nome as Estado,
+            FORMAT(ini.DataAtualizacao,'d','pt-br') as DataIni,
+            FORMAT(fim.DataAtualizacao,'d','pt-br') as DataFim,
+            DATEDIFF(day, ini.DataAtualizacao, fim.DataAtualizacao) as Dias
+            FROM HauszMapa.Pedidos.PedidoFlexy pf
+            inner join (select CodigoPedido ,DataAtualizacao from HauszMapa.Pedidos.LogPedidos where ParaIdEtapaFlexy = 6 GROUP BY DataAtualizacao, CodigoPedido )  ini on ini.CodigoPedido = pf.CodigoPedido
+            inner join (select CodigoPedido ,DataAtualizacao from HauszMapa.Pedidos.LogPedidos where ParaIdEtapaFlexy = 9 GROUP BY DataAtualizacao, CodigoPedido )  fim on fim.CodigoPedido = pf.CodigoPedido
+            inner join HauszLogin.Cadastro.Unidade uni on uni.IdUnidade = pf.IdUnidade
+            inner join HauszLogin.Cadastro.Cidade cit on cit.IdCidade = uni.IdCidade
+            inner join HauszLogin.Cadastro.Estado est on est.IdEstado = cit.IdEstado
+            where uni.bitAtivo = 1 and uni.IdUnidade <> 1 GROUP BY pf.CodigoPedido, est.Nome, ini.DataAtualizacao, fim.DataAtualizacao
+            """)))
+        execquery_produtos = conn.execute(query_produtos).all()
+        
+        for exc in execquery_produtos:
+            dict_items = {}
+            for keys, values in exc.items():
+                dict_items[keys] = values
+            lista_dicts.append(dict_items)
+            df = pd.DataFrame(lista_dicts)
+    
+    return df
 
+def Estados():
+    lista_dicts = []
+    engine = get_connection()
+    with engine.connect() as conn:
+        query_produtos = ((text("""
+            select nome as estado from HauszLogin.Cadastro.Estado
+            """)))
+        execquery_produtos = conn.execute(query_produtos).all()
 
+        for exc in execquery_produtos:
+            dict_items = {}
+            for keys, values in exc.items():
+                dict_items[keys] = values
+            lista_dicts.append(dict_items)
+
+            df = pd.DataFrame(lista_dicts)
+    
+    return df
+
+def percentual():
+    lista_dicts = []
+    engine = get_connection()
+    with engine.connect() as conn:
+        query_produtos = ((text("""
+             SELECT 
+        DISTINCT PF.CodigoPedido,
+        FORMAT(PF.PrevisaoEntrega,'d', 'pt-br') as PrevisaoEntrega, 
+        FORMAT(MIN(LOGPRAZO.PrazoAntigo) OVER (PARTITION BY PF.CodigoPedido), 'd', 'pt-br') as NovaPrevisao, 
+        FORMAT(LP.DataAtualizacao, 'd', 'pt-br') as DataEntrega
+        FROM Hauszmapa.Pedidos.PedidoFlexy PF
+        INNER JOIN Hauszmapa.Pedidos.ItensFlexy IFL ON IFL.CodigoPedido = PF.CodigoPedido
+        INNER JOIN Hauszmapa.Produtos.ProdutoBasico PB ON PB.SKU = IFL.SKU
+        INNER JOIN HauszMapa.Wms.T_Rejeicoes sep on sep.CodigoPedido = pf.CodigoPedido
+        iNNER JOIN HauszMapa.Pedidos.LogPedidos LP ON LP.CodigoPedido = PF.CodigoPedido
+        LEFT JOIN (SELECT LAP.CodigoPedido, LAP.IdProduto, LAP.PrazoAntigo, LAP.PrazoNovo,LAP.DataAlteracao
+        FROM Hauszmapa.Pedidos.LogAlteracaoPrazoPedidoVenda LAP
+        INNER JOIN (SELECT CodigoPedido, IdProduto, MIN(IdLogPrazoPedidoVenda) IdLogPrazoPedidoVenda
+        FROM Hauszmapa.Pedidos.LogAlteracaoPrazoPedidoVenda
+        GROUP BY CodigoPedido,IdProduto, DataAlteracao) AS LAPPV ON LAPPV.CodigoPedido = LAP.CodigoPedido AND LAPPV.IdProduto = LAP.IdProduto AND LAP.IdLogPrazoPedidoVenda = LAPPV.IdLogPrazoPedidoVenda) 
+
+        AS LOGPRAZO ON LOGPRAZO.CodigoPedido = ISNULL(PF.PedidoPai, PF.CodigoPedido) --AND LOGPRAZO.IdProduto = PB.IdProduto
+        where pf.DataInserido BETWEEN Convert(datetime, '2022-05-01' ) AND Convert(datetime, '2022-05-31' ) and LP.ParaIdEtapaFlexy = 9 AND RejeicaoId = 0
+        ORDER BY PF.CodigoPedido
+            """)))
+        execquery_produtos = conn.execute(query_produtos).all()
+
+        for exc in execquery_produtos:
+            dict_items = {}
+            for keys, values in exc.items():
+                dict_items[keys] = values
+            lista_dicts.append(dict_items)
+        df = pd.DataFrame(lista_dicts)
+    return df

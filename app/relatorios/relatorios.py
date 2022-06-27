@@ -31,7 +31,7 @@ def precos_google():
 @relatorios.route("/produtos/<int:page>", methods=["GET","POST"])
 def retorna_produtos(page=1):
     produtos = retorna_all_produtos(page)
-    print(produtos)
+    # print(produtos)
     return render_template("produtos.html",page=page, produtos=produtos)
 
 
@@ -48,7 +48,7 @@ def prazos_marca(page=1):
 @relatorios.route("/marcas", methods=["GET","POST"])
 def retorna_marcas():
     marcas = select_resumo_marcas()
-    print(marcas)
+    # print(marcas)
  
     return render_template("marcas.html", produtos = marcas)
 
@@ -76,7 +76,7 @@ def marcas_dinamicas():
     for js in jsons:
         for brand in js:
             lista_jsons.append(brand)
-    print(lista_jsons)
+    # print(lista_jsons)
     return render_template("informacoesestoque.html", produtos = lista_jsons)
 
 

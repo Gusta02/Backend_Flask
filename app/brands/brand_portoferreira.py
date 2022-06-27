@@ -79,7 +79,7 @@ class PortoFerreira:
         dataporto.to_excel("C:\\Projetoshausz\\apphauszetlsbi\\uploadarquivos\\logs\\porto3005.xlsx")
         jsons = dataporto.to_json(orient="records")
         values = json.loads(jsons)
-        print(values)
+        # print(values)
     
 
         return values
