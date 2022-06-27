@@ -98,7 +98,7 @@ class Lexxa:
         data.to_excel("C:\\Projetoshausz\\apphauszetlsbi\\uploadarquivos\\logs\\lexxa0606.xlsx")
         
 
-        print(data)
+        # print(data)
     
         jsons = data.to_dict('records')
 

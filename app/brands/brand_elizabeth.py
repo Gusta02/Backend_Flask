@@ -128,6 +128,6 @@ class Elizabeth:
         data.to_excel("C:\\Projetoshausz\\apphauszetlsbi\\uploadarquivos\\logs\\elizabeth0606.xlsx")
         
         jsons = data.to_dict('records')
-        print(jsons)
+
         return jsons
      

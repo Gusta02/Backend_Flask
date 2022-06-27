@@ -156,6 +156,7 @@ def select_pedidos_data_atual(data):
     datapedido = pd.DataFrame(lista_dicts)
     dataatual = datapedido.loc[datapedido['datainserido'] == data]
     jsons = dataatual.to_dict('records')
+ 
 
     return jsons
 

@@ -12,7 +12,7 @@ def retorna_produtos_estoques(skus):
             if type(sku) == dict:
                 try:
                     referencia = sku["SKU"]
-                    print(referencia)
+                    # print(referencia)
                     saldos = sku["SALDO"]
                     prazos = sku["PRAZO"]
                     dataatual= sku["DATA"]
@@ -104,7 +104,7 @@ def retorna_all_produtos(page):
             for keys, values in produto.items():
             
                 dict_items[keys] = values
-                print("ESTARTOUOOOOOOOOOOOOOOOO all produtos")
+                # print("ESTARTOUOOOOOOOOOOOOOOOO all produtos")
                 
             lista_produtos.append(dict_items)
 
@@ -136,7 +136,7 @@ def retorna_cadastros_novos(page):
             dict_items = {}
             for keys, values in produto.items():
                 dict_items[keys] = values
-                print("ESTARTOUOOOOOOOOOOOOOOOO all cadastro novo")
+                # print("ESTARTOUOOOOOOOOOOOOOOOO all cadastro novo")
 
             lista_dicts.append(dict_items)
                 

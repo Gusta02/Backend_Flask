@@ -74,7 +74,7 @@
                     </div>
                   </a>
                   <ul class="nav collapse " id="home" data-parent="#navbarVerticalCollapse">
-                    <li class="nav-item"><a class="nav-link" href="../index.html">Relatório Geral</a>
+                    <li class="nav-item"><a class="nav-link" href="/">Relatório Geral</a>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="../home/Relatorio_micro_logistica.html">Relatório Micro Logística</a>
                     </li>
@@ -190,7 +190,7 @@
                 <div class="col-6 col-sm-auto d-flex align-items-center pr-0">
                   <h5 class="fs-0 mb-0 text-nowrap py-2 py-xl-0">Tabela Rejeições</h5>
                 </div>
-                <form class="form-inline" action="{{ url_for('wms.filtro_tabela', page=1) }}" method="POST">
+                <form class="form-inline" action="{{ url_for('wms.filtro_tabela') }}" method="POST">
                   <div class="form-group mx-sm-3 mb-4">
                     <label for="inputPassword2" class="sr-only">Codigo Pedido</label>
                     <input type="text" class="form-control" id="inputPassword2" placeholder="Codigo Pedido" name="codigoPedido" for="codigoPedido">
@@ -211,13 +211,17 @@
                     <input type="date" name="DataFim" for="DataFim" class="form-control" placeholder="Data Fim">
                   </div>
                   <button class="btn btn-falcon-default mx-auto" type="submit"><span class="fas fa-filter" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ml-1">Filter</span></button>
-                  <button class="btn btn-falcon-default mx-auto" type="submit"><span class="fas fa-filter-slash" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ml-1">Limpa Filtro</span></button>
+                  <button class="btn btn-falcon-default mx-auto" type="" href ="/dashboard/logistica/integracao_wms/1"><span class="fas fa-filter-slash" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ml-1">Limpa Filtro</span></button>
                 </form>
               </div>
             </div>
             <div class="card-body px-0 pt-0">
               <div class="dashboard-data-table">
+                {% if pag == 0: %}
+                <table class="table table-sm table-dashboard fs--1" data-options='{"pageLength":15}'>
+                {% else: %}
                 <table class="table table-sm table-dashboard fs--1" data-options='{"pageLength":10}'>
+                {% endif %}
                   <thead class="bg-200 text-900">
                     <tr>
                     
@@ -250,6 +254,9 @@
                     <!-- FIM DA LINHA TABELA -->
                   </tbody>
                 </table>
+                {% if pag == 0: %}
+                <div><p>versão beta<p></div>
+                {% else: %}
                 <div class="align-middle">
                   <th scope="row"><a href="{{page-1}}" class="btn btn-outline-dark">Inicio</a></th>
                   <th scope="row"><a href="{{page}}" class="btn btn-outline-dark">{{page}}</a></th>
@@ -258,6 +265,7 @@
                   <th scope="row"><a href="{{page+3}}" class="btn btn-outline-dark">{{page+3}}</a></th>
                   <th scope="row"><a href="{{page+4}}" class="btn btn-outline-dark">next</a></th>
                 </div>
+                {% endif %}
               </div>
             </div>
           </div>

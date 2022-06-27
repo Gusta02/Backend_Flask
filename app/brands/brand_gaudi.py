@@ -75,7 +75,7 @@ class Gaudi:
         listas = self.reader_imagem()
      
         data = pd.DataFrame(listas)
-        print(data)
+
         data['SKU'].fillna(0, inplace=True)
 
       
@@ -90,7 +90,7 @@ class Gaudi:
         jsons = data.to_dict('records')
         
 
-        print(jsons)
+
         return jsons
     
 
