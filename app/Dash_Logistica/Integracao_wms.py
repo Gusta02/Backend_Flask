@@ -59,11 +59,13 @@ def categoriza_status():
         lista_values = {'0':'Integrou','6':'SemEstoque','3':'Erro'}
 
         rejeicoes_wms = IntegracaoWms.select_wms_rejeicoes()
+        
         rejeicoes = pd.DataFrame(rejeicoes_wms)
+        rejeicoes['statusRejeicao'] = rejeicoes.loc[:,'RejeicaoId'].apply(lambda k: 'Integrou' if '0' in k else('SemEstoque' if '6' in k else ("Erro" if '3' in k else k)))
 
+        rejeicoes = rejeicoes[rejeicoes.loc[:,'statusRejeicao'].astype(str).str.contains('Integrou')]
 
-        rejeicoes['statusRejeicao'] = rejeicoes['RejeicaoId'].map(lista_values)
-        rejeicoes[rejeicoes.loc[:,'statusRejeicao'].astype(str).str.contains('Integrou')]
+        return rejeicoes
 
 def read_excel(tabela):
 
@@ -151,19 +153,29 @@ def filtraSelecionaPedidos():
         logpedidowms = logpedidowms.sort_values('dataatualizacao', ascending=False).drop_duplicates('CodigoPedido').sort_index()
         return logpedidowms
 
-def quantidade_pedidos_rejeicao():
-        rejeicoes = rejeicoes[(rejeicoes['Data'].astype(str).str.contains(f'{IntegracaoWms.retorna_dataatual()}'))]
+def Numero_falhas_integracao_no_dia():
+
+        rejeicoes = categoriza_status()
+        # rejeicoes = rejeicoes[(rejeicoes['Data'].astype(str).str.contains(f'{IntegracaoWms.retorna_dataatual()}'))]
 
         unificavalores = pd.merge(filtraSelecionaPedidos(),rejeicoes, on='CodigoPedido', how='left')
         unificavalores.loc[:,['CodigoPedido','StatusPedido','NomeEtapa','RejeicaoId','statusRejeicao']]
 
-
         freq_rejeicoes = unificavalores.loc[:,'statusRejeicao'].value_counts()
+        # print(freq_rejeicoes)
 
         freq_rejeicoes_porc = unificavalores.loc[:,'statusRejeicao'].value_counts(normalize=True) * 100
+        freq_rejeicoes_porc = int(freq_rejeicoes_porc)
 
-        freq_rejeicoes_porc = freq_rejeicoes_porc.reset_index(name='frequencia')
-        freq_rejeicoes_porc.columns = ['Status','Frequencia']
+        # freq_rejeicoes_porc = freq_rejeicoes_porc.reset_index(name='frequencia')
+        # freq_rejeicoes_porc.columns = ['Status','Frequencia']
+        return freq_rejeicoes_porc
+
+def unificaValoress():
+        rejeicoes = rejeicoes[(rejeicoes['Data'].astype(str).str.contains(f'{IntegracaoWms.retorna_dataatual()}'))]
+
+        unificavalores = pd.merge(filtraSelecionaPedidos(),rejeicoes, on='CodigoPedido', how='left')
+        unificavalores.loc[:,['CodigoPedido','StatusPedido','NomeEtapa','RejeicaoId','statusRejeicao']]
         return unificavalores
 
 def status_pedido():
@@ -186,12 +198,49 @@ def FrequenciaSituacaoPedidos():
         frequencia_status_nota = unifica_pedidos_wms.loc[:,'Situação'].value_counts()
         frequencia_status_nota_porc = unifica_pedidos_wms.loc[:,'Situação'].value_counts(normalize=True) * 100
 
+def tempo_integracao():
+
+        unificavalores = unificaValoress()
+
+        unificalocwms = uni_tabela_wms.unificalocwms
+
+        unificavalores['CodigoPedido'] = unificavalores['CodigoPedido'].astype(str)
+
+        unificalocwms['REFERENCIA_PEDIDO_WMS'] = unificalocwms['REFERENCIA_PEDIDO_WMS'].apply(lambda k: str(k).replace('Ped.:','').split('-')[0].strip())
+
+        full = pd.merge(unificavalores,unificalocwms, left_on='CodigoPedido', right_on='REFERENCIA_PEDIDO_WMS', how='left')
+
+        pedidohauszbd = full.loc[:,['CodigoPedido','dataatualizacao','NomeEtapa']]
+
+        wmsunifica = uni_tabela_wms.unificalocwms.loc[:,['REFERENCIA_PEDIDO_WMS','DATA_INCLUSAO_PEDIDO']]
+
+        wmsunifica.columns = ['CodigoPedido','DATA_INCLUSAO_PEDIDO']
+
+        wmsunifica['CodigoPedido'] = wmsunifica['CodigoPedido'].apply(lambda k: str(k).replace('Ped.: ','').split('-')[0].strip())
+
+        pedidohauszbd.loc[:,'dataatualizacao'].apply(lambda k: str(k).split('.')[:-1])
+
+        pedidohauszbd['dataatualizacao'] = pd.to_datetime(pedidohauszbd['dataatualizacao']).dt.strftime('%Y/%m/%d %H:%M')
+
+        wmsunifica.loc[:,'DATA_INCLUSAO_PEDIDO'] = wmsunifica.loc[:,'DATA_INCLUSAO_PEDIDO'].apply(pd.to_datetime)
+
+        unificapd = pd.merge(pedidohauszbd, wmsunifica, how='left')
+        unificapd.loc[:,['dataatualizacao','DATA_INCLUSAO_PEDIDO']] = unificapd.loc[:,['dataatualizacao','DATA_INCLUSAO_PEDIDO']].apply(pd.to_datetime, errors='coerce')
+
+        unificapd['TEMPOINTEGRACAO'] = (unificapd.loc[:,'dataatualizacao'] - unificapd.loc[:,'DATA_INCLUSAO_PEDIDO']).dt.days.abs()
+        unificapd.loc[:,'STATUSTEMPO'] = unificapd.loc[:,'TEMPOINTEGRACAO'].apply(lambda k: 'IMEDIATO' if k ==0 else 'DELAY')
+
+        unificapd.loc[:,'TEMPOINTEGRACAO'].median()
+        # obs = unificapd.loc[:,'TEMPOINTEGRACAO'].describe().reset_index(name='valor').round(2)
+
+        unificapd.loc[:,['CodigoPedido','DATA_INCLUSAO_PEDIDO','TEMPOINTEGRACAO','STATUSTEMPO']]
+
 @wms.route('/dashboard/logistica/integracao_wms/<int:page>', methods=["GET","POST"])
-def index(page= 1):
+def Integracao_wms_first_page(page= 1):
         page = page
         tabela = IntegracaoWms.tabela_filtro1(page)
         # print(tabela)
-        pag = 1
+        aaa = 1
 
         card_1 = card1()
         card_2 = card2()
@@ -199,12 +248,15 @@ def index(page= 1):
         card_4 = card4()
         card_5 = card5()
         card_6 = card6()
+        card_7 = Numero_falhas_integracao_no_dia()
+
+
         
-        return render_template("Integracao_wms.html", card1 = card_1, card2 = card_2 ,card3 = card_3, card4 = card_4, card5 = card_5, card6 = card_6, tabela = tabela, page = page, pag = pag)
+        return render_template("Integracao_wms.html", card1 = card_1, card2 = card_2 ,card3 = card_3, card4 = card_4, card5 = card_5, card6 = card_6, tabela = tabela, page = page, aaa = aaa, card7 = card_7)
 
 @wms.route('/dashboard/logistica/itengracao_wms/filtro', methods=["POST"])
 def filtro_tabela(codigoPedido = '', SKU = '', RejeicaoID = '', DataFim = '', DataIni = ''):
-        pag = 0
+        aaa = 0
         codigoPedido = codigoPedido
         SKU = SKU
         RejeicaoID=RejeicaoID
@@ -266,4 +318,4 @@ def filtro_tabela(codigoPedido = '', SKU = '', RejeicaoID = '', DataFim = '', Da
         card_6 = card6()
         
 
-        return render_template("Integracao_wms.html", card1 = card_1, card2 = card_2 ,card3 = card_3, card4 = card_4, card5 = card_5, card6 = card_6, tabela = tabela, page = pag)
+        return render_template("Integracao_wms.html", card1 = card_1, card2 = card_2 ,card3 = card_3, card4 = card_4, card5 = card_5, card6 = card_6, tabela = tabela, aaa = aaa)
