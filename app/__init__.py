@@ -15,40 +15,40 @@ def register_handlers(app):
     @app.errorhandler(500)
     def server_error_page(*args, **kwargs):
         # retorna server error
-        return render_template("error_500.html"), 500
+        return render_template("500.html"), 500
 
     @app.errorhandler(404)
     def TemplateNotFound(*args, **kwargs):
         # retorna template notfound
-        return render_template("error_404.html"), 404
+        return render_template("404.html"), 404
 
     @app.errorhandler(404)
     def page_not_found(*args, **kwargs):
         # do stuff
-        return render_template("error_404.html"), 404
+        return render_template("404.html"), 404
     
     @app.errorhandler(500)
     def ModuleNotFoundError(*args, **kwargs):
-        return render_template("error_500.html"), 500
+        return render_template("500.html"), 500
 
     @app.errorhandler(403)
     def forbidden_page(*args, **kwargs):
         # do stuff
-        return render_template("error_403.html"), 403
+        return render_template("403.html"), 403
 
     @app.errorhandler(404)
     def page_not_found(*args, **kwargs):
         # do stuff
-        return render_template("error_404.html"), 404
+        return render_template("404.html"), 404
 
     @app.errorhandler(405)
     def method_not_allowed_page(*args, **kwargs):
         # do stuff
-        return render_template("error_405.html"), 405
+        return render_template("405.html"), 405
 
 
 def create_app():
-    app = Flask(__name__,static_folder=None)
+    app = Flask(__name__,static_folder='static',static_url_path='/app/index/static')
     
     with app.app_context():
         #imports Blueprints
