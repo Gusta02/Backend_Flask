@@ -137,7 +137,7 @@
               </div>
               <div class="card-body position-relative">
                 <h6>Percentual com base no dia anterior</h6>
-                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-info">{{ card2 }}</div>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-info">{{ card2 }}%</div>
               </div>
             </div>
             <!-- FIM CARD -->
@@ -147,7 +147,7 @@
               </div>
               <div class="card-body position-relative">
                 <h6>Rejeições do dia anterior</h6>
-                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif" >{{ card3 }}</div>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif" >{{ card3 }}%</div>
               </div>
             </div>
             <!-- FIM CARD -->
@@ -157,7 +157,7 @@
               </div>
               <div class="card-body position-relative">
                 <h6>Percentual com base no mes anterior</h6>
-                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-warning">{{ card4[0]['quantidade_de_rejeicao'] }}</div>
+              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-warning">{{ card4[0]['quantidade_de_rejeicao'] }}%</div>
               </div>
             </div>
             <!-- FIM CARD -->
@@ -182,16 +182,25 @@
               </div>
             </div>
              <!-- CARD7 -->
-      <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
-        <div class="bg-holder bg-card">
-        </div>
-        <div class="card-body position-relative">
-          <h6> Percentual de Integrações no dia </h6>
-          <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif">{{ card7 }}%</div>
-        </div>
-      </div>
-
-        <!-- FIM DO CARD7 -->
+            <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+              <div class="bg-holder bg-card">
+              </div>
+              <div class="card-body position-relative">
+                <h6> Falhas na integração Hoje </h6>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif">{{ card7 }}</div>
+              </div>
+            </div>
+          <!-- FIM DO CARD7 -->
+          <!-- CARD8 -->
+          <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+            <div class="bg-holder bg-card">
+            </div>
+            <div class="card-body position-relative">
+              <h6> Falhas de Integração Não Resolvidas </h6>
+              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif">{{ card8 }}</div>
+            </div>
+          </div>
+        <!-- FIM DO CARD8 -->
           </div>
           <!-- FIM DOS CARDS -->
          
