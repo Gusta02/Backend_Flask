@@ -76,9 +76,9 @@
                   <ul class="nav collapse " id="home" data-parent="#navbarVerticalCollapse">
                     <li class="nav-item"><a class="nav-link" href="/">Relatório Geral</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="../home/Relatorio_micro_logistica.html">Relatório Micro Logística</a>
+                    <li class="nav-item"><a class="nav-link" href="/">Relatório Micro Logística</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="../home/Relatorio_micro_transporte.html">Relatório Micro Transportes</a>
+                    <li class="nav-item"><a class="nav-link" href="/">Relatório Micro Transportes</a>
                     </li>
                   </ul>
                 </li>
@@ -87,11 +87,11 @@
                     </div>
                   </a>
                   <ul class="nav collapse show" id="pages" data-parent="#navbarVerticalCollapse">
-                    <li class="nav-item"><a class="nav-link" href="Indicador_perf_logistica.html">Indicador de Performance - Logística</a>
+                    <li class="nav-item"><a class="nav-link" href="/">Indicador de Performance - Logística</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="Indicador_perf_transporte.html">Indicador de Performance - Transportes</a>
+                    <li class="nav-item"><a class="nav-link" href="/">Indicador de Performance - Transportes</a>
                     </li>
-                    <li class="nav-item active"><a class="nav-link" href="Integracao_wms.html">Integração WMS</a>
+                    <li class="nav-item active"><a class="nav-link" href="/">Integração WMS</a>
                     </li>
               </ul>
           </div>
@@ -146,7 +146,7 @@
               <div class="bg-holder bg-card">
               </div>
               <div class="card-body position-relative">
-                <h6>Percentual com base no mes anterior</h6>
+                <h6>Rejeições do dia anterior</h6>
                 <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif" >{{ card3 }}%</div>
               </div>
             </div>
@@ -156,8 +156,10 @@
               <div class="bg-holder bg-card">
               </div>
               <div class="card-body position-relative">
-                <h6>Rejeições do dia anterior</h6>
-                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-warning">{{ card4[0]['quantidade_de_rejeicao'] }}</div>
+
+                <h6>Percentual com base no mes anterior</h6>
+              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-warning">{{ card4[0]['quantidade_de_rejeicao'] }}%</div>
+
               </div>
             </div>
             <!-- FIM CARD -->
@@ -181,8 +183,29 @@
                 <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif">{{ card6 }}</div>
               </div>
             </div>
+             <!-- CARD7 -->
+            <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+              <div class="bg-holder bg-card">
+              </div>
+              <div class="card-body position-relative">
+                <h6> Falhas na integração Hoje </h6>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif">{{ card7 }}</div>
+              </div>
+            </div>
+          <!-- FIM DO CARD7 -->
+          <!-- CARD8 -->
+          <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+            <div class="bg-holder bg-card">
+            </div>
+            <div class="card-body position-relative">
+              <h6> Falhas de Integração Não Resolvidas </h6>
+              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif">{{ card8 }}</div>
+            </div>
+          </div>
+        <!-- FIM DO CARD8 -->
           </div>
           <!-- FIM DOS CARDS -->
+         
           <!-- TABELA -->
           <div class="card mb-3">
             <div class="card-header">
@@ -211,16 +234,16 @@
                     <input type="date" name="DataFim" for="DataFim" class="form-control" placeholder="Data Fim">
                   </div>
                   <button class="btn btn-falcon-default mx-auto" type="submit"><span class="fas fa-filter" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ml-1">Filter</span></button>
-                  <button class="btn btn-falcon-default mx-auto" type="" href ="/dashboard/logistica/integracao_wms/1"><span class="fas fa-filter-slash" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ml-1">Limpa Filtro</span></button>
                 </form>
+                <button class="btn btn-falcon-default mx-auto" type="button"><a href ="{{ url_for('wms.Integracao_wms_first_page', page = 1) }}"><span class="fas fa-filter-slash"></span><span class="d-none d-sm-inline-block ml-1">Limpa Filtro</span></a></button>
               </div>
             </div>
             <div class="card-body px-0 pt-0">
               <div class="dashboard-data-table">
-                {% if pag == 0: %}
+                {% if aaa == 0: %}
                 <table class="table table-sm table-dashboard fs--1" data-options='{"pageLength":15}'>
                 {% else: %}
-                <table class="table table-sm table-dashboard fs--1" data-options='{"pageLength":10}'>
+                <table class="table table-sm table-dashboard fs--1" data-options='{"pageLength":5}'>
                 {% endif %}
                   <thead class="bg-200 text-900">
                     <tr>
@@ -248,14 +271,15 @@
                       <td class="align-middle">{{ i["Quantidade"] }}</td>
                       <td class="align-middle">{{ i["Quantidade_faltante"] }}</td>
                       <td class="align-middle">{{ i["Data_Rejeicao"] }}</td>
-
                     </tr>
                     {% endfor %}
                     <!-- FIM DA LINHA TABELA -->
                   </tbody>
+
                 </table>
-                {% if pag == 0: %}
-                <div><p>versão beta<p></div>
+
+                {% if aaa == 0: %}
+                <div></div>
                 {% else: %}
                 <div class="align-middle">
                   <th scope="row"><a href="{{page-1}}" class="btn btn-outline-dark">Inicio</a></th>

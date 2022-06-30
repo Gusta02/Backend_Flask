@@ -7,7 +7,6 @@ from ..controllers.relatorios_index_controller import (select_resumo_infos, sele
 ,select_groupby_saldo_produto, vendas_mes_agrupado)
 from ..controllers.controller_logistica import IntegracaoWms
 
-
 def register_handlers(app):
     if app.config.get('DEBUG') is True:
         app.logger.debug('Skipping error handlers in Debug mode')
@@ -16,37 +15,36 @@ def register_handlers(app):
     @current_app.errorhandler(500)
     def server_error_page(*args, **kwargs):
         # retorna server error
-        return render_template("error_500.html"), 500
+        return render_template("500.html"), 500
 
     @current_app.errorhandler(404)
     def TemplateNotFound(*args, **kwargs):
         # retorna template notfound
-        return render_template("error_404.html"), 404
+        return render_template("404.html"), 404
 
     @current_app.errorhandler(404)
     def page_not_found(*args, **kwargs):
         # do stuff
-        return render_template("error_404.html"), 404
+        return render_template("404.html"), 404
     
     @current_app.errorhandler(500)
     def ModuleNotFoundError(*args, **kwargs):
-        return render_template("error_500.html"), 500
+        return render_template("500.html"), 500
 
     @current_app.errorhandler(403)
     def forbidden_page(*args, **kwargs):
         # do stuff
-        return render_template("error_403.html"), 403
+        return render_template("403.html"), 403
 
     @current_app.errorhandler(404)
     def page_not_found(*args, **kwargs):
         # do stuff
-        return render_template("error_404.html"), 404
+        return render_template("404.html"), 404
 
     @current_app.errorhandler(405)
     def method_not_allowed_page(*args, **kwargs):
         # do stuff
-        return render_template("error_405.html"), 405
-
+        return render_template("405.html"), 405
 
 def leadtime():
     tabela = IntegracaoWms.leadtime_log()
@@ -64,12 +62,22 @@ def leadtime():
         media = f'{media: .0f}'
         medias.append(media)
 
+    tamanho = len(medias)
+    contador = 0
+    while (contador < tamanho):
+
+        try: 
+            medias[contador] = int(medias[contador])
+        except:
+            medias[contador] = 'Sem Média de'
+        
+        contador   = contador + 1    
+
     Media = pd.DataFrame(medias, columns = ['Media'])
     df =pd.concat([estado, Media], axis=1)
 
 
     return df
-
 
 def percentual_atrasado():
     df = IntegracaoWms.percentual()
@@ -102,13 +110,9 @@ def percentual_na_data():
 
     return Percentual_Entregas_no_prazo
 
-
-
-
 index = Blueprint("index",__name__
         ,template_folder='templates',static_folder='static',static_url_path='/static/imagens')
         
-
 @index.route("/", methods=["GET","POST"])
 def home():
         tabela = leadtime()
@@ -117,7 +121,6 @@ def home():
         Entregues_prazo = percentual_na_data()
        
         
-        return render_template("index.html", Tabela = tabela, Entregues_atraso = Entregues_atraso, Entregues_prazo = Entregues_prazo)
-
+        return render_template("index.html", tabela = tabela ,Entregues_atraso = Entregues_atraso, Entregues_prazo = Entregues_prazo)
 
 register_handlers(current_app)

@@ -122,6 +122,7 @@ def card_hoje():
     engine = get_connection()
     list_rhj = []
     with engine.connect() as conn:
+
         query_rejeicao_hoje =(text(f"""select COUNT (RejeicaoId) as quantidade_de_rejeicao from HauszMapa.wms.T_Rejeicoes
         where RejeicaoId <> 0 and Data between '{hoje2}' and '{data_amanha}' """))
         lista_filtro_hoje = conn.execute(query_rejeicao_hoje).all()
@@ -344,10 +345,12 @@ def leadtime_log():
             FROM HauszMapa.Pedidos.PedidoFlexy pf
             inner join (select CodigoPedido ,DataAtualizacao from HauszMapa.Pedidos.LogPedidos where ParaIdEtapaFlexy = 6 GROUP BY DataAtualizacao, CodigoPedido )  ini on ini.CodigoPedido = pf.CodigoPedido
             inner join (select CodigoPedido ,DataAtualizacao from HauszMapa.Pedidos.LogPedidos where ParaIdEtapaFlexy = 9 GROUP BY DataAtualizacao, CodigoPedido )  fim on fim.CodigoPedido = pf.CodigoPedido
-            inner join HauszLogin.Cadastro.Unidade uni on uni.IdUnidade = pf.IdUnidade
-            inner join HauszLogin.Cadastro.Cidade cit on cit.IdCidade = uni.IdCidade
+            inner join HauszLogin.Cadastro.Cliente cli on cli.IdCliente = pf.IdCliente
+			inner join HauszLogin.Cadastro.Usuario u on u.IdUsuario = cli.IdUsuario
+            inner join HauszLogin.Cadastro.Cidade cit on cit.IdCidade = u.IdCidade
             inner join HauszLogin.Cadastro.Estado est on est.IdEstado = cit.IdEstado
-            where uni.bitAtivo = 1 and uni.IdUnidade <> 1 GROUP BY pf.CodigoPedido, est.Nome, ini.DataAtualizacao, fim.DataAtualizacao
+
+            GROUP BY pf.CodigoPedido, est.Nome, ini.DataAtualizacao, fim.DataAtualizacao
             """)))
         execquery_produtos = conn.execute(query_produtos).all()
         
