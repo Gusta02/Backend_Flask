@@ -5,7 +5,6 @@ from datetime import datetime, timedelta,date
 from dateutil.relativedelta import *
 import pandas as pd
 
-
 #Horarios and mes
 hoje  = datetime.today()
 hoje2 = hoje.strftime('%Y-%m-%d')
