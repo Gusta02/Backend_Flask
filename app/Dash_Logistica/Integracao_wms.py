@@ -9,7 +9,7 @@ wms = Blueprint('wms', __name__ , template_folder='templates', static_folder='st
 def card1():
         #rejeicaohj, sao as rejeicoes do dia atual -  CARD 1
         rejeicaohj = IntegracaoWms.card_hoje()
-        rejeicaohj = rejeicaohj[0]['Rejeicao_Hoje']
+        rejeicaohj = rejeicaohj[0]['quantidade_de_rejeicao']
         return rejeicaohj
 
 def card2():
