@@ -11,8 +11,8 @@ load_dotenv()
 driver = "Driver={SQL Server Native Client 11.0}"
 server = "w2019.hausz.com.br"
 database = "HauszMapa"
-usuario = "Michel.florencio"
-password = "M1ch3l!Fl0@2022"
+usuario = "aplicacao.BI"
+password = "!4p.lic@C2022_aoB1"
 
 patharquivos = os.path.abspath(os.path.dirname(__file__))
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','csv','xlsx'}
