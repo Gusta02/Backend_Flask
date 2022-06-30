@@ -1,0 +1,50 @@
+#map-grid > div {
+  display: none;
+}
+
+.node {
+  display: none;
+}
+
+.estado.ativo + .node {
+  display: block !important;
+}
+
+.estado.ativo path {
+  fill: #2f72c9 !important;
+}
+
+#svg-map path {
+  fill: #a8aaa3;
+}
+
+#svg-map text {
+  fill: #fff;
+  font: 12px Arial-BoldMT, sans-serif;
+  cursor: pointer;
+  display: none;
+}
+
+#svg-map a {
+  text-decoration: none;
+  outline: 0;
+}
+
+#svg-map a:hover {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+#svg-map a:hover path {
+  fill: #498adf !important;
+}
+
+#svg-map .circle {
+  fill: #498adf;
+  display: none;
+}
+
+#svg-map a:hover .circle {
+  fill: #498adf !important;
+  cursor: pointer;
+}

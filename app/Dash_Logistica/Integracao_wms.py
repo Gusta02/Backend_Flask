@@ -1,13 +1,14 @@
 from flask import Blueprint, render_template, request
 from ..controllers.controller_logistica import IntegracaoWms
 import pandas as pd
+from datetime import datetime
 
 
 wms = Blueprint('wms', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
 def card1():
         rejeicaohj = IntegracaoWms.card_hoje()
-        rejeicaohj = rejeicaohj[0]['quantidade_de_rejeicao']
+        rejeicaohj = rejeicaohj[0]['Rejeicao_Hoje']
         return rejeicaohj
 
 def card2():
@@ -17,7 +18,7 @@ def card2():
                 percentual = card1 / ontem * 100
         except:
                 percentual = 0
-        dia_percentual = "{:.2f}".format(percentual)
+        dia_percentual = "{:.0f}".format(percentual)
 
         return dia_percentual
 
@@ -36,7 +37,7 @@ def card3():
                 percentual_mes = 0
         
         #ESTE CARD É O PERCENTUAL DE REJEICOES DO MES ANTERIOR
-        mes_resultado = "{:.2f}".format((percentual_mes))
+        mes_resultado = "{:.0f}".format((percentual_mes))
 
         return mes_resultado
 
@@ -69,12 +70,8 @@ def categoriza_status():
 
 def read_excel(tabela):
 
-        planilhas = pd.read_excel(f'C:/Users/Gusta/Documents/Backend_Flask/app/Dash_Logistica/planilha/{tabela}.xlsx',skiprows=[0,1,2,3,4,5])
-        dfwms2 = pd.read_excel('C:/Users/Gusta/Documents/Backend_Flask/app/Dash_Logistica/planilha/WD6part2.xlsx',skiprows=[0,1,2,3,4,5])
-        dfwxd1 = pd.read_excel('C:/Users/Gusta/Documents/Backend_Flask/app/Dash_Logistica/planilha/WXDpart1.xlsx',skiprows=[0,1,2,3,4,5])
-        dfwxd2 = pd.read_excel('C:/Users/Gusta/Documents/Backend_Flask/app/Dash_Logistica/planilha/WXDpart2.xlsx',skiprows=[0,1,2,3,4,5])
-        dfwpj1 = pd.read_excel('C:/Users/Gusta/Documents/Backend_Flask/app/Dash_Logistica/planilha/WPJpart1.xlsx',skiprows=[0,1,2,3,4,5,6])
-        dfwpj2 = pd.read_excel('C:/Users/Gusta/Documents/Backend_Flask/app/Dash_Logistica/planilha/WPJpart2.xlsx',skiprows=[0,1,2,3,4,5,6])
+        planilhas = pd.read_excel(f'app/Dash_Logistica/planilha/{tabela}.xlsx',skiprows=[0,1,2,3,4,5])
+
         return planilhas
  
 #Unifica tabelas wms, renomeia colunas e concatena
@@ -152,7 +149,22 @@ def filtraSelecionaPedidos():
         #logpedidowms = logpedidowms.sort_values('dataatualizacao', ascending=False)
         logpedidowms = logpedidowms.sort_values('dataatualizacao', ascending=False).drop_duplicates('CodigoPedido').sort_index()
         return logpedidowms
+        
+def filtra_sem_data():
 
+        mes = datetime.today().strftime('%m')
+
+        logsgeral = IntegracaoWms.select_log_wms_pedidos()
+        logpedidowms = pd.DataFrame(logsgeral)
+
+        logpedidowms.loc[:,'ParaIdEtapaFlexy'] = logpedidowms.loc[:,'ParaIdEtapaFlexy'].astype(int)
+
+        logpedidowms = logpedidowms[(logpedidowms.loc[:,'ParaIdEtapaFlexy'] == 6)]
+        logpedidowms['mes'] = logpedidowms['dataatualizacao'].apply(lambda x: x.strftime('%m'))
+        logpedidowms = logpedidowms[(logpedidowms.loc[:,'mes'].astype(str).str.contains(f'{mes}'))]
+
+        return logpedidowms
+        
 def Numero_falhas_integracao_no_dia():
 
         rejeicoes = categoriza_status()
@@ -169,6 +181,7 @@ def Numero_falhas_integracao_no_dia():
 
         # freq_rejeicoes_porc = freq_rejeicoes_porc.reset_index(name='frequencia')
         # freq_rejeicoes_porc.columns = ['Status','Frequencia']
+        print(freq_rejeicoes)
         return freq_rejeicoes_porc
 
 def unificaValoress():
@@ -197,6 +210,7 @@ def FrequenciaSituacaoPedidos():
         unifica_pedidos_wms = uni_tabela_wms()
         frequencia_status_nota = unifica_pedidos_wms.loc[:,'Situação'].value_counts()
         frequencia_status_nota_porc = unifica_pedidos_wms.loc[:,'Situação'].value_counts(normalize=True) * 100
+        return unifica_pedidos_wms
 
 def tempo_integracao():
 
@@ -235,11 +249,61 @@ def tempo_integracao():
 
         unificapd.loc[:,['CodigoPedido','DATA_INCLUSAO_PEDIDO','TEMPOINTEGRACAO','STATUSTEMPO']]
 
+def Nao_integrou_hoje():
+
+        logpedidowms = filtraSelecionaPedidos()
+        unifica_pedidos_wms = FrequenciaSituacaoPedidos()
+
+        logpedidowms.loc[:,'CodigoPedido'] = logpedidowms.loc[:,'CodigoPedido'].astype(str)
+        unifica_pedidos_wms.loc[:,'REFERENCIA_PEDIDOHAUSZ'] = unifica_pedidos_wms.loc[:,'REFERENCIA_PEDIDOHAUSZ']
+        logpedidowms = logpedidowms.loc[:,['CodigoPedido','dataatualizacao']]
+        unifica_pedidos_wms = unifica_pedidos_wms.loc[:,['REFERENCIA_PEDIDOHAUSZ','DATAMOVIMENTO','Situação']]
+
+        unificapv = pd.merge(logpedidowms, unifica_pedidos_wms, left_on='CodigoPedido',right_on='REFERENCIA_PEDIDOHAUSZ', how='left')
+
+        unificapv.loc[:,'REFERENCIA_PEDIDOHAUSZ'].fillna('valornaoencontrado', inplace=True)
+        unificapv['LOGPEDIDOINTEGRADO'] = unificapv.loc[:,'REFERENCIA_PEDIDOHAUSZ'].apply(lambda k: 'Naointegrado' if 'valornaoencontrado' in k else 'PedidoIntegrado')
+
+        fre_log = unificapv.loc[:,'LOGPEDIDOINTEGRADO'].value_counts()
+
+        fre_log = unificapv.loc[:,'LOGPEDIDOINTEGRADO'].value_counts().reset_index()
+        fre_log.columns=['Status','quantidade']
+        fre_log_porc = unificapv.loc[:,'LOGPEDIDOINTEGRADO'].value_counts(normalize=True) * 100
+
+        try:
+                fre_log = fre_log['quantidade'][0]
+        except: 
+                fre_log = 0
+        return fre_log
+
+def Nao_integrou_mes():
+
+        logpedidowms = filtra_sem_data()
+        unifica_pedidos_wms = FrequenciaSituacaoPedidos()
+
+        logpedidowms.loc[:,'CodigoPedido'] = logpedidowms.loc[:,'CodigoPedido'].astype(str)
+        unifica_pedidos_wms.loc[:,'REFERENCIA_PEDIDOHAUSZ'] = unifica_pedidos_wms.loc[:,'REFERENCIA_PEDIDOHAUSZ']
+        logpedidowms = logpedidowms.loc[:,['CodigoPedido','dataatualizacao']]
+        unifica_pedidos_wms = unifica_pedidos_wms.loc[:,['REFERENCIA_PEDIDOHAUSZ','DATAMOVIMENTO','Situação']]
+
+        unificapv = pd.merge(logpedidowms, unifica_pedidos_wms, left_on='CodigoPedido',right_on='REFERENCIA_PEDIDOHAUSZ', how='left')
+
+        unificapv.loc[:,'REFERENCIA_PEDIDOHAUSZ'].fillna('valornaoencontrado', inplace=True)
+        unificapv['LOGPEDIDOINTEGRADO'] = unificapv.loc[:,'REFERENCIA_PEDIDOHAUSZ'].apply(lambda k: 'Naointegrado' if 'valornaoencontrado' in k else 'PedidoIntegrado')
+
+        fre_log = unificapv.loc[:,'LOGPEDIDOINTEGRADO'].value_counts()
+
+        fre_log = unificapv.loc[:,'LOGPEDIDOINTEGRADO'].value_counts().reset_index()
+        fre_log.columns=['Status','quantidade']
+        fre_log_porc = unificapv.loc[:,'LOGPEDIDOINTEGRADO'].value_counts(normalize=True) * 100
+
+        fre_log = fre_log['quantidade'][0]
+        return fre_log
+
 @wms.route('/dashboard/logistica/integracao_wms/<int:page>', methods=["GET","POST"])
 def Integracao_wms_first_page(page= 1):
         page = page
         tabela = IntegracaoWms.tabela_filtro1(page)
-        # print(tabela)
         aaa = 1
 
         card_1 = card1()
@@ -248,11 +312,10 @@ def Integracao_wms_first_page(page= 1):
         card_4 = card4()
         card_5 = card5()
         card_6 = card6()
-        card_7 = Numero_falhas_integracao_no_dia()
-
-
+        card_7 = Nao_integrou_hoje()
+        card_8 = Nao_integrou_mes()
         
-        return render_template("Integracao_wms.html", card1 = card_1, card2 = card_2 ,card3 = card_3, card4 = card_4, card5 = card_5, card6 = card_6, tabela = tabela, page = page, aaa = aaa, card7 = card_7)
+        return render_template("Integracao_wms.html", card1 = card_1, card2 = card_2 ,card3 = card_3, card4 = card_4, card5 = card_5, card6 = card_6, tabela = tabela, page = page, aaa = aaa, card7 = card_7, card8 = card_8)
 
 @wms.route('/dashboard/logistica/itengracao_wms/filtro', methods=["POST"])
 def filtro_tabela(codigoPedido = '', SKU = '', RejeicaoID = '', DataFim = '', DataIni = ''):

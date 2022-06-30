@@ -69,7 +69,7 @@ def leadtime():
         try: 
             medias[contador] = int(medias[contador])
         except:
-            medias[contador] = 'Sem Média'
+            medias[contador] = 'Sem Média de'
         
         contador   = contador + 1    
 
@@ -121,6 +121,6 @@ def home():
         Entregues_prazo = percentual_na_data()
        
         
-        return render_template("index.html", Tabela = tabela, Entregues_atraso = Entregues_atraso, Entregues_prazo = Entregues_prazo)
+        return render_template("index.html", tabela = tabela ,Entregues_atraso = Entregues_atraso, Entregues_prazo = Entregues_prazo)
 
 register_handlers(current_app)
