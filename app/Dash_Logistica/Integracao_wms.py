@@ -6,11 +6,13 @@ import pandas as pd
 wms = Blueprint('wms', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
 def card1():
+        #rejeicaohj, sao as rejeicoes do dia atual -  CARD 1
         rejeicaohj = IntegracaoWms.card_hoje()
         rejeicaohj = rejeicaohj[0]['quantidade_de_rejeicao']
         return rejeicaohj
 
 def card2():
+        #dia_percentual é a porcentagem de rejeicao com base no dia anterior - CARD 2
         ontem = IntegracaoWms.card_ontem()
 
         try:
@@ -22,6 +24,7 @@ def card2():
         return dia_percentual
 
 def card3():
+        
         mes_passado = IntegracaoWms.card_mes_passado()
         mes_passado = mes_passado[0]['quantidade_de_rejeicao']
 
@@ -29,30 +32,28 @@ def card3():
         mes_seguinte = IntegracaoWms.card_mes_seguinte()
         mes_seguinte = mes_seguinte[0]['quantidade_de_rejeicao']
 
-        try:
-                percentual_mes = mes_seguinte / mes_passado * 100
-    
-        except:
-                percentual_mes = 0
-        
-        #ESTE CARD É O PERCENTUAL DE REJEICOES DO MES ANTERIOR
-        mes_resultado = "{:.2f}".format((percentual_mes))
+        percentual_mes = ((mes_seguinte / mes_passado) * 100)-100
 
-        return mes_resultado
+        mes_resultado =f'{percentual_mes:.2f}' 
+        #/////////// CARD COM PERCENTUAL DAS REJEICOES DO MES ANTERIOR COM O MES ATUAL - CARD 3
+
+        return mes_resultado 
 
 def card4():
+        #contem todas as rejeicoes do dia anterior   - CARD 4
         ontem = IntegracaoWms.card_ontem()
         return ontem
 
 def card5():
-        rejeicoes_mes_anterior = IntegracaoWms.qtd_mes_passado()
+        #total de rejeicoes que tivemos no mes anterior - card 5
+        rejeicoes_mes_anterior = IntegracaoWms.card_mes_passado()
         rejeicoes_mes_anterior = rejeicoes_mes_anterior[0]['quantidade_de_rejeicao']
         return rejeicoes_mes_anterior
 
 def card6():
-
-        possivel_rejeicao = IntegracaoWms.Pre_rejeicao()
-        possivel_rejeicao = possivel_rejeicao[0]['Pre_rejeicoes']
+        # /////////////////  STATUS VERIFICANDO ESTOQUE - CARD 6 
+        possivel_rejeicao = IntegracaoWms.Verificando()
+        possivel_rejeicao = possivel_rejeicao[0]['VerificandoEstoque']
         return possivel_rejeicao
 
 def categoriza_status():
