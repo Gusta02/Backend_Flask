@@ -19,13 +19,15 @@ data_amanha = data_amanha.strftime('%Y-%m-%d')
 #mes
 mes_atual = date.today().strftime('%Y-%m')
 
-Mpassado  =(hoje)+relativedelta(months=-1)
-Mpassado2 =  Mpassado.strftime('%Y-%m-%d')
-
+#mes seguinte
 seguinte  =(hoje)+relativedelta(months=1)
 seguinte2 = seguinte.strftime('%Y-%m-%d')
+print(seguinte2)
 
-only_mes_passado = Mpassado.strftime('%Y-%m')
+#mes passado
+Mpassado  =(hoje)+relativedelta(months=-1)
+mespassado = Mpassado.strftime('%Y-%m')
+
 
 
 def tabela_filtro(codigoPedido, SKU, RejeicaoID, DataFim, DataIni):
@@ -115,12 +117,14 @@ def tabela_filtro1(Page):
     return list_dicts
 
 
-#CARD DIA ATUAL
+#CARD REJEICAO DIA ATUAL
 def card_hoje():
     engine = get_connection()
     list_rhj = []
     with engine.connect() as conn:
-        query_rejeicao_hoje =(text(f"""select COUNT (RejeicaoId) as Rejeicao_Hoje from HauszMapa.wms.T_Rejeicoes where RejeicaoId <> 0 and Data between	'{hoje2}' and '{data_amanha}' """))
+
+        query_rejeicao_hoje =(text(f"""select COUNT (RejeicaoId) as quantidade_de_rejeicao from HauszMapa.wms.T_Rejeicoes
+        where RejeicaoId <> 0 and Data between '{hoje2}' and '{data_amanha}' """))
         lista_filtro_hoje = conn.execute(query_rejeicao_hoje).all()
         for lista in lista_filtro_hoje:
             dict_filtro_hoje ={}
@@ -130,16 +134,16 @@ def card_hoje():
         
     return list_rhj
 
-#CARD TOTAL REJEICOES ONTEM
+#CARD TOTAL DE REJEICOES DIA ANTERIOR
 def card_ontem():
     engine = get_connection()
     list_rontem = []
     with engine.connect() as conn:
-        query_rejeicao_ontem =(text(f"""select  count(r.RejeicaoId) as quantidade_de_rejeicao
-        from HauszMapa.wms.T_Rejeicoes r 
-        inner join HauszMapa.Wms.T_RejeicoesItens ri on ri.CodigoPedido = r.CodigoPedido
-        left join HauszMapa.Produtos.ProdutoBasico pb on pb.SKU = ri.CodigoProduto
-        where pb.BitAtivo = 1 and r.data between '{data_ontem} 00:00:00' and '{hoje2} 00:00:00' and r.RejeicaoId <> 0 """))
+        query_rejeicao_ontem =(text(f"""
+        select COUNT(CodigoPedido) as quantidade_de_rejeicao
+        from HauszMapa.wms.T_Rejeicoes 
+        where  data between '{data_ontem}' and '{hoje2}' and RejeicaoId <> 0 
+        """))
         lista_filtro_ontem = conn.execute(query_rejeicao_ontem).all()
         for lista in lista_filtro_ontem:
             dict_filtro_ontem={}
@@ -149,16 +153,16 @@ def card_ontem():
 
     return list_rontem
 
-#CARD PARA CONSULTA DE TOTAL DE REJEICOES MES PASSADO ( PARA CALCULAR PORCENTAGEM)
+#CARD TOTAL DE REJEICOES DO MES ANTERIOR
 def card_mes_passado():
     engine = get_connection()
     list_mes = []
     with engine.connect() as conn:
-        query_rejeicao_mes =(text(f"""select  count(r.RejeicaoId) as quantidade_de_rejeicao
-        from HauszMapa.wms.T_Rejeicoes r 
-        inner join HauszMapa.Wms.T_RejeicoesItens ri on ri.CodigoPedido = r.CodigoPedido
-        left join HauszMapa.Produtos.ProdutoBasico pb on pb.SKU = ri.CodigoProduto
-        where pb.BitAtivo = 1 and r.data between '{Mpassado2} 00:00:00' and '{hoje2} 00:00:00' and r.RejeicaoId <> 0 """))
+        query_rejeicao_mes =(text(f"""
+        select  count(CodigoPedido) as quantidade_de_rejeicao
+        from HauszMapa.wms.T_Rejeicoes 
+        where  data between '{mespassado}-01' and '{mespassado}-31' and RejeicaoId <> 0
+        """))
         lista_filtro_mes = conn.execute(query_rejeicao_mes).all()
         for lista in lista_filtro_mes:
             dict_filtro_mes={}
@@ -168,16 +172,16 @@ def card_mes_passado():
 
     return list_mes
     
-#CARD PARA CONSULTA DE TOTAL DE REJEICOES MES SEGUINTE ( PARA CALCULAR PORCENTAGEM)
+#CARD TOTAL DE REJEICOES DO MES ATUAL 
 def card_mes_seguinte():
     engine = get_connection()
     list_mes_seguinte = []
     with engine.connect() as conn:
-        query_mes_seguinte = (text(f"""select  count(r.RejeicaoId) as quantidade_de_rejeicao
-        from HauszMapa.wms.T_Rejeicoes r 
-        inner join HauszMapa.Wms.T_RejeicoesItens ri on ri.CodigoPedido = r.CodigoPedido
-        left join HauszMapa.Produtos.ProdutoBasico pb on pb.SKU = ri.CodigoProduto
-        where pb.BitAtivo = 1 and r.data between '{Mpassado2} 00:00:00' and '{seguinte2} 00:00:00' and r.RejeicaoId <> 0  """))
+        query_mes_seguinte = (text(f"""
+        select  count(CodigoPedido) as quantidade_de_rejeicao
+        from HauszMapa.wms.T_Rejeicoes 
+        where data between '{mes_atual}-01' and '{seguinte2}' and RejeicaoId <> 0
+        """))
         lista_filtro_seguinte = conn.execute(query_mes_seguinte).all()
         for lista in lista_filtro_seguinte:
             dict_filtro_seguinte={}
@@ -187,32 +191,16 @@ def card_mes_seguinte():
 
     return list_mes_seguinte
 
-#CARD TOTAL DE REJEICOES MES PASSADO
-def qtd_mes_passado():
-    engine = get_connection()
-    list_qtd_passado = []
-    with engine.connect() as conn:
-        query_qtd_mespassado = (text(f"""select  count(r.RejeicaoId) as quantidade_de_rejeicao
-        from HauszMapa.wms.T_Rejeicoes r 
-        inner join HauszMapa.Wms.T_RejeicoesItens ri on ri.CodigoPedido = r.CodigoPedido
-        left join HauszMapa.Produtos.ProdutoBasico pb on pb.SKU = ri.CodigoProduto
-        where pb.BitAtivo = 1 and r.data between '{only_mes_passado}-01 00:00:00' and '{mes_atual}-01 00:00:00' and r.RejeicaoId <> 0 """))
-        qtde_filtrada = conn.execute(query_qtd_mespassado).all()
-        for lista in qtde_filtrada:
-            dict_filtro_qtde={}
-            for keys, values in lista.items():
-                dict_filtro_qtde[keys] = values
-            list_qtd_passado.append(dict_filtro_qtde)
+#CARD TOTAL VERICANDO ESTOQUE =  PRE REJEICAO
 
-    return list_qtd_passado
-    
-#CARD DE POSSIVEIS REJEICOES ATUAIS E SHOWROOM
-def Pre_rejeicao():
+def Verificando():
     engine = get_connection()
     lista_pre = []
     with engine.connect() as conn:
-        query_pre = (text(f"""select count(StatusItem) as Pre_rejeicoes from V_Pedidos where StatusItem like '%Verificando%'
-          """))
+        query_pre = (text(f"""
+        select COUNT(CodigoPedido) as VerificandoEstoque from V_Pedidos where StatusItem like '%Verificando%'
+        
+        """))
         query_cont = conn.execute(query_pre).all()
         for contagem in query_cont:
             dict_cont = {}
