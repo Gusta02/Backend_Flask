@@ -1,6 +1,7 @@
+
 from app.Dash_Logistica.kpis_luiz import sql_queries as sql
 from app.Dash_Logistica.kpis_luiz.data_extractor import sql_to_pd
-from app.Dash_Logistica.kpis_luiz.kpi import Entregas,SemEtapas,PedidoPerfeito,IndicadorPerformance,calcula_kpi_time
+from app.Dash_Logistica.kpis_luiz.kpi import Entregas,SemEtapas,PedidoPerfeito,IndicadorPerformance
 
 
 ##################### Instâncias de Objetos que Calculam KPIs ##########################
@@ -32,7 +33,7 @@ ind_localizacaoLR = IndicadorPerformance(7,4,5,6)
 dict_performance_time_transporte = dict(
 ind_leadtime = IndicadorPerformance(15,10,5)
 ,ind_coletasnoprazo = IndicadorPerformance(85,95,5)
-,ind_entregasnoprazo = IndicadorPerformance(85,95,5,kpi_entregues_no_prazo)
+,ind_entregasnoprazo = IndicadorPerformance(85,95,5,kpi_entregues_no_prazo*100)
 ,ind_avarias = IndicadorPerformance(5,2.5,5)
 #,ind_nps = IndicadorPerformance(7,8,4)
 )
@@ -40,5 +41,5 @@ ind_leadtime = IndicadorPerformance(15,10,5)
 
 ####################### KPIs dos times ##############################
 
-kpi_time_logistica = calcula_kpi_time(dict_performance_time_logistica)
-kpi_time_transporte = calcula_kpi_time(dict_performance_time_transporte)
+kpi_time_logistica = IndicadorPerformance.calcula_kpi_time(dict_performance_time_logistica)
+kpi_time_transporte = IndicadorPerformance.calcula_kpi_time(dict_performance_time_transporte)

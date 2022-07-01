@@ -5,15 +5,13 @@ Created on Wed Jun 29 14:23:23 2022
 @author: Hausz
 
 """
-
-from abc import ABC, abstractmethod
-from app.Dash_Logistica.kpis_luiz.data_extractor import sql_to_pd
-from datetime import date,datetime
-import pandas as pd
 from app.Dash_Logistica.kpis_luiz import sql_queries as sql
+from app.Dash_Logistica.kpis_luiz.data_extractor import sql_to_pd
+from abc import ABC, abstractmethod
+from datetime import datetime,date
 import dateutil.relativedelta
-from functools import cache
 import math
+import pandas as pd
 
 class KPI(ABC):
 
@@ -102,12 +100,13 @@ class IndicadorPerformance():
         except:
             pass
 
-def calcula_kpi_time(ind):
+    @staticmethod
+    def calcula_kpi_time(ind):
 
-    peso_total = 0
-    valor_total = 0
-    for i in ind.values():
-        peso_total += i.peso
-        valor_total += i.calcula_nota_ajustada()*i.peso
-    
-    return valor_total/peso_total
+        peso_total = 0
+        valor_total = 0
+        for i in ind.values():
+            peso_total += i.peso
+            valor_total += i.calcula_nota_ajustada()*i.peso
+        
+        return valor_total/peso_total
