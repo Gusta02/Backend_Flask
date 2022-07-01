@@ -13,5 +13,8 @@ entrega_sem_etapa_7 = round(sem_etapas.calcula_sem_7().loc[True],2)
 kpi_pedido_perfeito = pedido_perfeito.calcula_indice()
 kpi_pedidos_ja_atrasados = sql_to_pd(sql.query_pedidos_ja_atrasados).iloc[0,0]
 
-localizacaoLR = IndicadorPerformance(7,4,5)
-print(localizacaoLR.fatornota7)
+ind_localizacaoLR = IndicadorPerformance(7,4,5)
+ind_tempocicloLR = IndicadorPerformance(25,20,5)
+ind_pedidoperfeito = IndicadorPerformance(80,90,5)
+ind_separacao = IndicadorPerformance(24,18,5)
+ind_dockstocktime = IndicadorPerformance(3,1.5,4)

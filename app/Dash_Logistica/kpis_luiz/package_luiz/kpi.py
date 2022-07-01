@@ -81,15 +81,23 @@ class IndicadorPerformance():
 
     def __init__(self,nota7,nota10,peso,notaobtida=None):
         self.peso = peso
+        self.nota7 = nota7
+        self.nota10 = nota10
+        self.notaobtida = notaobtida
         self.fatornota7 = abs(nota7-nota10)/math.log(4,10)
-        #self.notaajustada = 11-10**((notaobtida-nota10)/self.fatornota7) if nota7-nota10 >=0 else 11-10**((nota10-notaobtida)/self.fatornota7)
-        #self.notatruncada = self.trunca_nota()
 
-    def trunca_nota(self):
+    def trunca_nota(self,nota):
 
-        if self.notaajustada > 10:
+        if nota > 10:
             return 10
-        if self.notaajustada < 0:
+        if nota < 0:
             return 0
 
-        return self.notaajustada
+        return nota
+    
+    def calcula_nota_ajustada(self):
+
+        try:
+            return self.trunca_nota(11-10**((self.notaobtida-self.nota10)/self.fatornota7) if self.nota7-self.nota10 >=0 else 11-10**((self.nota10-self.notaobtida)/self.fatornota7))
+        except:
+            return 'erro'

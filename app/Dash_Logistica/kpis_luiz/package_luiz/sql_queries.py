@@ -106,7 +106,7 @@ query_entregaxprazo = '''
 		FROM [HauszMapa].[Pedidos].[LogPedidos]
 		WHERE ParaIdEtapaFlexy = 9
 		AND IdUsuarioAlteracao = 'Aplicacao' --Remove pedidos que foram dados como entregues mais que uma vez
-		AND MONTH(DataAtualizacao) = 5
+		AND MONTH(DataAtualizacao) = MONTH(GETDATE())-1
 		GROUP BY CodigoPedido) entrega
   ON pedidos.CodigoPedido = entrega.CodigoPedido
   WHERE separacao.Prazo IS NOT NULL -- Casos onde o sistema não atualizou o prazo na etapa 6, mas sim na próxima etapa
