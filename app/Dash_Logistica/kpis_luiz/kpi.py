@@ -100,7 +100,11 @@ class IndicadorPerformance():
         except:
             pass
 
+<<<<<<< Updated upstream
     @abstractmethod
+=======
+    @staticmethod
+>>>>>>> Stashed changes
     def calcula_kpi_time(ind):
 
         peso_total = 0
