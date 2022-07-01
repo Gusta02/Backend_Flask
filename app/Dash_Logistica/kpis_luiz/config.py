@@ -19,8 +19,9 @@ from sqlalchemy.engine import URL
 driver = "Driver={SQL Server Native Client 11.0}"
 server = "w2019.hausz.com.br"
 database = "HauszMapa"
-usuario = "Aplicacao"
-password = "S3nh4Apl!caca0"
+usuario = "aplicacao.BI"
+password = "!4p.lic@C2022_aoB1"
+
 
 
 patharquivos = os.path.abspath(os.path.dirname(__file__))
