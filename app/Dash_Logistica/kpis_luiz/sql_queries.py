@@ -87,30 +87,34 @@ SELECT [IdLog]
 '''
 
 query_entregaxprazo = '''
-      SELECT DISTINCT pedidos.CodigoPedido
+     SELECT DISTINCT entrega.CodigoPedido
 				,DataFoiParaSeparacao
-				,MAX(entrega.DataDeEntrega) OVER (PARTITION BY entrega.codigopedido) DataDeEntrega
-				,MAX(separacao.Prazo) OVER (PARTITION BY entrega.codigopedido) Prazo --para pedidos que a aplicação atualizou o prazo mais que uma vez
+				,MAX(entrega.[DataAtualizacao]) OVER (PARTITION BY entrega.codigopedido) DataDeEntrega
+				,MAX(separacao.Prazo) OVER (PARTITION BY entrega.codigopedido)Prazo --para pedidos que a aplicação atualizou o prazo mais que uma vez
+				--,entrega.IdLog 
+				--,UltimaAtualizacao
 				--,DATEDIFF(DAY,separacao.DataFoiParaSeparacao,separacao.Prazo) DiasParaEntregar
 				--,DATEDIFF(DAY,separacao.DataFoiParaSeparacao,entrega.[DataAtualizacao]) DiasQueLevouParaEntregar
-  FROM [HauszMapa].[Pedidos].[LogPedidos] pedidos
+  FROM [HauszMapa].[Pedidos].[LogPedidos] entrega
   JOIN  (SELECT CodigoPedido
 		,ParaPrazo Prazo
 		,MAX(DataAtualizacao) OVER (PARTITION BY CodigoPedido) DataFoiParaSeparacao
   FROM [HauszMapa].[Pedidos].[LogPedidos]
   WHERE ParaIdEtapaFlexy = 6
-  and IdUsuarioAlteracao = 'Aplicacao') separacao
-  ON pedidos.CodigoPedido = separacao.CodigoPedido
+  and IdUsuarioAlteracao = 'Aplicacao'
+  AND DATEDIFF(Month,DataAtualizacao,GETDATE()) = 1) separacao
+  ON entrega.CodigoPedido = separacao.CodigoPedido
   JOIN (SELECT CodigoPedido
-			,MAX([DataAtualizacao]) DataDeEntrega
+			,MAX([IdLog]) UltimaAtualizacao
 		FROM [HauszMapa].[Pedidos].[LogPedidos]
-		WHERE ParaIdEtapaFlexy = 9
-		AND IdUsuarioAlteracao = 'Aplicacao' --Remove pedidos que foram dados como entregues mais que uma vez
-		AND MONTH(DataAtualizacao) = MONTH(GETDATE())-1
-		GROUP BY CodigoPedido) entrega
-  ON pedidos.CodigoPedido = entrega.CodigoPedido
-  WHERE separacao.Prazo IS NOT NULL -- Casos onde o sistema não atualizou o prazo na etapa 6, mas sim na próxima etapa
-  ORDER BY DataDeEntrega desc
+		WHERE IdUsuarioAlteracao = 'Aplicacao'
+		GROUP BY CodigoPedido) atualizacao
+	ON entrega.CodigoPedido = atualizacao.CodigoPedido
+  WHERE entrega.ParaIdEtapaFlexy = 9
+  --AND entrega.IdUsuarioAlteracao = 'Aplicacao' --Remove pedidos que foram dados como entregues mais que uma vez
+  --AND entrega.DataAtualizacao = atualizacao.UltimaAtualizacao -- Remove pedidos que após serem entregues voltam para outro status
+  AND separacao.Prazo IS NOT NULL -- Casos onde o sistema não atualizou o prazo na etapa 6, mas sim na próxima etapa
+  AND entrega.IdLog = atualizacao.UltimaAtualizacao
   '''
 
 query_em_processo = '''
@@ -120,7 +124,7 @@ SELECT DISTINCT FoiParaEntrega.CodigoPedido
 				,FoiParaEntrega.[DataAtualizacao] DataFoiParaEntrega
 				,separacao.Prazo DataMaxDeEntrega
 				,DATEDIFF(DAY,separacao.DataFoiParaSeparacao,separacao.Prazo) + FoiParaEntrega.[DataAtualizacao] - 3 DataPrevistaParaEntrega
-				,FORMAT(DATEDIFF(DAY,separacao.DataFoiParaSeparacao,separacao.Prazo),'d','br') TempoMaximo
+				,DATEDIFF(DAY,separacao.DataFoiParaSeparacao,separacao.Prazo) TempoMaximo
   FROM [HauszMapa].[Pedidos].[LogPedidos] FoiParaEntrega
   JOIN  (SELECT CodigoPedido
 		,MAX([ParaPrazo]) OVER (PARTITION BY CodigoPedido) Prazo
@@ -141,7 +145,7 @@ SELECT DISTINCT FoiParaEntrega.CodigoPedido
 query_sem_etapas = '''
 SELECT DISTINCT pedidos.CodigoPedido
 				,FORMAT(DataFoiParaSeparacao,'d','br') DataFoiParaSeparacao
-				,FORMAT(MAX(pedidos.[DataAtualizacao]) OVER (PARTITION BY pedidos.codigopedido),'d','br') DataDeEntrega
+				,FORMAT(MAX(DataDepedidos) OVER (PARTITION BY pedidos.codigopedido),'d','br') DataDeEntrega
 				,FORMAT(MAX(separacao.ParaPrazo) OVER (PARTITION BY pedidos.codigopedido),'d','br') DataMax --para pedidos que a aplicação atualizou o prazo mais que uma vez
 				,FORMAT(DataFoiParaTransito,'d','br') AS DataFoiParaTransito
 				,FORMAT(DataSaiuParaEntrega,'d','br') AS DataSaiuParaEntrega
@@ -158,7 +162,8 @@ SELECT DISTINCT pedidos.CodigoPedido
 		,MAX(DataAtualizacao) OVER (PARTITION BY CodigoPedido) DataFoiParaTransito
   FROM [HauszMapa].[Pedidos].[LogPedidos]
   WHERE ParaIdEtapaFlexy = 7
-  and IdUsuarioAlteracao = 'Aplicacao') emtransito
+  and IdUsuarioAlteracao = 'Aplicacao'
+  ) emtransito
     ON pedidos.CodigoPedido = emtransito.CodigoPedido
   Left JOIN  (SELECT CodigoPedido
 		,MAX(DataAtualizacao) OVER (PARTITION BY CodigoPedido) DataSaiuParaEntrega
@@ -171,10 +176,10 @@ SELECT DISTINCT pedidos.CodigoPedido
 FROM [HauszMapa].[Pedidos].[LogPedidos]
 WHERE ParaIdEtapaFlexy = 9
 AND IdUsuarioAlteracao = 'Aplicacao' --Remove pedidos que foram dados como entregues mais que uma vez
-AND MONTH(DataAtualizacao) = 5
 GROUP BY CodigoPedido) entrega
 ON pedidos.CodigoPedido = entrega.CodigoPedido
 WHERE separacao.ParaPrazo IS NOT NULL -- Casos onde o sistema não atualizou o prazo na etapa 6, mas sim na próxima etapa
+AND DATEDIFF(Month,DataDepedidos,GETDATE()) = 1
   '''
 
 query_pedido_perfeito = '''
@@ -195,7 +200,7 @@ SELECT DISTINCT pedidos.CodigoPedido
 		FROM [HauszMapa].[Pedidos].[LogPedidos]
 		WHERE ParaIdEtapaFlexy = 9
 		AND IdUsuarioAlteracao = 'Aplicacao' --Remove pedidos que foram dados como entregues mais que uma vez
-		AND MONTH(DataAtualizacao) = MONTH(GETDATE())-1
+		AND DATEDIFF(Month,DataAtualizacao,GETDATE()) = 1
 		GROUP BY CodigoPedido) entrega
   ON pedidos.CodigoPedido = entrega.CodigoPedido
   JOIN (SELECT [CodigoPedido]
@@ -207,24 +212,23 @@ SELECT DISTINCT pedidos.CodigoPedido
   ) naodesmembrados
   ON naodesmembrados.CodigoPedido = pedidos.CodigoPedido
   WHERE separacao.Prazo IS NOT NULL -- Casos onde o sistema não atualizou o prazo na etapa 6, mas sim na próxima etapa
-  AND FORMAT(DataDeEntrega,'d') <= FORMAT(Prazo,'d')
+  AND DATEDIFF(day,DataDeEntrega,Prazo) > 0 --FORMAT(DataDeEntrega,'d') <= FORMAT(Prazo,'d')
   EXCEPT
   SELECT CodigoPedido FROM Logistica.LogReversaOcorrencia
   '''
 
-query_total_de_pedidos_maio = '''
-SELECT COUNT(pai.codigopedido) TotalDePedidos FROM
-(SELECT DISTINCT pai.CodigoPedido
-FROM [HauszMapa].[Pedidos].[PedidoFlexy] pai
+query_total_de_pedidos = '''
+SELECT COUNT(pedidosentregues.CodigoPedido) AS TotalDeEntregas FROM 
+(SELECT DISTINCT pf.CodigoPedido
+FROM [HauszMapa].[Pedidos].[PedidoFlexy] pf
 JOIN (SELECT CodigoPedido
-,MAX(DataAtualizacao) DataAtualizacao
+,MAX(IdLog) ultimolog
 FROM [HauszMapa].[Pedidos].[LogPedidos]
 WHERE IdUsuarioAlteracao = 'Aplicacao'
-GROUP BY CodigoPedido) maio
-ON pai.CodigoPedido = maio.CodigoPedido
-WHERE pai.StatusPedido = 'Entregue'
---AND pai.PedidoPai = pai.CodigoPedido -- Usado para desconsiderar pedidos filho
-AND maio.DataAtualizacao BETWEEN Convert(datetime, '2022-05-01') AND Convert(datetime, '2022-06-01')) pai
+AND DATEDIFF(Month,DataAtualizacao,GETDATE()) = 1
+GROUP BY CodigoPedido) ultimo
+ON pf.CodigoPedido = ultimo.CodigoPedido
+WHERE pf.StatusPedido = 'Entregue') pedidosentregues
 '''
 
 query_pedidos_ja_atrasados = '''

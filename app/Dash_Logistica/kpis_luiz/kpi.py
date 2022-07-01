@@ -7,10 +7,10 @@ Created on Wed Jun 29 14:23:23 2022
 """
 
 from abc import ABC, abstractmethod
-from package_luiz.data_extractor import sql_to_pd
+from app.Dash_Logistica.kpis_luiz.data_extractor import sql_to_pd
 from datetime import date,datetime
 import pandas as pd
-import package_luiz.sql_queries as sql
+from app.Dash_Logistica.kpis_luiz import sql_queries as sql
 import dateutil.relativedelta
 from functools import cache
 import math
@@ -70,7 +70,7 @@ class PedidoPerfeito(KPI):
 
     def calcula_indice(self):
         df_pipefy = pd.read_excel('app\Dash_Logistica\planilha\pedidos_pipefy.xlsx',usecols=['Numero do pedido'])
-        total_de_pedidos = sql_to_pd(sql.query_total_de_pedidos_maio).iloc[0,0]
+        total_de_pedidos = sql_to_pd(sql.query_total_de_pedidos).iloc[0,0]
         df_pedidos_sem_pipefy = pd.merge(self.df, df_pipefy, left_on=['CodigoPedido'], right_on=['Numero do pedido'], how="outer", indicator=True).query('_merge=="left_only"')
         pedidos_perfeitos = df_pedidos_sem_pipefy.shape[0]
         return round(pedidos_perfeitos/total_de_pedidos,2)
@@ -79,7 +79,7 @@ class PedidoPerfeito(KPI):
 
 class IndicadorPerformance():
 
-    def __init__(self,nota7,nota10,peso,notaobtida=None):
+    def __init__(self,nota7,nota10,peso,notaobtida=0):
         self.peso = peso
         self.nota7 = nota7
         self.nota10 = nota10
@@ -100,4 +100,14 @@ class IndicadorPerformance():
         try:
             return self.trunca_nota(11-10**((self.notaobtida-self.nota10)/self.fatornota7) if self.nota7-self.nota10 >=0 else 11-10**((self.nota10-self.notaobtida)/self.fatornota7))
         except:
-            return 'erro'
+            pass
+
+def calcula_kpi_time(ind):
+
+    peso_total = 0
+    valor_total = 0
+    for i in ind.values():
+        peso_total += i.peso
+        valor_total += i.calcula_nota_ajustada()*i.peso
+    
+    return valor_total/peso_total
