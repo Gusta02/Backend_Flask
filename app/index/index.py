@@ -3,9 +3,9 @@ from flask import Blueprint, render_template,current_app, jsonify, request
 import os
 from ..controllers.relatorios_index_controller import (select_pedidos_data_atual)
 import pandas as pd
-from ..controllers.relatorios_index_controller import (select_resumo_infos, select_marca_prazo_fabricacao
-,select_groupby_saldo_produto, vendas_mes_agrupado)
+from ..controllers.relatorios_index_controller import (select_resumo_infos, select_marca_prazo_fabricacao,select_groupby_saldo_produto, vendas_mes_agrupado)
 from ..controllers.controller_logistica import IntegracaoWms
+from ..Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_ja_atrasados,kpi_time_logistica,kpi_time_transporte
 
 def register_handlers(app):
     if app.config.get('DEBUG') is True:
@@ -139,6 +139,6 @@ def home():
         Coleta_no_prazo = percentual_coleta_Prazo()
         print(Coleta_no_prazo)
        
-        return render_template("index.html", tabela = tabela ,Entregues_atraso = Entregues_atraso, Entregues_prazo = Entregues_prazo, Coleta_atraso = Coleta_atraso, Coleta_no_prazo = Coleta_no_prazo)
+        return render_template("index.html", tabela = tabela ,Entregues_atraso = Entregues_atraso, Entregues_prazo = Entregues_prazo, Coleta_atraso = Coleta_atraso, Coleta_no_prazo = Coleta_no_prazo, pedidos_ja_atrasados= kpi_pedidos_ja_atrasados, performance_time_transporte = f'{kpi_time_transporte: .1f}', performance_time_logistica = f'{kpi_time_logistica: .1f}')
 
 register_handlers(current_app)
