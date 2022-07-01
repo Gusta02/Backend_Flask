@@ -54,6 +54,7 @@ def create_app():
         #imports Blueprints
         from .index.index import index
         from .Dash_Logistica.Integracao_wms import wms
+        from .Dash_Logistica.home_log import home
         # from .uploads.uploads import uploads
         # from .relatorios.relatorios import relatorios
         # from .admin_app.admin_app import admin_app
@@ -65,6 +66,7 @@ def create_app():
         #app.register_blueprint(uploads)
         app.register_blueprint(index)
         app.register_blueprint(wms)
+        app.register_blueprint(home)
         #app.register_blueprint(relatorios)
         #app.register_blueprint(admin_app)
         #app.register_blueprint(relatoriosgraficos)

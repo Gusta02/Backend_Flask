@@ -82,9 +82,6 @@ def leadtime():
 def percentual_atrasado():
     df = IntegracaoWms.percentual()
 
-    codigo = df['CodigoPedido']
-    dataEntregue = df['DataEntrega']
-
     tira_na = df['NovaPrevisao'].fillna(df['PrevisaoEntrega'])
 
     df3 =  df['DataEntrega'] > tira_na 
@@ -97,9 +94,6 @@ def percentual_atrasado():
 def percentual_na_data():
     df = IntegracaoWms.percentual()
 
-    codigo = df['CodigoPedido']
-    dataEntregue = df['DataEntrega']
-
     tira_na = df['NovaPrevisao'].fillna(df['PrevisaoEntrega'])
 
     df3 =  df['DataEntrega'] > tira_na 
@@ -110,7 +104,7 @@ def percentual_na_data():
 
     return Percentual_Entregas_no_prazo
 
-def percentual_Entrega_Prazo():
+def percentual_coleta_Prazo():
 
     df = IntegracaoWms.coleta_prazo()
 
@@ -121,7 +115,7 @@ def percentual_Entrega_Prazo():
 
     return Percentual_Entregas_no_prazo
 
-def percentual_Entrega_fora_prazo():
+def percentual_coleta_fora_prazo():
 
     df = IntegracaoWms.coleta_prazo()
 
@@ -141,8 +135,8 @@ def home():
         tabela = tabela.to_dict('records')
         Entregues_atraso = percentual_atrasado()
         Entregues_prazo = percentual_na_data()
-        Coleta_atraso = percentual_Entrega_fora_prazo()
-        Coleta_no_prazo = percentual_Entrega_Prazo()
+        Coleta_atraso = percentual_coleta_fora_prazo()
+        Coleta_no_prazo = percentual_coleta_Prazo()
         print(Coleta_no_prazo)
        
         return render_template("index.html", tabela = tabela ,Entregues_atraso = Entregues_atraso, Entregues_prazo = Entregues_prazo, Coleta_atraso = Coleta_atraso, Coleta_no_prazo = Coleta_no_prazo, pedidos_ja_atrasados= kpi_pedidos_ja_atrasados, performance_time_transporte = f'{kpi_time_transporte: .1f}', performance_time_logistica = f'{kpi_time_logistica: .1f}')
