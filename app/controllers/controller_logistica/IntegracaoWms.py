@@ -115,7 +115,6 @@ def tabela_filtro1(Page):
             
     return list_dicts
 
-
 #CARD REJEICAO DIA ATUAL
 def card_hoje():
     engine = get_connection()
@@ -191,7 +190,6 @@ def card_mes_seguinte():
     return list_mes_seguinte
 
 #CARD TOTAL VERICANDO ESTOQUE =  PRE REJEICAO
-
 def Verificando():
     engine = get_connection()
     lista_pre = []
@@ -405,6 +403,31 @@ def percentual():
         AS LOGPRAZO ON LOGPRAZO.CodigoPedido = ISNULL(PF.PedidoPai, PF.CodigoPedido) --AND LOGPRAZO.IdProduto = PB.IdProduto
         where pf.DataInserido BETWEEN Convert(datetime, '2022-05-01' ) AND Convert(datetime, '2022-05-31' ) and LP.ParaIdEtapaFlexy = 9 AND RejeicaoId = 0
         ORDER BY PF.CodigoPedido
+            """)))
+        execquery_produtos = conn.execute(query_produtos).all()
+
+        for exc in execquery_produtos:
+            dict_items = {}
+            for keys, values in exc.items():
+                dict_items[keys] = values
+            lista_dicts.append(dict_items)
+        df = pd.DataFrame(lista_dicts)
+    return df
+
+def coleta_prazo():
+    lista_dicts = []
+    engine = get_connection()
+    with engine.connect() as conn:
+        query_produtos = ((text("""
+            select 
+            DISTINCT pc.CodigoPedidoCompra,
+            Format(MAX(Coletado.DataAtualizacao),'d','pt-br') as Coletado,
+            FORMAT(MAX(pc.PrevisaoEntrega),'d','pt-br') as Previsao
+            from HauszMapa.Pedidos.PedidoCompraItens pc
+            inner join (select DataAtualizacao, CodigoPedidoCompra from HauszMapa.Pedidos.LogPedidoCompraItens 
+            where ParaStatusItem = 15 and DataAtualizacao between '2022-05-01' and '2022-06-01') Coletado on Coletado.CodigoPedidoCompra = pc.CodigoPedidoCompra
+            where bitAtivo = 1 and pc.DataLiberadoColeta <> ''
+            Group by pc.CodigoPedidoCompra, pc.IdProduto,pc.DataLiberadoColeta, coletado.DataAtualizacao
             """)))
         execquery_produtos = conn.execute(query_produtos).all()
 

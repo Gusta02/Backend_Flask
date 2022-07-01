@@ -110,6 +110,28 @@ def percentual_na_data():
 
     return Percentual_Entregas_no_prazo
 
+def percentual_Entrega_Prazo():
+
+    df = IntegracaoWms.coleta_prazo()
+
+    df3 =  df['Coletado'] > df['Previsao'] 
+
+    Percentual_Entregas_no_prazo = (df3.value_counts()[1] / (df3.value_counts()[0] + df3.value_counts()[1]))
+    Percentual_Entregas_no_prazo = f'{Percentual_Entregas_no_prazo: .2%}'
+
+    return Percentual_Entregas_no_prazo
+
+def percentual_Entrega_fora_prazo():
+
+    df = IntegracaoWms.coleta_prazo()
+
+    df3 =  df['Coletado'] > df['Previsao'] 
+
+    Percentual_Entregas_fora_prazo = (df3.value_counts()[0] / (df3.value_counts()[0] + df3.value_counts()[1]))
+    Percentual_Entregas_fora_prazo = f'{Percentual_Entregas_fora_prazo: .2%}'
+
+    return Percentual_Entregas_fora_prazo
+
 index = Blueprint("index",__name__
         ,template_folder='templates',static_folder='static',static_url_path='/static/imagens')
         
@@ -119,8 +141,10 @@ def home():
         tabela = tabela.to_dict('records')
         Entregues_atraso = percentual_atrasado()
         Entregues_prazo = percentual_na_data()
+        Coleta_atraso = percentual_Entrega_fora_prazo()
+        Coleta_no_prazo = percentual_Entrega_Prazo()
+        print(Coleta_no_prazo)
        
-        
-        return render_template("index.html", tabela = tabela ,Entregues_atraso = Entregues_atraso, Entregues_prazo = Entregues_prazo)
+        return render_template("index.html", tabela = tabela ,Entregues_atraso = Entregues_atraso, Entregues_prazo = Entregues_prazo, Coleta_atraso = Coleta_atraso, Coleta_no_prazo = Coleta_no_prazo)
 
 register_handlers(current_app)
