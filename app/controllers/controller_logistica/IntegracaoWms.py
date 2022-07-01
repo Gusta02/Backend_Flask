@@ -22,11 +22,11 @@ mes_atual = date.today().strftime('%Y-%m')
 #mes seguinte
 seguinte  =(hoje)+relativedelta(months=1)
 seguinte2 = seguinte.strftime('%Y-%m-%d')
-print(seguinte2)
+# print(seguinte2)
 
 #mes passado
 Mpassado  =(hoje)+relativedelta(months=-1)
-mespassado = Mpassado.strftime('%Y-%m')
+mespassado = Mpassado.strftime('%Y-%m') 
 
 
 
