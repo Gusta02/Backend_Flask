@@ -5,7 +5,7 @@ Created on Thu Jun  9 14:30:23 2022
 @author: Hausz
 """
 #from asyncio import exceptions
-from app.Dash_Logistica.kpis_luiz.config import get_connection
+from config import get_connection
 from sqlalchemy import text
 import pandas as pd
 
