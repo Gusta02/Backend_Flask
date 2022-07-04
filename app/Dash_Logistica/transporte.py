@@ -26,7 +26,7 @@ def frete_arrecadado():
 @transporte.route("/dashboard/logistica/transporte", methods=["GET","POST"])
 def Transporte_rota():
 
-    #frete_total = frete_arrecadado()
+    frete_total = 0
     #print(frete_total)
 
 
