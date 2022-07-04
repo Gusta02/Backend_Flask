@@ -6,27 +6,27 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
 :root {
-  --blue: #2c7be5;
-  --indigo: #727cf5;
-  --purple: #6b5eae;
+  --blue: #3F51B5;
+  --indigo: #4B5BB5;
+  --purple: #5666BE;
   --pink: #ff679b;
   --red: #e63757;
   --orange: #fd7e14;
   --yellow: #f5803e;
-  --green: #00d27a;
-  --teal: #02a8b5;
-  --cyan: #27bcfd;
-  --white: #fff;
+  --green: #3F6172;
+  --teal: #3995B2;
+  --cyan: #7ECFE9;
+  --white: #263238;
   --gray: #748194;
-  --gray-dark: #4d5969;
+  --gray-dark: #b6c1d2;
   --primary: #2c7be5;
   --secondary: #748194;
-  --success: #00d27a;
+  --success: #669D34;
   --info: #27bcfd;
   --warning: #f5803e;
-  --danger: #e63757;
-  --light: #f9fafd;
-  --dark: #0b1727;
+  --danger: #B3261E;
+  --light: #263238;
+  --dark: #f9fafd;
   --breakpoint-xs: 0;
   --breakpoint-sm: 576px;
   --breakpoint-md: 768px;
@@ -5671,11 +5671,11 @@ input[type="button"].btn-block {
 }
 
 .navbar-light .navbar-brand {
-  color: #2c7be5;
+  color: #3F51B5;
 }
 
 .navbar-light .navbar-brand:hover, .navbar-light .navbar-brand:focus {
-  color: #2c7be5;
+  color: #3F51B5;
 }
 
 .navbar-light .navbar-nav .nav-link {
@@ -14127,35 +14127,35 @@ a.text-success:hover, a.text-success:focus {
 }
 
 .text-info {
-  color: #27bcfd !important;
+  color: #3995B2 !important;
 }
 
 a.text-info:hover, a.text-info:focus {
-  color: #0295d6 !important;
+  color: #3995B2 !important;
 }
 
 .text-warning {
-  color: #f5803e !important;
+  color: #E4C65B !important;
 }
 
 a.text-warning:hover, a.text-warning:focus {
-  color: #db560b !important;
+  color: #E4C65B !important;
 }
 
 .text-danger {
-  color: #e63757 !important;
+  color: #599290 !important;
 }
 
 a.text-danger:hover, a.text-danger:focus {
-  color: #b91735 !important;
+  color: #599290 !important;
 }
 
 .text-light {
-  color: #f9fafd !important;
+  color: #4B5BB5 !important;
 }
 
 a.text-light:hover, a.text-light:focus {
-  color: #c0caea !important;
+  color: #4B5BB5 !important;
 }
 
 .text-dark {

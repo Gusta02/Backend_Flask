@@ -1,8 +1,20 @@
 from asyncio import exceptions
 from config import get_connection
 from sqlalchemy import text
-import pandas as pd
+from datetime import date,datetime
+from dateutil.relativedelta import *
 
+import pandas as pd
+#relacionando datas 
+#dia
+hoje  = datetime.today()
+#mes
+mes_atual = date.today().strftime('%Y-%m')
+#mes passado
+passado = (hoje)+relativedelta(months=-1)
+mespassado = passado.strftime('%Y-%m')
+
+#////////////////////////// CONSULTAS MICHEL   ///////////////////////////////////
 
 #consulta do BD em cima da tabela  select * from HauszMapa.Pedidos.LogPedidos where ParaIdEtapaFlexy = 9
 def Quant_entregue():
@@ -19,7 +31,7 @@ def Quant_entregue():
         ON maxlog.CodigoPedido = lg.CodigoPedido
         where ParaIdEtapaFlexy = 9 
 		AND lg.IdLog = maxlog.ultimaetapa
-        AND DataAtualizacao between '2022-06-01' and '2022-07-01'
+        AND DataAtualizacao between '{mespassado}-01' and '{mes_atual}-01'
 		AND IdUsuarioAlteracao = 'Aplicacao'
         """))
         lista_entreguetotal = conn.execute(query_entregue).all()
@@ -31,7 +43,7 @@ def Quant_entregue():
 
     return list_entregue
 
-#consulta do BD em cima da tabela  select *  from HauszMapa.Pedidos.LogPedidos where ParaIdEtapaFlexy = 25
+#consulta do BD em cima da tabela  select *  from HauszMapa.Logistica.LogReversaOcorrencia = 1
 def Quant_avaria():
     engine = get_connection()
     list_avaria = []
@@ -45,7 +57,7 @@ def Quant_avaria():
 		where IdCausaOcorrencia = 1
 		GROUP BY CodigoPedido) maxlog on maxlog.CodigoPedido = lr.CodigoPedido
 		--where lr.IdCausaOcorrencia = 1
-		and DataInserido between '2022-06-01' and '2022-07-01') avarias
+		and DataInserido between '{mespassado}-01' and '{mes_atual}-01') avarias
         """))
         lista_avaria = conn.execute(query_avaria).all()
         for lista in lista_avaria:
@@ -55,6 +67,9 @@ def Quant_avaria():
             list_avaria.append(dict_avaria)
 
     return list_avaria
+
+#///////////////////////////// FIM CONSULTAS MICHEL//////////////////
+
 
 def Valor_arrecadado_frete_pedido():
     lista_dicts = []
