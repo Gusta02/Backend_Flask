@@ -49,8 +49,8 @@ def register_handlers(app):
 index = Blueprint("index",__name__
         ,template_folder='templates',static_folder='static',static_url_path='/static/imagens')
         
-@index.route("/", methods=["GET","POST"])
-def home():   
-        return render_template("500.html")
+# @index.route("/aa", methods=["GET","POST"])
+# def home():   
+#         return render_template("500.html")
 
 register_handlers(current_app)

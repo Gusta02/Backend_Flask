@@ -119,7 +119,7 @@ def percentual_coleta_fora_prazo():
 
     return Percentual_coletas_fora_prazo
 
-@home.route("/dashboard/logistica/home", methods=["GET","POST"])
+@home.route("/", methods=["GET","POST"])
 def RelatorioGeral():
 
     tabela = leadtime()

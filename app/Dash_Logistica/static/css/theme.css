@@ -14151,11 +14151,11 @@ a.text-danger:hover, a.text-danger:focus {
 }
 
 .text-light {
-  color: #f9fafd !important;
+  color: #4B5BB5 !important;
 }
 
 a.text-light:hover, a.text-light:focus {
-  color: #c0caea !important;
+  color: #4B5BB5 !important;
 }
 
 .text-dark {
