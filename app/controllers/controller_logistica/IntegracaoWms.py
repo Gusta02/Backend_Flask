@@ -21,6 +21,7 @@ mes_atual = date.today().strftime('%Y-%m')
 #mes seguinte
 seguinte  =(hoje)+relativedelta(months=1)
 seguinte2 = seguinte.strftime('%Y-%m-%d')
+seguinte3 = seguinte.strftime('%Y-%m')
 # print(seguinte2)
 
 #mes passado
@@ -159,7 +160,7 @@ def card_mes_passado():
         query_rejeicao_mes =(text(f"""
         select  count(CodigoPedido) as quantidade_de_rejeicao
         from HauszMapa.wms.T_Rejeicoes 
-        where  data between '{mespassado}-01' and '{mespassado}-31' and RejeicaoId <> 0
+        where  data between '{mespassado}-01' and '{mes_atual}-01' and RejeicaoId <> 0
         """))
         lista_filtro_mes = conn.execute(query_rejeicao_mes).all()
         for lista in lista_filtro_mes:
@@ -178,7 +179,7 @@ def card_mes_seguinte():
         query_mes_seguinte = (text(f"""
         select  count(CodigoPedido) as quantidade_de_rejeicao
         from HauszMapa.wms.T_Rejeicoes 
-        where data between '{mes_atual}-01' and '{seguinte2}' and RejeicaoId <> 0
+        where data between '{mes_atual}-01' and '{seguinte3}-01' and RejeicaoId <> 0
         """))
         lista_filtro_seguinte = conn.execute(query_mes_seguinte).all()
         for lista in lista_filtro_seguinte:
