@@ -299,6 +299,7 @@ def Nao_integrou_mes():
         fre_log = fre_log['quantidade'][0]
         return fre_log
 
+
 @wms.route('/dashboard/logistica/integracao_wms/<int:page>', methods=["GET","POST"])
 def Integracao_wms_first_page(page= 1):
         page = page
