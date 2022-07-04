@@ -1,74 +1,3 @@
-query_no_prazo = '''
-SELECT DISTINCT PF.CodigoPedido
-				,LP.DataAtualizacao
-				,(MIN(LOGPRAZO.PrazoAntigo) OVER (PARTITION BY PF.CodigoPedido)) AS PrazoAlterado
-				,PF.PrevisaoEntrega
-FROM Pedidos.PedidoFlexy PF
-INNER JOIN Pedidos.ItensFlexy IFL ON IFL.CodigoPedido = PF.CodigoPedido
-Inner JOIN Pedidos.LogPedidos AS LP ON LP.CodigoPedido = PF.CodigoPedido
-INNER JOIN Produtos.ProdutoBasico PB ON PB.SKU = IFL.SKU
-LEFT JOIN
-(SELECT LAP.CodigoPedido, LAP.IdProduto, LAP.PrazoAntigo, LAP.PrazoNovo
-FROM Pedidos.LogAlteracaoPrazoPedidoVenda LAP
-INNER JOIN
-(SELECT CodigoPedido, IdProduto, MIN(IdLogPrazoPedidoVenda) IdLogPrazoPedidoVenda
-FROM Pedidos.LogAlteracaoPrazoPedidoVenda
-GROUP BY CodigoPedido,IdProduto) AS LAPPV ON LAPPV.CodigoPedido = LAP.CodigoPedido
-											AND LAPPV.IdProduto = LAP.IdProduto
-											AND LAP.IdLogPrazoPedidoVenda = LAPPV.IdLogPrazoPedidoVenda
-) AS LOGPRAZO ON LOGPRAZO.CodigoPedido = ISNULL(PF.PedidoPai, PF.CodigoPedido) --AND LOGPRAZO.IdProduto = PB.IdProduto
-WHERE PF.[DataInserido] BETWEEN Convert(datetime, '2022-05-01' ) AND Convert(datetime, '2022-05-31' )
-AND StatusPedido = 'Entregue'
-AND LP.[ParaIdEtapaFlexy] = 9
-AND LP.[DeIdEtapaFlexy]  != 9
-'''
-
-query_status_pedidos = '''
-SELECT DISTINCT PF.CodigoPedido
-				,PF.StatusPedido
-FROM Pedidos.PedidoFlexy PF
-INNER JOIN Pedidos.ItensFlexy IFL ON IFL.CodigoPedido = PF.CodigoPedido
-Inner JOIN Pedidos.LogPedidos AS LP ON LP.CodigoPedido = PF.CodigoPedido
-INNER JOIN Produtos.ProdutoBasico PB ON PB.SKU = IFL.SKU
-LEFT JOIN
-(SELECT LAP.CodigoPedido, LAP.IdProduto, LAP.PrazoAntigo, LAP.PrazoNovo
-FROM Pedidos.LogAlteracaoPrazoPedidoVenda LAP
-INNER JOIN
-(SELECT CodigoPedido, IdProduto, MIN(IdLogPrazoPedidoVenda) IdLogPrazoPedidoVenda
-FROM Pedidos.LogAlteracaoPrazoPedidoVenda
-GROUP BY CodigoPedido,IdProduto) AS LAPPV ON LAPPV.CodigoPedido = LAP.CodigoPedido
-											AND LAPPV.IdProduto = LAP.IdProduto
-											AND LAP.IdLogPrazoPedidoVenda = LAPPV.IdLogPrazoPedidoVenda
-) AS LOGPRAZO ON LOGPRAZO.CodigoPedido = ISNULL(PF.PedidoPai, PF.CodigoPedido) --AND LOGPRAZO.IdProduto = PB.IdProduto
-WHERE PF.[DataInserido] BETWEEN Convert(datetime, '2022-05-01' ) AND Convert(datetime, '2022-05-31' )
-ORDER BY CodigoPedido
-'''
-
-query_atraso_compras = '''
-SELECT DISTINCT PF.CodigoPedido
-				,LP.DataAtualizacao
-				,(MIN(LOGPRAZO.PrazoAntigo) OVER (PARTITION BY PF.CodigoPedido)) AS PrazoAlterado
-				,PF.PrevisaoEntrega
-FROM Pedidos.PedidoFlexy PF
-INNER JOIN Pedidos.ItensFlexy IFL ON IFL.CodigoPedido = PF.CodigoPedido
-Inner JOIN Pedidos.LogPedidos AS LP ON LP.CodigoPedido = PF.CodigoPedido
-INNER JOIN Produtos.ProdutoBasico PB ON PB.SKU = IFL.SKU
-LEFT JOIN
-(SELECT LAP.CodigoPedido, LAP.IdProduto, LAP.PrazoAntigo, LAP.PrazoNovo
-FROM Pedidos.LogAlteracaoPrazoPedidoVenda LAP
-INNER JOIN
-(SELECT CodigoPedido, IdProduto, MIN(IdLogPrazoPedidoVenda) IdLogPrazoPedidoVenda
-FROM Pedidos.LogAlteracaoPrazoPedidoVenda
-GROUP BY CodigoPedido,IdProduto) AS LAPPV ON LAPPV.CodigoPedido = LAP.CodigoPedido
-											AND LAPPV.IdProduto = LAP.IdProduto
-											AND LAP.IdLogPrazoPedidoVenda = LAPPV.IdLogPrazoPedidoVenda
-) AS LOGPRAZO ON LOGPRAZO.CodigoPedido = ISNULL(PF.PedidoPai, PF.CodigoPedido) --AND LOGPRAZO.IdProduto = PB.IdProduto
-WHERE PF.[DataInserido] BETWEEN Convert(datetime, '2022-05-01' ) AND Convert(datetime, '2022-05-31' )
-AND StatusPedido = 'Entregue'
-AND LP.[ParaIdEtapaFlexy] = 6
-AND LP.[DeIdEtapaFlexy]  != 6
-'''
-
 query_frete_recebido = '''
 SELECT FORMAT((SUM(PrecoFrete)*1.0175),'c','pt-br') as FreteRecebido
 FROM HauszMapa.Pedidos.PedidoFlexy
@@ -87,10 +16,10 @@ SELECT [IdLog]
 '''
 
 query_entregaxprazo = '''
-     SELECT DISTINCT entrega.CodigoPedido
+  SELECT DISTINCT entrega.CodigoPedido
 				,DataFoiParaSeparacao
 				,MAX(entrega.[DataAtualizacao]) OVER (PARTITION BY entrega.codigopedido) DataDeEntrega
-				,MAX(separacao.Prazo) OVER (PARTITION BY entrega.codigopedido)Prazo --para pedidos que a aplicação atualizou o prazo mais que uma vez
+				,MAX(separacao.Prazo) OVER (PARTITION BY entrega.codigopedido) Prazo --para pedidos que a aplicação atualizou o prazo mais que uma vez
 				--,entrega.IdLog 
 				--,UltimaAtualizacao
 				--,DATEDIFF(DAY,separacao.DataFoiParaSeparacao,separacao.Prazo) DiasParaEntregar
@@ -101,45 +30,21 @@ query_entregaxprazo = '''
 		,MAX(DataAtualizacao) OVER (PARTITION BY CodigoPedido) DataFoiParaSeparacao
   FROM [HauszMapa].[Pedidos].[LogPedidos]
   WHERE ParaIdEtapaFlexy = 6
-  and IdUsuarioAlteracao = 'Aplicacao'
-  AND DATEDIFF(Month,DataAtualizacao,GETDATE()) = 1) separacao
+  and IdUsuarioAlteracao IN ('Aplicacao','NT SERVICE\SQLSERVERAGENT')) separacao
   ON entrega.CodigoPedido = separacao.CodigoPedido
   JOIN (SELECT CodigoPedido
 			,MAX([IdLog]) UltimaAtualizacao
 		FROM [HauszMapa].[Pedidos].[LogPedidos]
-		WHERE IdUsuarioAlteracao = 'Aplicacao'
+		WHERE DATEDIFF(Month,DataAtualizacao,GETDATE()) = 1
+		--WHERE IdUsuarioAlteracao = 'Aplicacao'
 		GROUP BY CodigoPedido) atualizacao
 	ON entrega.CodigoPedido = atualizacao.CodigoPedido
   WHERE entrega.ParaIdEtapaFlexy = 9
   --AND entrega.IdUsuarioAlteracao = 'Aplicacao' --Remove pedidos que foram dados como entregues mais que uma vez
-  --AND entrega.DataAtualizacao = atualizacao.UltimaAtualizacao -- Remove pedidos que após serem entregues voltam para outro status
+  AND entrega.IdLog = atualizacao.UltimaAtualizacao -- Remove pedidos que após serem entregues voltam para outro status
   AND separacao.Prazo IS NOT NULL -- Casos onde o sistema não atualizou o prazo na etapa 6, mas sim na próxima etapa
-  AND entrega.IdLog = atualizacao.UltimaAtualizacao
-  '''
-
-query_em_processo = '''
-SELECT DISTINCT FoiParaEntrega.CodigoPedido
-				,FoiParaEntrega.ParaIdEtapaFlexy IDAtual
-				,MAX(separacao.DataFoiParaSeparacao) OVER (PARTITION BY separacao.CodigoPedido) DataFoiParaSeparacao
-				,FoiParaEntrega.[DataAtualizacao] DataFoiParaEntrega
-				,separacao.Prazo DataMaxDeEntrega
-				,DATEDIFF(DAY,separacao.DataFoiParaSeparacao,separacao.Prazo) + FoiParaEntrega.[DataAtualizacao] - 3 DataPrevistaParaEntrega
-				,DATEDIFF(DAY,separacao.DataFoiParaSeparacao,separacao.Prazo) TempoMaximo
-  FROM [HauszMapa].[Pedidos].[LogPedidos] FoiParaEntrega
-  JOIN  (SELECT CodigoPedido
-		,MAX([ParaPrazo]) OVER (PARTITION BY CodigoPedido) Prazo
-		,DataAtualizacao DataFoiParaSeparacao
-  FROM [HauszMapa].[Pedidos].[LogPedidos]
-  WHERE ParaIdEtapaFlexy = 6) separacao
-  ON FoiParaEntrega.CodigoPedido = separacao.CodigoPedido
-  JOIN (SELECT CodigoPedido
-			,MAX([DataAtualizacao]) UltimaAtualizacao
-		FROM [HauszMapa].[Pedidos].[LogPedidos]
-		GROUP BY CodigoPedido) atualizacao
-	ON FoiParaEntrega.CodigoPedido = atualizacao.CodigoPedido
-  WHERE ParaIdEtapaFlexy in (6,7,18,19)
-  AND FoiParaEntrega.DataAtualizacao = atualizacao.UltimaAtualizacao
-  ORDER BY FoiParaEntrega.CodigoPedido
+  --AND separacao.Prazo > entrega.DataAtualizacao
+  ORDER BY CodigoPedido desc
   '''
 
 query_sem_etapas = '''
