@@ -43,3 +43,4 @@ ind_leadtime = IndicadorPerformance(15,10,5)
 
 kpi_time_logistica = IndicadorPerformance.calcula_kpi_time(dict_performance_time_logistica)
 kpi_time_transporte = IndicadorPerformance.calcula_kpi_time(dict_performance_time_transporte)
+#kpi_dock_stock_time = 

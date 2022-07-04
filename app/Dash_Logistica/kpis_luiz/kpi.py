@@ -67,7 +67,7 @@ class PedidoPerfeito(KPI):
         self.nome = 'pedido_perfeito'
 
     def calcula_indice(self):
-        df_pipefy = pd.read_excel('app\Dash_Logistica\planilha\pedidos_pipefy.xlsx',usecols=['Numero do pedido'])
+        df_pipefy = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/pedidos_pipefy.xlsx',usecols=['Numero do pedido'])
         total_de_pedidos = sql_to_pd(sql.query_total_de_pedidos).iloc[0,0]
         df_pedidos_sem_pipefy = pd.merge(self.df, df_pipefy, left_on=['CodigoPedido'], right_on=['Numero do pedido'], how="outer", indicator=True).query('_merge=="left_only"')
         pedidos_perfeitos = df_pedidos_sem_pipefy.shape[0]
@@ -110,3 +110,18 @@ class IndicadorPerformance():
             valor_total += i.calcula_nota_ajustada()*i.peso
         
         return valor_total/peso_total
+
+class DockStockStime(KPI):
+
+    def __init__(self):
+        self.df = None
+        self.df1 = pd.read_excel('/planilha/WEQ - Documentos Entrada - Periodo - Global - cliente 1.xlsx',usecols=['Dt. Inclusão', 'Dt. Fechamento','DockStockTime','DockStockTimeAjustado'])
+        self.df2 = pd.read_excel('/planilha/WEQ - Documentos Entrada - Periodo - Global - cliente 2.xlsx',usecols=['Dt. Inclusão', 'Dt. Fechamento','DockStockTime'])
+        self.nome = "DockStockTime"
+        self.indice = self.calcula_indice()
+
+    
+    def calcula_indice(self):
+        dockmediocliente1 = self.df1['DockStockTimeAjustado'].iloc[-1]
+        dockmediocliente2 = self.df2['DockStockTime'].iloc[-1]
+        return {'SP':dockmediocliente2,'SC':dockmediocliente1}

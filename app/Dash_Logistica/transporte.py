@@ -52,6 +52,7 @@ def Perc_TaxaAvaria():
 @transporte.route("/dashboard/logistica/transporte", methods=["GET","POST"])
 def Transporte_rota():
 
+
     frete_total = frete_arrecadado()
     card6 = TotalAvaria() 
     card7 = Perc_TaxaAvaria()
