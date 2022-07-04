@@ -219,7 +219,6 @@ def FALHAS_E_AVARIAS():
 
 
 @home.route("/", methods=["GET","POST"])
->>>>>>> db95a8137707294c2f4307f92ca3962587c2bd7a
 def RelatorioGeral():
 
     tabela = leadtime()
