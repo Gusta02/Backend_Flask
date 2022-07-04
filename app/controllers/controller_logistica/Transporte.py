@@ -53,3 +53,43 @@ def Quant_avaria():
             list_avaria.append(dict_avaria)
 
     return list_avaria
+
+
+def Valor_arrecadado_frete_pedido():
+    engine = get_connection()
+    arrecadado = []
+    with engine.connect() as conn:
+        query_avaria = (text(f"""
+        SELECT (SUM(PrecoFrete)*1.0175) as FreteRecebido
+        FROM HauszMapa.Pedidos.PedidoFlexy
+        WHERE IdEtapaFlexy NOT IN  (1,11,15,16,26,41)
+        AND MONTH(DataInserido) = MONTH(GETDATE()) and DesmPedido = 0
+            """))
+        arrecadado = conn.execute(query_avaria).all()
+        for lista in arrecadado:
+            dict_avaria = {}
+            for keys, values in lista.items():
+                dict_avaria[keys] = values
+            arrecadado.append(dict_avaria)
+
+    return arrecadado
+
+def Valor_arrecadado_frete_showrrom():
+    engine = get_connection()
+    arrecadado = []
+    with engine.connect() as conn:
+        query_avaria = (text(f"""
+        SELECT (SUM(PrecoFrete)*1.0175) as FreteRecebido
+        FROM HauszMapa.ShowRoom.Pedido
+        WHERE IdEtapaFlexy NOT IN  (1,11,15,16,26,41)
+        AND MONTH(DataInserido) = MONTH(GETDATE()) and DesmPedido = 0
+        """))
+        arrecadado = conn.execute(query_avaria).all()
+        for lista in arrecadado:
+            dict_avaria = {}
+            for keys, values in lista.items():
+                dict_avaria[keys] = values
+            arrecadado.append(dict_avaria)
+
+    return arrecadado
+
