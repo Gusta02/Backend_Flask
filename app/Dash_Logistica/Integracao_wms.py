@@ -299,12 +299,17 @@ def Nao_integrou_mes():
         fre_log = fre_log['quantidade'][0]
         return fre_log
 
+def teste():
+        pedido = IntegracaoWms.Valor_arrecadado_frete_pedido()
+
+        return pedido
+
 @wms.route('/dashboard/logistica/integracao_wms/<int:page>', methods=["GET","POST"])
 def Integracao_wms_first_page(page= 1):
         page = page
         tabela = IntegracaoWms.tabela_filtro1(page)
         aaa = 1
-
+        print(teste())
         card_1 = card1()
         card_2 = card2()
         card_3 = card3()

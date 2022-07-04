@@ -1,5 +1,7 @@
+from asyncio import exceptions
 from config import get_connection
 from sqlalchemy import text
+import pandas as pd
 
 
 #consulta do BD em cima da tabela  select * from HauszMapa.Pedidos.LogPedidos where ParaIdEtapaFlexy = 9
@@ -54,42 +56,44 @@ def Quant_avaria():
 
     return list_avaria
 
-
 def Valor_arrecadado_frete_pedido():
+    lista_dicts = []
     engine = get_connection()
-    arrecadado = []
     with engine.connect() as conn:
-        query_avaria = (text(f"""
-        SELECT (SUM(PrecoFrete)*1.0175) as FreteRecebido
-        FROM HauszMapa.Pedidos.PedidoFlexy
-        WHERE IdEtapaFlexy NOT IN  (1,11,15,16,26,41)
-        AND MONTH(DataInserido) = MONTH(GETDATE()) and DesmPedido = 0
-            """))
-        arrecadado = conn.execute(query_avaria).all()
-        for lista in arrecadado:
-            dict_avaria = {}
-            for keys, values in lista.items():
-                dict_avaria[keys] = values
-            arrecadado.append(dict_avaria)
+        query_produtos = ((text(f"""
+            SELECT (SUM(PrecoFrete)*1.0175) as FreteRecebido
+            FROM HauszMapa.Pedidos.PedidoFlexy
+            WHERE IdEtapaFlexy NOT IN  (1,11,15,16,26,41)
+            AND MONTH(DataInserido) = MONTH(GETDATE()) and DesmPedido = 0
+            """)))
+        execquery_produtos = conn.execute(query_produtos).all()
 
-    return arrecadado
+        for exc in execquery_produtos:
+            dict_items = {}
+            for keys, values in exc.items():
+                dict_items[keys] = values
+            lista_dicts.append(dict_items)
+        df = pd.DataFrame(lista_dicts)
+    return df
 
-def Valor_arrecadado_frete_showrrom():
+def Valor_arrecadado_frete_showroom():
+    lista_dicts = []
     engine = get_connection()
-    arrecadado = []
     with engine.connect() as conn:
-        query_avaria = (text(f"""
-        SELECT (SUM(PrecoFrete)*1.0175) as FreteRecebido
-        FROM HauszMapa.ShowRoom.Pedido
-        WHERE IdEtapaFlexy NOT IN  (1,11,15,16,26,41)
-        AND MONTH(DataInserido) = MONTH(GETDATE()) and DesmPedido = 0
-        """))
-        arrecadado = conn.execute(query_avaria).all()
-        for lista in arrecadado:
-            dict_avaria = {}
-            for keys, values in lista.items():
-                dict_avaria[keys] = values
-            arrecadado.append(dict_avaria)
+        query_produtos = ((text(f"""
+            SELECT (SUM(PrecoFrete)*1.0175) as FreteRecebido
+            FROM HauszMapa.ShowRoom.Pedido
+            WHERE IdEtapaFlexy NOT IN  (1,11,15,16,26,41)
+            AND MONTH(DataInserido) = MONTH(GETDATE()) and DesmPedido = 0
+            """)))
+        execquery_produtos = conn.execute(query_produtos).all()
 
-    return arrecadado
+        for exc in execquery_produtos:
+            dict_items = {}
+            for keys, values in exc.items():
+                dict_items[keys] = values
+            lista_dicts.append(dict_items)
+        df = pd.DataFrame(lista_dicts)
+    return df
+
 
