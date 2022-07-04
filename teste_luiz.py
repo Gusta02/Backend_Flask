@@ -1,3 +1,3 @@
-from app.Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_ja_atrasados,kpi_time_logistica,kpi_time_transporte,kpi_pedido_perfeito
+from app.Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_ja_atrasados,kpi_time_logistica,kpi_time_transporte,kpi_pedido_perfeito,kpi_dock_stock_time,acuracidade
 
-print(kpi_pedido_perfeito)
+print(acuracidade.indice)

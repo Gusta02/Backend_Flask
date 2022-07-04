@@ -5,7 +5,7 @@ from app.Dash_Logistica.kpis_luiz import kpi
 from ..controllers.controller_logistica import IntegracaoWms
 import pandas as pd
 from datetime import datetime
-from ..Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_ja_atrasados,kpi_time_logistica,kpi_time_transporte,kpi_pedido_perfeito
+from ..Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_ja_atrasados,kpi_time_logistica,kpi_time_transporte,kpi_pedido_perfeito,kpi_dock_stock_time
 
 home = Blueprint('home', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
@@ -130,4 +130,4 @@ def RelatorioGeral():
     Coleta_no_prazo = percentual_coleta_Prazo()
     # print(Coleta_no_prazo)
     
-    return render_template("Relatorio_logistica.html", tabela = tabela ,Entregues_atraso = f'{1-kpi_entregues_no_prazo: .0%}', Entregues_prazo = f'{kpi_entregues_no_prazo: .0%}', Coleta_atraso = Coleta_atraso, Coleta_no_prazo = Coleta_no_prazo, pedidos_ja_atrasados= kpi_pedidos_ja_atrasados, performance_time_transporte = f'{kpi_time_transporte: .1f}', performance_time_logistica = f'{kpi_time_logistica: .1f}',pedido_perfeito = f'{kpi_pedido_perfeito: .0%}')
+    return render_template("Relatorio_logistica.html", tabela = tabela ,Entregues_atraso = f'{1-kpi_entregues_no_prazo: .0%}', Entregues_prazo = f'{kpi_entregues_no_prazo: .0%}', Coleta_atraso = Coleta_atraso, Coleta_no_prazo = Coleta_no_prazo, pedidos_ja_atrasados= kpi_pedidos_ja_atrasados, performance_time_transporte = f'{kpi_time_transporte: .1f}', performance_time_logistica = f'{kpi_time_logistica: .1f}',pedido_perfeito = f'{kpi_pedido_perfeito: .0%}',dock_stock_time_SP=kpi_dock_stock_time['SP'],dock_stock_time_SC=kpi_dock_stock_time['SC'])
