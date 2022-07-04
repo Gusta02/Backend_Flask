@@ -14,8 +14,7 @@ mes_atual = date.today().strftime('%Y-%m')
 passado = (hoje)+relativedelta(months=-1)
 mespassado = passado.strftime('%Y-%m')
 
-
-
+#////////////////////////// CONSULTAS MICHEL   ///////////////////////////////////
 
 #consulta do BD em cima da tabela  select * from HauszMapa.Pedidos.LogPedidos where ParaIdEtapaFlexy = 9
 def Quant_entregue():
@@ -68,6 +67,9 @@ def Quant_avaria():
             list_avaria.append(dict_avaria)
 
     return list_avaria
+
+#///////////////////////////// FIM CONSULTAS MICHEL//////////////////
+
 
 def Valor_arrecadado_frete_pedido():
     lista_dicts = []

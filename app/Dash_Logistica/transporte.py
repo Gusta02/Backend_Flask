@@ -27,16 +27,15 @@ def frete_arrecadado():
         return resultado
 
 #//////////////////// MICHEL //////////////////////////
-
-def TotalAvaria(): #///////////////  CARD TOTAL AVARIAS =  Card 6 //////////////////////// 
+#///////////////  CARD TOTAL AVARIAS =  Card 6 //////////////////////// 
+def TotalAvaria(): 
 
     Avaria = Transporte.Quant_avaria()
     TotalAvaria = Avaria[0]['QuantidadeAvaria']
 
     return TotalAvaria
-
-
-def Perc_TaxaAvaria(): #////////////////    CARD PERCENTUAL AVARIAS / ENTREGUE (TAXA)  = Card 7 ////////////////
+#////////////////    CARD PERCENTUAL AVARIAS / ENTREGUE (TAXA)  = Card 7 ////////////////
+def Perc_TaxaAvaria(): 
 
     Avaria = Transporte.Quant_avaria()
     TotalAvaria = Avaria[0]['QuantidadeAvaria']
