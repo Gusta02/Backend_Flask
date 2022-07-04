@@ -49,6 +49,27 @@ def Perc_TaxaAvaria():
 
     return TaxaAvaria
 
+def percentual_coleta_prazo():
+
+    df = Transporte.percentual_coleta_Prazo()
+    df3 =  df['Coletado'] > df['Previsao'] 
+
+    Percentual_Entregas_no_prazo = (df3.value_counts()[1] / (df3.value_counts()[0] + df3.value_counts()[1]))
+    Percentual_Entregas_no_prazo = f'{Percentual_Entregas_no_prazo: .2%}'
+    return Percentual_Entregas_no_prazo
+
+
+def percentual_coleta_fora_prazo():
+
+    df = Transporte.percentual_coleta_fora_prazo()
+    df3 =  df['Coletado'] > df['Previsao'] 
+
+    Percentual_Entregas_fora_prazo = (df3.value_counts()[0] / (df3.value_counts()[0] + df3.value_counts()[1]))
+    Percentual_Entregas_fora_prazo = f'{Percentual_Entregas_fora_prazo: .2%}'
+    return Percentual_Entregas_fora_prazo
+
+
+
 @transporte.route("/dashboard/logistica/transporte", methods=["GET","POST"])
 def Transporte_rota():
 
@@ -56,4 +77,7 @@ def Transporte_rota():
     frete_total = frete_arrecadado()
     card6 = TotalAvaria() 
     card7 = Perc_TaxaAvaria()
-    return render_template('Relatorio_transporte.html', frete = frete_total, card1=f'{kpi_entregues_no_prazo: .0%}',card2 = kpi_pedidos_ja_atrasados, card3 = f'{pct_entregas_sem_etapa_7: .0%}', card4 = f'{pct_entregas_sem_etapa_19: .0%}', card5 = '', card6 = card6, card7 = card7)
+    card8 = percentual_coleta_prazo()
+    card9 = percentual_coleta_fora_prazo()
+
+    return render_template('Relatorio_transporte.html', card8 = card8, card9 = card9, frete = frete_total, card1=f'{kpi_entregues_no_prazo: .0%}',card2 = kpi_pedidos_ja_atrasados, card3 = f'{pct_entregas_sem_etapa_7: .0%}', card4 = f'{pct_entregas_sem_etapa_19: .0%}', card5 = '', card6 = card6, card7 = card7)
