@@ -439,3 +439,4 @@ def coleta_prazo():
             lista_dicts.append(dict_items)
         df = pd.DataFrame(lista_dicts)
     return df
+
