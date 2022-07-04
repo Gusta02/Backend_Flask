@@ -1,9 +1,11 @@
 from flask import Blueprint, render_template, request
 from sqlalchemy import true
+
+from app.Dash_Logistica.kpis_luiz import kpi
 from ..controllers.controller_logistica import IntegracaoWms
 import pandas as pd
 from datetime import datetime
-from ..Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_ja_atrasados,kpi_time_logistica,kpi_time_transporte
+from ..Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_ja_atrasados,kpi_time_logistica,kpi_time_transporte,kpi_pedido_perfeito
 
 home = Blueprint('home', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
@@ -13,6 +15,7 @@ def leadtime():
     estado = IntegracaoWms.Estados()
 
     medias = []
+    mediasprevistas = []
 
     for index, row in estado.iterrows():
 
@@ -23,6 +26,11 @@ def leadtime():
         media = media.mean()
         media = f'{media: .0f}'
         medias.append(media)
+        mediaprevista = tabela.query(f'Estado=="{Estado}"')
+        mediaprevista = mediaprevista['DiasPrevistos']
+        mediaprevista = mediaprevista.mean()
+        mediaprevista = f'{mediaprevista: .0f}'
+        mediasprevistas.append(mediaprevista)
 
     tamanho = len(medias)
     contador = 0
@@ -30,13 +38,16 @@ def leadtime():
 
         try: 
             medias[contador] = int(medias[contador])
+            mediasprevistas[contador] = int(mediasprevistas[contador])
         except:
             medias[contador] = 'Sem Média de'
-        
+            mediasprevistas[contador] = 'Sem Média de'
+
         contador   = contador + 1    
 
     Media = pd.DataFrame(medias, columns = ['Media'])
-    df =pd.concat([estado, Media], axis=1)
+    MediaPrevista = pd.DataFrame(mediasprevistas, columns = ['MediaPrevista'])
+    df =pd.concat([estado,Media,MediaPrevista], axis=1)
 
 
     return df
@@ -119,4 +130,4 @@ def RelatorioGeral():
     Coleta_no_prazo = percentual_coleta_Prazo()
     # print(Coleta_no_prazo)
     
-    return render_template("Relatorio_logistica.html", tabela = tabela ,Entregues_atraso = Entregues_atraso, Entregues_prazo = Entregues_prazo, Coleta_atraso = Coleta_atraso, Coleta_no_prazo = Coleta_no_prazo, pedidos_ja_atrasados= kpi_pedidos_ja_atrasados, performance_time_transporte = f'{kpi_time_transporte: .1f}', performance_time_logistica = f'{kpi_time_logistica: .1f}')
+    return render_template("Relatorio_logistica.html", tabela = tabela ,Entregues_atraso = f'{1-kpi_entregues_no_prazo: .0%}', Entregues_prazo = f'{kpi_entregues_no_prazo: .0%}', Coleta_atraso = Coleta_atraso, Coleta_no_prazo = Coleta_no_prazo, pedidos_ja_atrasados= kpi_pedidos_ja_atrasados, performance_time_transporte = f'{kpi_time_transporte: .1f}', performance_time_logistica = f'{kpi_time_logistica: .1f}',pedido_perfeito = f'{kpi_pedido_perfeito: .0%}')
