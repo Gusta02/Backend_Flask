@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request
+from sqlalchemy import true
 from ..controllers.controller_logistica import IntegracaoWms
 import pandas as pd
 from datetime import datetime
@@ -46,9 +47,14 @@ def percentual_atrasado():
     tira_na = df['NovaPrevisao'].fillna(df['PrevisaoEntrega'])
 
     df3 =  df['DataEntrega'] > tira_na 
+    
+    try: 
 
-    Percentual_Entregues_Atrasado = (df3.value_counts()[0] / (df3.value_counts()[0] + df3.value_counts()[1]))
-    Percentual_Entregues_Atrasado = f'{Percentual_Entregues_Atrasado: .2%}'
+        Percentual_Entregues_Atrasado = (df3.value_counts()[0] / (df3.value_counts()[0] + df3.value_counts()[1]))
+        Percentual_Entregues_Atrasado = f'{Percentual_Entregues_Atrasado: .2%}'
+
+    except:
+        Percentual_Entregues_Atrasado = 0
 
     return Percentual_Entregues_Atrasado
 
@@ -59,8 +65,11 @@ def percentual_na_data():
 
     df3 =  df['DataEntrega'] > tira_na 
 
-    Percentual_Entregas_no_prazo = (df3.value_counts()[1] / (df3.value_counts()[0] + df3.value_counts()[1]))
-    Percentual_Entregas_no_prazo = f'{Percentual_Entregas_no_prazo: .2%}'
+    try:
+        Percentual_Entregas_no_prazo = (df3.value_counts()[1] / (df3.value_counts()[0] + df3.value_counts()[1]))
+        Percentual_Entregas_no_prazo = f'{Percentual_Entregas_no_prazo: .2%}'
+    except:
+        Percentual_Entregas_no_prazo = 0
 
 
     return Percentual_Entregas_no_prazo
@@ -71,10 +80,16 @@ def percentual_coleta_Prazo():
 
     df3 =  df['Coletado'] > df['Previsao'] 
 
-    Percentual_Entregas_no_prazo = (df3.value_counts()[1] / (df3.value_counts()[0] + df3.value_counts()[1]))
-    Percentual_Entregas_no_prazo = f'{Percentual_Entregas_no_prazo: .2%}'
+    try:
 
-    return Percentual_Entregas_no_prazo
+        Percentual_coletas_no_prazo = (df3.value_counts()[1] / (df3.value_counts()[0] + df3.value_counts()[1]))
+        Percentual_coletas_no_prazo = f'{Percentual_coletas_no_prazo: .2%}'
+    
+    except:
+
+        Percentual_coletas_no_prazo = 0
+
+    return Percentual_coletas_no_prazo
 
 def percentual_coleta_fora_prazo():
 
@@ -82,10 +97,16 @@ def percentual_coleta_fora_prazo():
 
     df3 =  df['Coletado'] > df['Previsao'] 
 
-    Percentual_Entregas_fora_prazo = (df3.value_counts()[0] / (df3.value_counts()[0] + df3.value_counts()[1]))
-    Percentual_Entregas_fora_prazo = f'{Percentual_Entregas_fora_prazo: .2%}'
+    try: 
 
-    return Percentual_Entregas_fora_prazo
+        Percentual_coletas_fora_prazo = (df3.value_counts()[0] / (df3.value_counts()[0] + df3.value_counts()[1]))
+        Percentual_coletas_fora_prazo = f'{Percentual_coletas_fora_prazo: .2%}'
+
+    except:
+
+        Percentual_coletas_fora_prazo = 0
+
+    return Percentual_coletas_fora_prazo
 
 @home.route("/dashboard/logistica/home", methods=["GET","POST"])
 def RelatorioGeral():

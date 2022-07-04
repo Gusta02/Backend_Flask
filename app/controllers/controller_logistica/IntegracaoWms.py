@@ -332,7 +332,7 @@ def leadtime_log():
     lista_dicts = []
     engine = get_connection()
     with engine.connect() as conn:
-        query_produtos = ((text("""
+        query_produtos = ((text(f"""
             SELECT 
             DISTINCT pf.CodigoPedido,
             est.Nome as Estado,
@@ -346,7 +346,7 @@ def leadtime_log():
             inner join HauszLogin.Cadastro.Usuario u on u.IdUsuario = cli.IdUsuario
             inner join HauszLogin.Cadastro.Cidade cit on cit.IdCidade = u.IdCidade
             inner join HauszLogin.Cadastro.Estado est on est.IdEstado = cit.IdEstado
-            where fim.DataAtualizacao between '2022-06-01' and '2022-06-30'
+            where fim.DataAtualizacao between '{mes_atual}-01' and '{seguinte3}-01'
             GROUP BY pf.CodigoPedido, est.Nome, ini.DataAtualizacao, fim.DataAtualizacao
             """)))
         execquery_produtos = conn.execute(query_produtos).all()
@@ -383,7 +383,7 @@ def percentual():
     lista_dicts = []
     engine = get_connection()
     with engine.connect() as conn:
-        query_produtos = ((text("""
+        query_produtos = ((text(f"""
         SELECT 
         DISTINCT PF.CodigoPedido,
         FORMAT(PF.PrevisaoEntrega,'d', 'pt-br') as PrevisaoEntrega, 
@@ -401,7 +401,7 @@ def percentual():
         GROUP BY CodigoPedido,IdProduto, DataAlteracao) AS LAPPV ON LAPPV.CodigoPedido = LAP.CodigoPedido AND LAPPV.IdProduto = LAP.IdProduto AND LAP.IdLogPrazoPedidoVenda = LAPPV.IdLogPrazoPedidoVenda) 
 
         AS LOGPRAZO ON LOGPRAZO.CodigoPedido = ISNULL(PF.PedidoPai, PF.CodigoPedido) --AND LOGPRAZO.IdProduto = PB.IdProduto
-        where LP.DataAtualizacao BETWEEN Convert(datetime, '2022-06-01' ) AND Convert(datetime, '2022-06-30' ) and LP.ParaIdEtapaFlexy = 9 AND RejeicaoId = 0
+        where LP.DataAtualizacao BETWEEN Convert(datetime, '{mes_atual}-01' ) AND Convert(datetime, '{seguinte3}-01' ) and LP.ParaIdEtapaFlexy = 9 AND RejeicaoId = 0
         ORDER BY PF.CodigoPedido
             """)))
         execquery_produtos = conn.execute(query_produtos).all()
@@ -418,14 +418,14 @@ def coleta_prazo():
     lista_dicts = []
     engine = get_connection()
     with engine.connect() as conn:
-        query_produtos = ((text("""
+        query_produtos = ((text(f"""
             select 
             DISTINCT pc.CodigoPedidoCompra,
             Format(MAX(Coletado.DataAtualizacao),'d','pt-br') as Coletado,
             FORMAT(MAX(pc.PrevisaoEntrega),'d','pt-br') as Previsao
             from HauszMapa.Pedidos.PedidoCompraItens pc
             inner join (select DataAtualizacao, CodigoPedidoCompra from HauszMapa.Pedidos.LogPedidoCompraItens 
-            where ParaStatusItem = 15 and DataAtualizacao between '2022-06-01' and '2022-07-01') Coletado on Coletado.CodigoPedidoCompra = pc.CodigoPedidoCompra
+            where ParaStatusItem = 15 and DataAtualizacao between '{mes_atual}-01' and '{seguinte3}-01') Coletado on Coletado.CodigoPedidoCompra = pc.CodigoPedidoCompra
             where bitAtivo = 1 and pc.DataLiberadoColeta <> ''
             Group by pc.CodigoPedidoCompra, pc.IdProduto,pc.DataLiberadoColeta, coletado.DataAtualizacao
             """)))
