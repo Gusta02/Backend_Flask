@@ -151,3 +151,22 @@ class Acuracidade(KPI):
         soma_wms = df_com_fator['QuantidadeAjustada'].sum()
         soma_sistema = df_quantidade_do_sistema['Quantidade'].sum()
         return soma_wms/soma_sistema
+
+class LeadTime(KPI):
+
+    def __init__(self):
+        self.df = sql_to_pd(sql.query_entregas_por_estado)
+        self.indice = self.calcula_indice()
+        self.nome = 'LeadTimeNacional'
+
+    def calcula_indice(self):
+        df_por_estado = self.df.groupby(['Estado'])
+        entregas_totais = 0
+        soma = 0
+        for i in df_por_estado.groups.keys():
+            grupo = df_por_estado.get_group(i)
+            entregas = grupo.shape[0]
+            entregas_totais += entregas
+            media =  (grupo.loc[:,'DiasPrevistos'] - grupo.loc[:,'Dias']).mean()
+            soma += entregas*media
+        return soma/entregas_totais

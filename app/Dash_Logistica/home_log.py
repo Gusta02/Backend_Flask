@@ -216,20 +216,6 @@ def FALHAS_E_AVARIAS():
 
     return taxa_fseparacao_avaria
 
-#################################### Indicadores de Performance do Time De Logística ############################################
-
-dict_performance_time_logistica = dict(
-ind_localizacaoLR = IndicadorPerformance(7,4,5,6)
-,ind_tempocicloLR = IndicadorPerformance(25,20,5,23) #Parece que não está no Asana, remover?
-,ind_pedidoperfeito = IndicadorPerformance(80,90,5,kpi_pedido_perfeito*100)
-,ind_separacao = IndicadorPerformance(24,18,5,20) 
-,ind_dockstocktime = IndicadorPerformance(3,1.5,4,kpi_dock_stock_time['Media'])
-)
-
-kpi_time_logistica = IndicadorPerformance.calcula_kpi_time(dict_performance_time_logistica)
-
- 
-
 def media_separacao_sp():
 
     Sp = pd.read_excel('app/Dash_Logistica/planilha/Producao_SaoPaulo.xlsx')
@@ -239,7 +225,8 @@ def media_separacao_sp():
     horas = Sp[7:9]
     minutos = Sp[10:12]
     SP = horas + 'h' + minutos + 'm'
-    return SP
+    valor = int(horas) + int(minutos)/60
+    return {'texto':SP,'valor':valor}
 
 def media_separacao_sc():
 
@@ -250,19 +237,42 @@ def media_separacao_sc():
     horas = Sc[7:9]
     minutos = Sc[10:12]
     SC = horas + 'h' + minutos + 'm'
-    return SC
+    valor = int(horas) + int(minutos)/60
+    return {'texto':SC,'valor':valor}
+
+#################################### Indicadores de Performance do Time De Logística ############################################
+
+dict_performance_time_logistica = dict(
+ind_localizacaoLR = IndicadorPerformance(7,4,5,6) #michel
+#,ind_tempocicloLR = IndicadorPerformance(25,20,5,23) #Parece que não está no Asana, remover?
+,ind_pedidoperfeito = IndicadorPerformance(80,90,5,kpi_pedido_perfeito*100)
+,ind_separacao = IndicadorPerformance(24,18,5,(media_separacao_sc()['valor']+media_separacao_sc()['valor'])) #posso dar o mesmo peso para SP e SC?
+,ind_dockstocktime = IndicadorPerformance(3,1.5,4,kpi_dock_stock_time['Media'])
+)
+
+kpi_time_logistica = IndicadorPerformance.calcula_kpi_time(dict_performance_time_logistica)
 
 @home.route("/", methods=["GET","POST"])
 def RelatorioGeral():
 
     tabela = leadtime()
-    Media_Sp = media_separacao_sp()
-    Media_Sc = media_separacao_sc()
     tabela = tabela.to_dict('records')
-    Coleta_atraso = percentual_coleta_fora_prazo()
-    Coleta_no_prazo = percentual_coleta_Prazo()
-    falhas_separacao = FalhaSeparacao()
-    taxa_Fseparacao_Avarias_entregues = FALHAS_E_AVARIAS()
- 
+
+    dict_variaveis = {
+    'Percentual Entregue no Prazo':f'{kpi_entregues_no_prazo: .0%}'
+    ,'Percentual de Entregas Atrasadas': f'{1-kpi_entregues_no_prazo: .0%}'
+    ,'Percentual de Coletas no Prazo': percentual_coleta_Prazo()
+    ,'Percentual de Coletas Fora do Prazo': percentual_coleta_fora_prazo()
+    ,'Taxa de Falhas na Separação': FalhaSeparacao()
+    ,'Taxa de Falhas na Separação e Avarias':FALHAS_E_AVARIAS()
+    ,'Pedidos Ativos Atrasados':kpi_pedidos_ja_atrasados
+    ,'Pedidos Perfeitos':f'{kpi_pedido_perfeito: .0%}'
+    ,'Acuracidade do Sistema':f'{kpi_acuracidade_do_sistema: .1%}'
+    ,'Performance do Time de Logística' : f'{kpi_time_logistica: .1f}' 
+    ,'Média de Dias para Separação SP' : media_separacao_sp()['texto']
+    ,'Média de Dias para Separação SC' : media_separacao_sc()['texto']
+    ,'Dock Stock SP' : kpi_dock_stock_time['SP']
+    ,'Dock Stock SC' : kpi_dock_stock_time['SC']
+    }
     
-    return render_template("Relatorio_logistica.html", card14 = Media_Sc ,card15 = Media_Sp ,tabela = tabela ,Entregues_atraso = f'{1-kpi_entregues_no_prazo: .0%}', Entregues_prazo = f'{kpi_entregues_no_prazo: .0%}', Coleta_atraso = Coleta_atraso, Coleta_no_prazo = Coleta_no_prazo, pedidos_ja_atrasados= kpi_pedidos_ja_atrasados, performance_time_transporte = f'{kpi_time_transporte: .1f}', performance_time_logistica = f'{kpi_time_logistica: .1f}',pedido_perfeito = f'{kpi_pedido_perfeito: .0%}', falhas_separacao = falhas_separacao, taxa_Fseparacao_Avarias_entregues = taxa_Fseparacao_Avarias_entregues,dock_stock_time_SP=kpi_dock_stock_time['SP'],dock_stock_time_SC=kpi_dock_stock_time['SC'],acuracidade=kpi_acuracidade_do_sistema )
+    return render_template("Relatorio_logistica.html", tabela = tabela, cards = dict_variaveis)

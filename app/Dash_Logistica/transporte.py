@@ -4,7 +4,7 @@ from ..controllers.controller_logistica import Transporte
 import pandas as pd
 from datetime import datetime
 import locale
-from ..Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_ja_atrasados,pct_entregas_sem_etapa_19,pct_entregas_sem_etapa_7,IndicadorPerformance
+from ..Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_ja_atrasados,pct_entregas_sem_etapa_19,pct_entregas_sem_etapa_7,IndicadorPerformance,kpi_leadtime_nacional
 
 transporte = Blueprint('transporte', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
@@ -70,7 +70,7 @@ def percentual_coleta_fora_prazo():
 
 #################################### Indicadores de Performance do Time De Transporte ############################################
 dict_performance_time_transporte = dict(
-ind_leadtime = IndicadorPerformance(15,10,5) #tirar a média nacional?
+ind_leadtime = IndicadorPerformance(15,10,5,kpi_leadtime_nacional) 
 ,ind_coletasnoprazo = IndicadorPerformance(85,95,5,percentual_coleta_prazo()*100)
 ,ind_entregasnoprazo = IndicadorPerformance(85,95,5,kpi_entregues_no_prazo*100)
 ,ind_avarias = IndicadorPerformance(5,2.5,Perc_TaxaAvaria())
@@ -84,12 +84,17 @@ kpi_time_transporte = IndicadorPerformance.calcula_kpi_time(dict_performance_tim
 @transporte.route("/dashboard/logistica/transporte", methods=["GET","POST"])
 def Transporte_rota():
 
+    dict_variaveis_transporte = {
 
-    frete_total = frete_arrecadado()
-    card6 = TotalAvaria() 
-    card7 = f'{Perc_TaxaAvaria(): .2%}'
-    card8 = f'{percentual_coleta_prazo(): .2%}'
-    card9 = f'{percentual_coleta_fora_prazo(): .2%}'
-    card1 = f'{kpi_entregues_no_prazo: .0%}'
+    'Frete Total':frete_arrecadado()
+    ,'Total de Avarias' : TotalAvaria() 
+    ,'Taxa de Avaria' : f'{Perc_TaxaAvaria(): .2%}'
+    ,'Percentual de Coletas no Prazo' : f'{percentual_coleta_prazo(): .2%}'
+    ,'Percentual de Coletas Fora do Prazo' : f'{percentual_coleta_fora_prazo(): .2%}'
+    ,'Entregas no Prazo' : f'{kpi_entregues_no_prazo: .0%}'
+    ,'Entregas que Pularam a Etapa "Em Transporte"' : f'{pct_entregas_sem_etapa_7: .0%}'
+    ,'Entregas que Pularam a Etapa "Saiu para Entrega"' : f'{pct_entregas_sem_etapa_19: .0%}'
+    ,'Performance do Time de Transportes' : f'{kpi_time_transporte: .1f}'
+    }
 
-    return render_template('Relatorio_transporte.html', card8 = card8, card9 = card9, frete = frete_total, card1=card1,card2 = kpi_pedidos_ja_atrasados, card3 = f'{pct_entregas_sem_etapa_7: .0%}', card4 = f'{pct_entregas_sem_etapa_19: .0%}', card5 = f'{kpi_time_transporte: .1f}', card6 = card6, card7 = card7)
+    return render_template('Relatorio_transporte.html', cards = dict_variaveis_transporte)

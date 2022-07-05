@@ -1,7 +1,7 @@
 
 from app.Dash_Logistica.kpis_luiz import sql_queries as sql
 from app.Dash_Logistica.kpis_luiz.data_extractor import sql_to_pd
-from app.Dash_Logistica.kpis_luiz.kpi import Entregas,SemEtapas,PedidoPerfeito,IndicadorPerformance,DockStockTime,Acuracidade
+from app.Dash_Logistica.kpis_luiz.kpi import Entregas, LeadTime,SemEtapas,PedidoPerfeito,IndicadorPerformance,DockStockTime,Acuracidade
 
 
 ##################### Instâncias de Objetos que Calculam KPIs ##########################
@@ -11,16 +11,18 @@ sem_etapas = SemEtapas()
 pedido_perfeito = PedidoPerfeito()
 dockstocktime = DockStockTime()
 acuracidade = Acuracidade()
+leadtime = LeadTime()
 
 ####################### KPIs resultates dos Objetos ##############################
 
-kpi_entregues_no_prazo = round(entregas.indice.loc[True],2)
-pct_entregas_sem_etapa_19 = round(sem_etapas.calcula_sem_19().loc[True],2)
-pct_entregas_sem_etapa_7 = round(sem_etapas.calcula_sem_7().loc[True],2)
+kpi_entregues_no_prazo = entregas.indice.loc[True]
+pct_entregas_sem_etapa_19 = sem_etapas.calcula_sem_19().loc[True]
+pct_entregas_sem_etapa_7 = sem_etapas.calcula_sem_7().loc[True]
 kpi_pedido_perfeito = pedido_perfeito.calcula_indice()
 kpi_pedidos_ja_atrasados = sql_to_pd(sql.query_pedidos_ja_atrasados).iloc[0,0]
 kpi_dock_stock_time = dockstocktime.calcula_indice()
-kpi_acuracidade_do_sistema = f'{acuracidade.indice:.1%}'
+kpi_acuracidade_do_sistema = acuracidade.indice
+kpi_leadtime_nacional = leadtime.indice
 
 # ##################### Instâncias de Objetos Performance do Time Logística ##########################
 
