@@ -70,7 +70,6 @@ def Quant_avaria():
 
 #///////////////////////////// FIM CONSULTAS MICHEL//////////////////
 
-
 def Valor_arrecadado_frete_pedido():
     lista_dicts = []
     engine = get_connection()
@@ -111,4 +110,55 @@ def Valor_arrecadado_frete_showroom():
         df = pd.DataFrame(lista_dicts)
     return df
 
+def percentual_coleta_Prazo():
+
+    lista_dicts = []
+    engine = get_connection()
+    with engine.connect() as conn:
+        query_produtos = ((text(f"""
+            select 
+            DISTINCT pc.CodigoPedidoCompra,
+            Format(MAX(Coletado.DataAtualizacao),'d','pt-br') as Coletado,
+            FORMAT(MAX(pc.PrevisaoEntrega),'d','pt-br') as Previsao
+            from HauszMapa.Pedidos.PedidoCompraItens pc
+            inner join (select DataAtualizacao, CodigoPedidoCompra from HauszMapa.Pedidos.LogPedidoCompraItens 
+            where ParaStatusItem = 15 and DataAtualizacao between '2022-05-01' and '2022-06-01') Coletado on Coletado.CodigoPedidoCompra = pc.CodigoPedidoCompra
+            where bitAtivo = 1 and pc.DataLiberadoColeta <> ''
+            Group by pc.CodigoPedidoCompra, pc.IdProduto,pc.DataLiberadoColeta, coletado.DataAtualizacao
+            """)))
+        execquery_produtos = conn.execute(query_produtos).all()
+
+        for exc in execquery_produtos:
+            dict_items = {}
+            for keys, values in exc.items():
+                dict_items[keys] = values
+            lista_dicts.append(dict_items)
+        df = pd.DataFrame(lista_dicts)
+    return df
+
+def percentual_coleta_fora_prazo():
+
+    lista_dicts = []
+    engine = get_connection()
+    with engine.connect() as conn:
+        query_produtos = ((text(f"""
+            select 
+            DISTINCT pc.CodigoPedidoCompra,
+            Format(MAX(Coletado.DataAtualizacao),'d','pt-br') as Coletado,
+            FORMAT(MAX(pc.PrevisaoEntrega),'d','pt-br') as Previsao
+            from HauszMapa.Pedidos.PedidoCompraItens pc
+            inner join (select DataAtualizacao, CodigoPedidoCompra from HauszMapa.Pedidos.LogPedidoCompraItens 
+            where ParaStatusItem = 15 and DataAtualizacao between '2022-05-01' and '2022-06-01') Coletado on Coletado.CodigoPedidoCompra = pc.CodigoPedidoCompra
+            where bitAtivo = 1 and pc.DataLiberadoColeta <> ''
+            Group by pc.CodigoPedidoCompra, pc.IdProduto,pc.DataLiberadoColeta, coletado.DataAtualizacao
+            """)))
+        execquery_produtos = conn.execute(query_produtos).all()
+
+        for exc in execquery_produtos:
+            dict_items = {}
+            for keys, values in exc.items():
+                dict_items[keys] = values
+            lista_dicts.append(dict_items)
+        df = pd.DataFrame(lista_dicts)
+    return df
 
