@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, request
-import scipy as sp
 from sqlalchemy import true
 
 from app.Dash_Logistica.kpis_luiz import kpi
@@ -227,6 +226,25 @@ def media_separacao_sp():
     SP = horas + 'h' + minutos + 'm'
     valor = int(horas) + int(minutos)/60
     return {'texto':SP,'valor':valor}
+
+#localização mercadoria
+def Localizacao_MediaDias():
+    data.columns = ['CODIGO', 'FASE_ATUAL', 'CRIADOR', 'PV_CRIADO','NUMERO_PV','NUMERO_NF','MOTIVO_SOLICITACAO'
+    ,'OBSERVACOES_SOLICITACAO','FASE_INICIAL'
+    ,'FASE_GESTAO','FASE_CLIENTE','FASE_IMPLANTACAO_REPOSICAO','FASE_SHOW_ROOM'
+    ,'PEDIDOS_REPROVADOS','FASE_AJUSTE_FISCAL','FASE_LOCALIZACAO_MERCADORIA','ROTEIRIZACAO_PV_LOCALIZADO'
+    ,'SOLICITACAO_COLETA'
+    ,'COLETA_APROVADA','COLETA_REPROVADA','SOLICITACAO_REEMBOLSO','ENVIO_EMAIL','CONCLUIDO','SEM_REPOSICAO'
+    ,'LOCALIZACAO_MERCADORIA']
+
+    media = data.apply(lambda x:x['LOCALIZACAO_MERCADORIA']-x['FASE_LOCALIZACAO_MERCADORIA'],axis=1)
+    data.loc[:,'MEDIA'] = media
+    media= media.mean()
+
+    return media
+
+#///////////////////////////////// END MICHEL //////////////////////////////////
+
 
 def media_separacao_sc():
 

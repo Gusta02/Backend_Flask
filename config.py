@@ -16,7 +16,6 @@ database = env['database']
 usuario = env['usuario']
 password = env['password']
 
-
 patharquivos = os.path.abspath(os.path.dirname(__file__))
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','csv','xlsx'}
 
