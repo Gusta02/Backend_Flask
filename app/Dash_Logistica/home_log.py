@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request
+import scipy as sp
 from sqlalchemy import true
 
 from app.Dash_Logistica.kpis_luiz import kpi
@@ -9,6 +10,8 @@ from ..Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_j
 
 home = Blueprint('home', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
+#PLANILHA PIPE EXCEL - ATUALIZAR UMA VEZ POR SEMANA
+data = pd.read_excel('app/Dash_Logistica/planilha/relatorio_kpi3006.xlsx')
 
 def leadtime():
     tabela = IntegracaoWms.leadtime_log()
@@ -119,7 +122,6 @@ def percentual_coleta_fora_prazo():
 
     return Percentual_coletas_fora_prazo
 
-
 #///////////////////   MICHEL  /////////////////////////////
 def TotalAvaria(): 
     Avaria = Transporte.Quant_avaria()
@@ -132,9 +134,6 @@ def TotalEntregue():
     totalentregue = entregue[0]['Quantidade_Entregue']
 
     return totalentregue
-
-#PLANILHA PIPE EXCEL - ATUALIZAR UMA VEZ POR SEMANA
-data = pd.read_excel('app/Dash_Logistica/planilha/relatorio_kpi3006.xlsx')
 
 def QuantidadeErrada():
     #///////// Renomeando colunas /////////////////////
@@ -217,11 +216,34 @@ def FALHAS_E_AVARIAS():
 
     return taxa_fseparacao_avaria
 
+def media_separacao_sp():
+
+    Sp = pd.read_excel('app/Dash_Logistica/planilha/Producao_SaoPaulo.xlsx')
+    Sp = (Sp['Dt_Conf_Sep'] - Sp['Dt_Inclusao'])
+    Sp = Sp.mean()
+    Sp = str(Sp)
+    horas = Sp[7:9]
+    minutos = Sp[10:12]
+    SP = horas + 'h' + minutos + 'm'
+    return SP
+
+def media_separacao_sc():
+
+    Sc = pd.read_excel('app/Dash_Logistica/planilha/Producao_SantaCatarina.xlsx')
+    Sc = (Sc['Dt_Conf_Sep'] - Sc['Dt_Inclusao'])
+    Sc = Sc.mean()
+    Sc = str(Sc)
+    horas = Sc[7:9]
+    minutos = Sc[10:12]
+    SC = horas + 'h' + minutos + 'm'
+    return SC
 
 @home.route("/", methods=["GET","POST"])
 def RelatorioGeral():
 
     tabela = leadtime()
+    Media_Sp = media_separacao_sp()
+    Media_Sc = media_separacao_sc()
     tabela = tabela.to_dict('records')
     Entregues_atraso = percentual_atrasado()
     Entregues_prazo = percentual_na_data()
@@ -229,6 +251,6 @@ def RelatorioGeral():
     Coleta_no_prazo = percentual_coleta_Prazo()
     falhas_separacao = FalhaSeparacao()
     taxa_Fseparacao_Avarias_entregues = FALHAS_E_AVARIAS()
-    # print(Coleta_no_prazo)
+ 
     
-    return render_template("Relatorio_logistica.html", tabela = tabela ,Entregues_atraso = f'{1-kpi_entregues_no_prazo: .0%}', Entregues_prazo = f'{kpi_entregues_no_prazo: .0%}', Coleta_atraso = Coleta_atraso, Coleta_no_prazo = Coleta_no_prazo, pedidos_ja_atrasados= kpi_pedidos_ja_atrasados, performance_time_transporte = f'{kpi_time_transporte: .1f}', performance_time_logistica = f'{kpi_time_logistica: .1f}',pedido_perfeito = f'{kpi_pedido_perfeito: .0%}', falhas_separacao = falhas_separacao, taxa_Fseparacao_Avarias_entregues = taxa_Fseparacao_Avarias_entregues,dock_stock_time_SP=kpi_dock_stock_time['SP'],dock_stock_time_SC=kpi_dock_stock_time['SC'],acuracidade=kpi_acuracidade_do_sistema )
+    return render_template("Relatorio_logistica.html", card14 = Media_Sc ,card15 = Media_Sp ,tabela = tabela ,Entregues_atraso = f'{1-kpi_entregues_no_prazo: .0%}', Entregues_prazo = f'{kpi_entregues_no_prazo: .0%}', Coleta_atraso = Coleta_atraso, Coleta_no_prazo = Coleta_no_prazo, pedidos_ja_atrasados= kpi_pedidos_ja_atrasados, performance_time_transporte = f'{kpi_time_transporte: .1f}', performance_time_logistica = f'{kpi_time_logistica: .1f}',pedido_perfeito = f'{kpi_pedido_perfeito: .0%}', falhas_separacao = falhas_separacao, taxa_Fseparacao_Avarias_entregues = taxa_Fseparacao_Avarias_entregues,dock_stock_time_SP=kpi_dock_stock_time['SP'],dock_stock_time_SC=kpi_dock_stock_time['SC'],acuracidade=kpi_acuracidade_do_sistema )
