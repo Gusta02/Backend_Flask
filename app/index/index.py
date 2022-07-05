@@ -5,7 +5,7 @@ from ..controllers.relatorios_index_controller import (select_pedidos_data_atual
 import pandas as pd
 from ..controllers.relatorios_index_controller import (select_resumo_infos, select_marca_prazo_fabricacao,select_groupby_saldo_produto, vendas_mes_agrupado)
 from ..controllers.controller_logistica import IntegracaoWms
-from ..Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_ja_atrasados,kpi_time_logistica,kpi_time_transporte
+#from ..Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_ja_atrasados,kpi_time_logistica,kpi_time_transporte
 
 def register_handlers(app):
     if app.config.get('DEBUG') is True:

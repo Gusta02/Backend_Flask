@@ -5,7 +5,7 @@ from app.Dash_Logistica.kpis_luiz import kpi
 from ..controllers.controller_logistica import IntegracaoWms, Transporte
 import pandas as pd
 from datetime import datetime
-from ..Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_ja_atrasados,kpi_time_logistica,kpi_time_transporte,kpi_pedido_perfeito,kpi_dock_stock_time,kpi_acuracidade_do_sistema
+from ..Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_ja_atrasados,kpi_pedido_perfeito,kpi_dock_stock_time,kpi_acuracidade_do_sistema, IndicadorPerformance
 
 home = Blueprint('home', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
@@ -217,6 +217,20 @@ def FALHAS_E_AVARIAS():
 
     return taxa_fseparacao_avaria
 
+#################################### Indicadores de Performance do Time De Logística ############################################
+
+dict_performance_time_logistica = dict(
+ind_localizacaoLR = IndicadorPerformance(7,4,5,6)
+,ind_tempocicloLR = IndicadorPerformance(25,20,5,23) #Parece que não está no Asana, remover?
+,ind_pedidoperfeito = IndicadorPerformance(80,90,5,kpi_pedido_perfeito*100)
+,ind_separacao = IndicadorPerformance(24,18,5,20) 
+,ind_dockstocktime = IndicadorPerformance(3,1.5,4,kpi_dock_stock_time['Media'])
+)
+
+kpi_time_logistica = IndicadorPerformance.calcula_kpi_time(dict_performance_time_logistica)
+
+ 
+
 
 @home.route("/", methods=["GET","POST"])
 def RelatorioGeral():
@@ -231,4 +245,4 @@ def RelatorioGeral():
     taxa_Fseparacao_Avarias_entregues = FALHAS_E_AVARIAS()
     # print(Coleta_no_prazo)
     
-    return render_template("Relatorio_logistica.html", tabela = tabela ,Entregues_atraso = f'{1-kpi_entregues_no_prazo: .0%}', Entregues_prazo = f'{kpi_entregues_no_prazo: .0%}', Coleta_atraso = Coleta_atraso, Coleta_no_prazo = Coleta_no_prazo, pedidos_ja_atrasados= kpi_pedidos_ja_atrasados, performance_time_transporte = f'{kpi_time_transporte: .1f}', performance_time_logistica = f'{kpi_time_logistica: .1f}',pedido_perfeito = f'{kpi_pedido_perfeito: .0%}', falhas_separacao = falhas_separacao, taxa_Fseparacao_Avarias_entregues = taxa_Fseparacao_Avarias_entregues,dock_stock_time_SP=kpi_dock_stock_time['SP'],dock_stock_time_SC=kpi_dock_stock_time['SC'],acuracidade=kpi_acuracidade_do_sistema )
+    return render_template("Relatorio_logistica.html", tabela = tabela ,Entregues_atraso = f'{1-kpi_entregues_no_prazo: .0%}', Entregues_prazo = f'{kpi_entregues_no_prazo: .0%}', Coleta_atraso = Coleta_atraso, Coleta_no_prazo = Coleta_no_prazo, pedidos_ja_atrasados= kpi_pedidos_ja_atrasados, performance_time_logistica = f'{kpi_time_logistica: .1f}',pedido_perfeito = f'{kpi_pedido_perfeito: .0%}', falhas_separacao = falhas_separacao, taxa_Fseparacao_Avarias_entregues = taxa_Fseparacao_Avarias_entregues,dock_stock_time_SP=kpi_dock_stock_time['SP'],dock_stock_time_SC=kpi_dock_stock_time['SC'],acuracidade=kpi_acuracidade_do_sistema )

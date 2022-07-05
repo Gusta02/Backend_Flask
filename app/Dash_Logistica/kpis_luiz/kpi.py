@@ -77,7 +77,7 @@ class PedidoPerfeito(KPI):
 
 class IndicadorPerformance():
 
-    def __init__(self,nota7,nota10,peso,notaobtida=0):
+    def __init__(self,nota7,nota10,peso=5,notaobtida=0):
         self.peso = peso
         self.nota7 = nota7
         self.nota10 = nota10
@@ -124,9 +124,10 @@ class DockStockTime(KPI):
     def calcula_indice(self):
         dockmediocliente1 = str(self.df1['DockStockTimeAjustado'].iloc[-1])[:5]
         dockmediocliente2 = str(self.df2['DockStockTime'].iloc[-1])[:5]
+        media = (int(dockmediocliente1[0:2]) + int(dockmediocliente1[3:5])/60 + int(dockmediocliente2[0:2]) + int(dockmediocliente2[3:5])/60)/2  #Converte as horas e minutos em ints e calcula a media em horas
         dockformatado1 = dockmediocliente1[0:2] + 'h' + dockmediocliente1[3:5] + 'm'
         dockformatado2 = dockmediocliente2[0:2] + 'h' + dockmediocliente2[3:5] + 'm'
-        return {'SP':dockformatado2,'SC':dockformatado1}
+        return {'SP':dockformatado2,'SC':dockformatado1,'Media':media}
 
 class Acuracidade(KPI):
 

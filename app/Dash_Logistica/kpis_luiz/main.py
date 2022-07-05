@@ -22,26 +22,26 @@ kpi_pedidos_ja_atrasados = sql_to_pd(sql.query_pedidos_ja_atrasados).iloc[0,0]
 kpi_dock_stock_time = dockstocktime.calcula_indice()
 kpi_acuracidade_do_sistema = f'{acuracidade.indice:.1%}'
 
-##################### Instâncias de Objetos Performance do Time Logística ##########################
+# ##################### Instâncias de Objetos Performance do Time Logística ##########################
 
-dict_performance_time_logistica = dict(
-ind_localizacaoLR = IndicadorPerformance(7,4,5,6)
-,ind_tempocicloLR = IndicadorPerformance(25,20,5,23)
-,ind_pedidoperfeito = IndicadorPerformance(80,90,5,kpi_pedido_perfeito*100)
-,ind_separacao = IndicadorPerformance(24,18,5,20)
-,ind_dockstocktime = IndicadorPerformance(3,1.5,4,kpi_dock_stock_time*100)
-)
+# dict_performance_time_logistica = dict(
+# ind_localizacaoLR = IndicadorPerformance(7,4,5,6)
+# ,ind_tempocicloLR = IndicadorPerformance(25,20,5,23)
+# ,ind_pedidoperfeito = IndicadorPerformance(80,90,5,kpi_pedido_perfeito*100)
+# ,ind_separacao = IndicadorPerformance(24,18,5,20)
+# ,ind_dockstocktime = IndicadorPerformance(3,1.5,4,kpi_dock_stock_time*100)
+# )
 
-##################### Instâncias de Objetos Performance do Time Transporte ##########################
-dict_performance_time_transporte = dict(
-ind_leadtime = IndicadorPerformance(15,10,5)
-,ind_coletasnoprazo = IndicadorPerformance(85,95,5)
-,ind_entregasnoprazo = IndicadorPerformance(85,95,5,kpi_entregues_no_prazo*100)
-,ind_avarias = IndicadorPerformance(5,2.5,5)
-#,ind_nps = IndicadorPerformance(7,8,4)
-)
+# ##################### Instâncias de Objetos Performance do Time Transporte ##########################
+# dict_performance_time_transporte = dict(
+# ind_leadtime = IndicadorPerformance(15,10,5)
+# ,ind_coletasnoprazo = IndicadorPerformance(85,95,5)
+# ,ind_entregasnoprazo = IndicadorPerformance(85,95,5,kpi_entregues_no_prazo*100)
+# ,ind_avarias = IndicadorPerformance(5,2.5,5)
+# #,ind_nps = IndicadorPerformance(7,8,4)
+# )
 
-####################### KPIs dos times ##############################
+# ####################### KPIs dos times ##############################
 
-kpi_time_logistica = IndicadorPerformance.calcula_kpi_time(dict_performance_time_logistica)
-kpi_time_transporte = IndicadorPerformance.calcula_kpi_time(dict_performance_time_transporte)
+# kpi_time_logistica = IndicadorPerformance.calcula_kpi_time(dict_performance_time_logistica)
+# kpi_time_transporte = IndicadorPerformance.calcula_kpi_time(dict_performance_time_transporte)
