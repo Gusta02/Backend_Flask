@@ -122,7 +122,7 @@ def percentual_coleta_Prazo():
             FORMAT(MAX(pc.PrevisaoEntrega),'d','pt-br') as Previsao
             from HauszMapa.Pedidos.PedidoCompraItens pc
             inner join (select DataAtualizacao, CodigoPedidoCompra from HauszMapa.Pedidos.LogPedidoCompraItens 
-            where ParaStatusItem = 15 and DataAtualizacao between '2022-05-01' and '2022-06-01') Coletado on Coletado.CodigoPedidoCompra = pc.CodigoPedidoCompra
+            where ParaStatusItem = 15 and DataAtualizacao between '2022-06-01' and '2022-07-01') Coletado on Coletado.CodigoPedidoCompra = pc.CodigoPedidoCompra
             where bitAtivo = 1 and pc.DataLiberadoColeta <> ''
             Group by pc.CodigoPedidoCompra, pc.IdProduto,pc.DataLiberadoColeta, coletado.DataAtualizacao
             """)))
