@@ -29,7 +29,7 @@ ind_localizacaoLR = IndicadorPerformance(7,4,5,6)
 ,ind_tempocicloLR = IndicadorPerformance(25,20,5,23)
 ,ind_pedidoperfeito = IndicadorPerformance(80,90,5,kpi_pedido_perfeito*100)
 ,ind_separacao = IndicadorPerformance(24,18,5,20)
-,ind_dockstocktime = IndicadorPerformance(3,1.5,4,2)
+,ind_dockstocktime = IndicadorPerformance(3,1.5,4,kpi_dock_stock_time*100)
 )
 
 ##################### Instâncias de Objetos Performance do Time Transporte ##########################
