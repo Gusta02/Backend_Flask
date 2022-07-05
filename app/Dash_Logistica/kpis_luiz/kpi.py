@@ -129,28 +129,39 @@ class DockStockTime(KPI):
         dockformatado2 = dockmediocliente2[0:2] + 'h' + dockmediocliente2[3:5] + 'm'
         return {'SP':dockformatado2,'SC':dockformatado1,'Media':media}
 
-class Acuracidade(KPI):
+class Estoque(KPI):
 
     def __init__(self):
-        df1 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WQ4 - Estoque Mercadorias Cliente WMS - cliente 1.xlsx',usecols=['Cód. Merc.','Qt. Disp.'])
-        df2 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WQ4 - Estoque Mercadorias Cliente WMS - cliente 2.xlsx',usecols=['Cód. Merc.','Qt. Disp.'])
-        self.df = pd.concat([df1,df2])
+        self.df = self.multiplica_fator()
         self.indice = self.calcula_indice()
         self.nome = 'Acuracidade_do_Sistema'
 
-    def calcula_indice(self):
+    def multiplica_fator(self):
+        df1 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WQ4 - Estoque Mercadorias Cliente WMS - cliente 1.xlsx',usecols=['Cód. Merc.','Qt. Disp.'])
+        df2 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WQ4 - Estoque Mercadorias Cliente WMS - cliente 2.xlsx',usecols=['Cód. Merc.','Qt. Disp.'])
+        df_concat = pd.concat([df1,df2])
         df_fator_multiplicador = sql_to_pd(sql.query_fator_multiplicador_prod)
-        df_com_fator = pd.merge(self.df,df_fator_multiplicador.drop_duplicates(subset='SKU'),how='left',left_on='Cód. Merc.',right_on='SKU')
+        df_com_fator = pd.merge(df_concat,df_fator_multiplicador.drop_duplicates(subset='SKU'),how='left',left_on='Cód. Merc.',right_on='SKU')
         df_fator_multiplicador = sql_to_pd(sql.query_fator_multiplicador_show_room)
         df_com_fator = df_com_fator.merge(df_fator_multiplicador.drop_duplicates(subset='SKU'),how='left',left_on='Cód. Merc.',right_on='SKU')
         df_com_fator['FatorMultiplicador'] = df_com_fator['FatorMultiplicador_x'].fillna(df_com_fator['FatorMultiplicador_y'])
         df_com_fator.drop(columns=['SKU_x','SKU_y','FatorMultiplicador_x','FatorMultiplicador_y'])
         df_com_fator['QuantidadeAjustada'] = df_com_fator['Qt. Disp.']*df_com_fator['FatorMultiplicador']
+        return df_com_fator
+
+    #Acuracidade do Sistema
+    def calcula_indice(self):
         df_quantidade_do_sistema = sql_to_pd(sql.query_quantidade_do_sistema)
         df_quantidade_do_sistema['Quantidade'] = df_quantidade_do_sistema['Quantidade'].apply(lambda x: x if x>=0 else 0)
-        soma_wms = df_com_fator['QuantidadeAjustada'].sum()
+        soma_wms = self.multiplica_fator()['QuantidadeAjustada'].sum()
         soma_sistema = df_quantidade_do_sistema['Quantidade'].sum()
         return soma_wms/soma_sistema
+
+    #Rejeicoes Futuras
+    def rejeicoes_futuras(self):
+        df_produtos_por_pedido = sql_to_pd(sql.query_produtos_por_pedido)
+        grupos_SKU = df_produtos_por_pedido.groupby('SKU')
+        return grupos_SKU
 
 class LeadTime(KPI):
 
@@ -170,3 +181,12 @@ class LeadTime(KPI):
             media =  (grupo.loc[:,'DiasPrevistos'] - grupo.loc[:,'Dias']).mean()
             soma += entregas*media
         return soma/entregas_totais
+    
+class Rejeicao(KPI):
+
+    def __init__(self):
+       
+        self.indice = self.calcula_indice()
+        self.nome = 'rejeicoes_futuras'
+
+   

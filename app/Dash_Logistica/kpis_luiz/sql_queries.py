@@ -271,3 +271,26 @@ SELECT
 			where datediff(month,prazo.DataDeEntrega,getdate()) = 1
             --GROUP BY pf.CodigoPedido, est.Nome, ini.DataAtualizacao, fim.DataAtualizacao,Prazo
 '''
+
+query_produtos_por_pedido = '''
+Select CodigoPedido,SKU,Quantidade 
+from (SELECT StatusPedido
+		,itens.CodigoPedido
+		,itens.SKU
+		,itens.Quantidade
+		FROM [HauszMapa].[Pedidos].[PedidoFlexy] pedidos
+		JOIN (SELECT CodigoPedido,SKU, Quantidade FROM [HauszMapa].[Pedidos].[ItensFlexy]
+		WHERE IdEstoque IN (1,5)) itens
+		ON pedidos.CodigoPedido = itens.CodigoPedido
+		UNION
+	SELECT StatusPedido
+			,itens.CodigoPedidoSw as CodigoPedido
+			,itens.SKU
+			,itens.Quantidade
+	FROM [HauszMapa].[ShowRoom].[Pedido] showroom
+	JOIN (SELECT CodigoPedidoSw,SKU,Quantidade  FROM  [HauszMapa].[ShowRoom].[ItensPedido]
+	WHERE IdEstoque IN (1,5)) itens
+	ON showroom.CodigoPedidoSw = itens.CodigoPedidoSw) AS pedidos_ativos
+WHERE pedidos_ativos.StatusPedido IN ('Pago','Aguardando Arquiteto','Aguardando confirmação do cliente','Entrega Futura','Verificando Estoque')
+ORDER BY CodigoPedido
+'''
