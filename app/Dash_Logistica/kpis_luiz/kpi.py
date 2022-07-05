@@ -161,7 +161,25 @@ class Estoque(KPI):
     def rejeicoes_futuras(self):
         df_produtos_por_pedido = sql_to_pd(sql.query_produtos_por_pedido)
         grupos_SKU = df_produtos_por_pedido.groupby('SKU')
-        return grupos_SKU
+        pedidos_rejeicao = pd.DataFrame(columns=['CodigoPedido','SKU'])
+        for k in grupos_SKU.groups.keys():
+            try:
+                pos = pd.Index(self.df['Cód. Merc.']).get_loc(k)
+                qt_estoque = self.df.loc[pos,'QuantidadeAjustada']
+                grupo = grupos_SKU.get_group(k)
+                for index, row in grupo.iterrows():
+                    qt_estoque -= row['QuantidadePedida']
+                    if qt_estoque < 0:
+                        pedidos_rejeicao = pd.concat([pedidos_rejeicao,grupo.loc[index:,['CodigoPedido','SKU']]])
+            except:
+                pass
+        return pedidos_rejeicao
+
+    def count_excesso(self):
+        pass
+
+    def count_falta(self):
+        pass
 
 class LeadTime(KPI):
 

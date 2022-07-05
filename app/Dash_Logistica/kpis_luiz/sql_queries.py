@@ -273,7 +273,7 @@ SELECT
 '''
 
 query_produtos_por_pedido = '''
-Select CodigoPedido,SKU,Quantidade 
+Select CodigoPedido,SKU,Quantidade AS QuantidadePedida
 from (SELECT StatusPedido
 		,itens.CodigoPedido
 		,itens.SKU

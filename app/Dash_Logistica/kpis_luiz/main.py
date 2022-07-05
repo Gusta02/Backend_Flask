@@ -12,7 +12,6 @@ pedido_perfeito = PedidoPerfeito()
 dockstocktime = DockStockTime()
 estoque = Estoque()
 leadtime = LeadTime()
-rejeicao = Rejeicao()
 
 ####################### KPIs resultates dos Objetos ##############################
 
