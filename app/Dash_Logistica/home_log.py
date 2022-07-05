@@ -245,8 +245,6 @@ def RelatorioGeral():
     Media_Sp = media_separacao_sp()
     Media_Sc = media_separacao_sc()
     tabela = tabela.to_dict('records')
-    Entregues_atraso = percentual_atrasado()
-    Entregues_prazo = percentual_na_data()
     Coleta_atraso = percentual_coleta_fora_prazo()
     Coleta_no_prazo = percentual_coleta_Prazo()
     falhas_separacao = FalhaSeparacao()
