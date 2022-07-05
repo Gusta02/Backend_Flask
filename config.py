@@ -6,13 +6,15 @@ from urllib import parse
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
+from os import environ as env
 
 load_dotenv()
-driver = "Driver={SQL Server Native Client 11.0}"
-server = "w2019.hausz.com.br"
-database = "HauszMapa"
-usuario = "aplicacao.BI"
-password = "!4p.lic@C2022_aoB1"
+
+driver = env['driver']
+server = env['server']
+database = env['database']
+usuario = env['usuario']
+password = env['password']
 
 patharquivos = os.path.abspath(os.path.dirname(__file__))
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','csv','xlsx'}

@@ -182,11 +182,6 @@ class LeadTime(KPI):
             soma += entregas*media
         return soma/entregas_totais
     
-class Rejeicao(KPI):
 
-    def __init__(self):
-       
-        self.indice = self.calcula_indice()
-        self.nome = 'rejeicoes_futuras'
 
-   
+    
