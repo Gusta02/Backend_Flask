@@ -133,8 +133,9 @@ class Estoque(KPI):
 
     def __init__(self):
         self.df = self.multiplica_fator()
+        self.nome = 'estoque'
+        self.df_quantidade_do_sistema = self.quantidade_do_sistema()
         self.indice = self.calcula_indice()
-        self.nome = 'Acuracidade_do_Sistema'
 
     def multiplica_fator(self):
         df1 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WQ4 - Estoque Mercadorias Cliente WMS - cliente 1.xlsx',usecols=['Cód. Merc.','Qt. Disp.'])
@@ -149,12 +150,15 @@ class Estoque(KPI):
         df_com_fator['QuantidadeAjustada'] = df_com_fator['Qt. Disp.']*df_com_fator['FatorMultiplicador']
         return df_com_fator
 
-    #Acuracidade do Sistema
-    def calcula_indice(self):
+    def quantidade_do_sistema(self):
         df_quantidade_do_sistema = sql_to_pd(sql.query_quantidade_do_sistema)
         df_quantidade_do_sistema['Quantidade'] = df_quantidade_do_sistema['Quantidade'].apply(lambda x: x if x>=0 else 0)
+        return df_quantidade_do_sistema
+
+    #Acuracidade do Sistema
+    def calcula_indice(self):
         soma_wms = self.multiplica_fator()['QuantidadeAjustada'].sum()
-        soma_sistema = df_quantidade_do_sistema['Quantidade'].sum()
+        soma_sistema = self.df_quantidade_do_sistema['Quantidade'].sum()
         return soma_wms/soma_sistema
 
     #Rejeicoes Futuras
@@ -170,14 +174,28 @@ class Estoque(KPI):
                 for index, row in grupo.iterrows():
                     qt_estoque -= row['QuantidadePedida']
                     if qt_estoque < 0:
-                        pedidos_rejeicao = pd.concat([pedidos_rejeicao,grupo.loc[index:,['CodigoPedido','SKU']]])
+                        pedidos_rejeicao = pd.concat([pedidos_rejeicao,grupo.loc[index:,['CodigoPedido','SKU','QuantidadePedida']]])
             except:
                 pass
         return pedidos_rejeicao
 
     def count_excesso(self):
-        pass
+        diff = self.df_quantidade_do_sistema['Quantidade'] - self.df['QuantidadeAjustada']
+        diff.dropna(inplace=True)
+        #diff = diff.apply(lambda x: 'certo' if x == 0 else x)
+        #diff = diff.iloc[:,0] > 0
+        diff = diff.apply(lambda x: self.classify(x))
+        return diff.value_counts()
 
+    def classify(self,x):
+        if x == 0:
+            return 0
+        if x>0:
+            return 'excesso'
+        if x<0:
+            return 'falta'
+
+    
     def count_falta(self):
         pass
 
