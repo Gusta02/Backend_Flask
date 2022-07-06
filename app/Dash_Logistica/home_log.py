@@ -291,21 +291,22 @@ def RelatorioGeral():
     ,'Média de Dias para Separação SC' : media_separacao_sc()['texto']
     ,'Dock Stock SP' : kpi_dock_stock_time['SP']
     ,'Dock Stock SC' : kpi_dock_stock_time['SC']
-    ,'Produtos com Saldo a Mais' : estoque.count_estoque()['excesso']
-    ,'Produtos com Saldo a Menos' : estoque.count_estoque()['falta']
+    ,'Produtos com Saldo a Mais' : estoque.count_estoque().situacao.value_counts()['excesso']
+    ,'Produtos com Saldo a Menos' : estoque.count_estoque().situacao.value_counts()['falta']
     ,'Acuracidade do Sistema' : f'{estoque.indice: .1%}'
     ,'Localização de Mercadoria - LR' : Localizacao_MediaDias() + ' dias'
+    ,'Rejeições Futuras' : estoque.rejeicoes_futuras().shape[0]
     }
     
     return render_template("Relatorio_logistica.html", tabela = tabela, cards = dict_variaveis)
 
-@home.route('/download_rejeicoes',methods=['GET']) # this is a job for GET, not POST
-def download_rejeicoes():
+@home.route('/download/<filename>',methods=['GET']) # this is a job for GET, not POST
+def download_excel(filename):
 
     buffer = io.BytesIO()
     estoque.rejeicoes_futuras().to_excel(buffer)
     headers = {
-    'Content-Disposition': 'attachment; filename=rejeicoes_futuras.xlsx',
+    'Content-Disposition': 'attachment; filename={}.xlsx'.format(filename),
     'Content-type': 'application/vnd.ms-excel'
     }
     return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
