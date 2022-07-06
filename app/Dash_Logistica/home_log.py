@@ -1,10 +1,12 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, send_file,send_from_directory, Response
 from sqlalchemy import true
-from app.Dash_Logistica.kpis_luiz import kpi
+
 from ..controllers.controller_logistica import IntegracaoWms, Transporte
 import pandas as pd
 from datetime import datetime
-from ..Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_ja_atrasados,kpi_pedido_perfeito,kpi_dock_stock_time,kpi_acuracidade_do_sistema, IndicadorPerformance
+import io
+
+from ..Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_ja_atrasados,kpi_pedido_perfeito,kpi_dock_stock_time, IndicadorPerformance, estoque
 
 home = Blueprint('home', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
@@ -241,11 +243,10 @@ def Localizacao_MediaDias():
     media = data.apply(lambda x:x['LOCALIZACAO_MERCADORIA']-x['FASE_LOCALIZACAO_MERCADORIA'],axis=1)
     data.loc[:,'MEDIA'] = media
     media= media.mean()
-    media = str(media)
-    media = media[0:1] + ' dias'
+    #media = str(media)
+    #media = media[0:1]
         
-
-    return media
+    return str(media)[0:1]
 
 #///////////////////////////////// END MICHEL //////////////////////////////////
 
@@ -265,7 +266,7 @@ def media_separacao_sc():
 #################################### Indicadores de Performance do Time De Logística ############################################
 
 dict_performance_time_logistica = dict(
-ind_localizacaoLR = IndicadorPerformance(7,4,5,6) #michel
+ind_localizacaoLR = IndicadorPerformance(7,4,5,7) #nao consigo incluir a função do michel. Valor aidicionado manualmente
 #,ind_tempocicloLR = IndicadorPerformance(25,20,5,23) #Parece que não está no Asana, remover?
 ,ind_pedidoperfeito = IndicadorPerformance(80,90,5,kpi_pedido_perfeito*100)
 ,ind_separacao = IndicadorPerformance(24,18,5,(media_separacao_sc()['valor']+media_separacao_sc()['valor'])) #posso dar o mesmo peso para SP e SC?
@@ -289,13 +290,26 @@ def RelatorioGeral():
     ,'Taxa de Falhas na Separação e Avarias':FALHAS_E_AVARIAS()
     ,'Pedidos Ativos Atrasados':kpi_pedidos_ja_atrasados
     ,'Pedidos Perfeitos':f'{kpi_pedido_perfeito: .0%}'
-    ,'Acuracidade do Sistema':f'{kpi_acuracidade_do_sistema: .1%}'
     ,'Performance do Time de Logística' : f'{kpi_time_logistica: .1f}' 
     ,'Média de Dias para Separação SP' : media_separacao_sp()['texto']
     ,'Média de Dias para Separação SC' : media_separacao_sc()['texto']
     ,'Dock Stock SP' : kpi_dock_stock_time['SP']
     ,'Dock Stock SC' : kpi_dock_stock_time['SC']
-    ,'Localização de Mercadoria - LR' : Localizacao_MediaDias()
+    ,'Produtos com Saldo a Mais' : estoque.count_estoque()['excesso']
+    ,'Produtos com Saldo a Menos' : estoque.count_estoque()['falta']
+    ,'Acuracidade do Sistema' : f'{estoque.indice: .1%}'
+    ,'Localização de Mercadoria - LR' : Localizacao_MediaDias() + ' dias'
     }
     
     return render_template("Relatorio_logistica.html", tabela = tabela, cards = dict_variaveis)
+
+@home.route('/download_rejeicoes',methods=['GET']) # this is a job for GET, not POST
+def download_rejeicoes():
+
+    buffer = io.BytesIO()
+    estoque.rejeicoes_futuras().to_excel(buffer)
+    headers = {
+    'Content-Disposition': 'attachment; filename=rejeicoes_futuras.xlsx',
+    'Content-type': 'application/vnd.ms-excel'
+    }
+    return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)

@@ -21,8 +21,11 @@ pct_entregas_sem_etapa_7 = sem_etapas.calcula_sem_7().loc[True]
 kpi_pedido_perfeito = pedido_perfeito.calcula_indice()
 kpi_pedidos_ja_atrasados = sql_to_pd(sql.query_pedidos_ja_atrasados).iloc[0,0]
 kpi_dock_stock_time = dockstocktime.calcula_indice()
-kpi_acuracidade_do_sistema = estoque.indice
 kpi_leadtime_nacional = leadtime.indice
+kpi_excesso_de_estoque = estoque.count_estoque()['excesso']
+kpi_falta_de_estoque = estoque.count_estoque()['falta']
+kpi_acuracidade_do_sistema = estoque.indice
+estoque.rejeicoes_futuras()
 
 # ##################### Instâncias de Objetos Performance do Time Logística ##########################
 
