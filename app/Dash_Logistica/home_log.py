@@ -1,10 +1,10 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, send_file,send_from_directory, Response
 from sqlalchemy import true
-
-from app.Dash_Logistica.kpis_luiz import kpi
 from ..controllers.controller_logistica import IntegracaoWms, Transporte
 import pandas as pd
 from datetime import datetime
+import io
+
 from ..Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_ja_atrasados,kpi_pedido_perfeito,kpi_dock_stock_time, IndicadorPerformance, estoque
 
 home = Blueprint('home', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
@@ -299,3 +299,14 @@ def RelatorioGeral():
     }
     
     return render_template("Relatorio_logistica.html", tabela = tabela, cards = dict_variaveis)
+
+@home.route('/download_rejeicoes',methods=['GET']) # this is a job for GET, not POST
+def download_rejeicoes():
+
+    buffer = io.BytesIO()
+    estoque.rejeicoes_futuras().to_excel(buffer)
+    headers = {
+    'Content-Disposition': 'attachment; filename=rejeicoes_futuras.xlsx',
+    'Content-type': 'application/vnd.ms-excel'
+    }
+    return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)

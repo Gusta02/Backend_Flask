@@ -177,7 +177,7 @@ class Estoque(KPI):
                         pedidos_rejeicao = pd.concat([pedidos_rejeicao,grupo.loc[index:,['CodigoPedido','SKU','QuantidadePedida']]])
             except:
                 pass
-        return pedidos_rejeicao.to_excel('rejeicoes_futuras.xlsx')
+        return pedidos_rejeicao
 
     def count_estoque(self):
 
@@ -192,8 +192,7 @@ class Estoque(KPI):
         diff = pd.merge(self.df_quantidade_do_sistema, self.df, left_on='CodigoProduto',right_on='Cód. Merc.')
         diff['diferenca'] = diff['QuantidadeAjustada'] - diff['Quantidade']
         diff['situacao'] = diff['diferenca'].apply(lambda x: classify(x))
-        return diff
-        #return diff['situacao'].value_counts()
+        return diff['situacao'].value_counts()
 
     
 
