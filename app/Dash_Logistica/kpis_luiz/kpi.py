@@ -81,7 +81,7 @@ class IndicadorPerformance():
         self.peso = peso
         self.nota7 = nota7
         self.nota10 = nota10
-        self.notaobtida = notaobtida
+        self.notaobtida = int(notaobtida) if type(notaobtida) == str else notaobtida
         self.fatornota7 = abs(nota7-nota10)/math.log(4,10)
 
     def trunca_nota(self,nota):
@@ -148,11 +148,13 @@ class Estoque(KPI):
         df_com_fator['FatorMultiplicador'] = df_com_fator['FatorMultiplicador_x'].fillna(df_com_fator['FatorMultiplicador_y'])
         df_com_fator.drop(columns=['SKU_x','SKU_y','FatorMultiplicador_x','FatorMultiplicador_y'],inplace=True)
         df_com_fator['QuantidadeAjustada'] = df_com_fator['Qt. Disp.']*df_com_fator['FatorMultiplicador']
+        df_com_fator['Cód. Merc.'] = df_com_fator['Cód. Merc.'].apply(lambda x: str(x).strip())
         return df_com_fator
 
     def quantidade_do_sistema(self):
         df_quantidade_do_sistema = sql_to_pd(sql.query_quantidade_do_sistema)
         df_quantidade_do_sistema['Quantidade'] = df_quantidade_do_sistema['Quantidade'].apply(lambda x: x if x>=0 else 0)
+        df_quantidade_do_sistema['CodigoProduto'] = df_quantidade_do_sistema['CodigoProduto'].apply(lambda x: str(x).strip())
         return df_quantidade_do_sistema
 
     #Acuracidade do Sistema
@@ -189,13 +191,13 @@ class Estoque(KPI):
             if x<0:
                 return 'falta'
 
-        diff = pd.merge(self.df_quantidade_do_sistema, self.df, left_on='CodigoProduto',right_on='Cód. Merc.')
+        diff = pd.merge(self.df_quantidade_do_sistema, self.df,how = 'outer',left_on='CodigoProduto',right_on='Cód. Merc.')
+        #return diff
         diff['diferenca'] = diff['QuantidadeAjustada'] - diff['Quantidade']
         diff['situacao'] = diff['diferenca'].apply(lambda x: classify(x))
         return diff['situacao'].value_counts()
 
     
-
 class LeadTime(KPI):
 
     def __init__(self):

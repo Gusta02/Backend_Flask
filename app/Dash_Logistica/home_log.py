@@ -240,11 +240,10 @@ def Localizacao_MediaDias():
     media = data.apply(lambda x:x['LOCALIZACAO_MERCADORIA']-x['FASE_LOCALIZACAO_MERCADORIA'],axis=1)
     data.loc[:,'MEDIA'] = media
     media= media.mean()
-    media = str(media)
-    media = media[0:1] + ' dias'
+    #media = str(media)
+    #media = media[0:1]
         
-
-    return media
+    return str(media)[0:1]
 
 #///////////////////////////////// END MICHEL //////////////////////////////////
 
@@ -263,7 +262,7 @@ def media_separacao_sc():
 #################################### Indicadores de Performance do Time De Logística ############################################
 
 dict_performance_time_logistica = dict(
-ind_localizacaoLR = IndicadorPerformance(7,4,5,6) #michel
+ind_localizacaoLR = IndicadorPerformance(7,4,5,7) #nao consigo incluir a função do michel. Valor aidicionado manualmente
 #,ind_tempocicloLR = IndicadorPerformance(25,20,5,23) #Parece que não está no Asana, remover?
 ,ind_pedidoperfeito = IndicadorPerformance(80,90,5,kpi_pedido_perfeito*100)
 ,ind_separacao = IndicadorPerformance(24,18,5,(media_separacao_sc()['valor']+media_separacao_sc()['valor'])) #posso dar o mesmo peso para SP e SC?
@@ -295,7 +294,7 @@ def RelatorioGeral():
     ,'Produtos com Saldo a Mais' : estoque.count_estoque()['excesso']
     ,'Produtos com Saldo a Menos' : estoque.count_estoque()['falta']
     ,'Acuracidade do Sistema' : f'{estoque.indice: .1%}'
-    ,'Localização de Mercadoria - LR' : Localizacao_MediaDias()
+    ,'Localização de Mercadoria - LR' : Localizacao_MediaDias() + ' dias'
     }
     
     return render_template("Relatorio_logistica.html", tabela = tabela, cards = dict_variaveis)
