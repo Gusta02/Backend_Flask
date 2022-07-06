@@ -241,11 +241,13 @@ def Localizacao_MediaDias():
     media = data.apply(lambda x:x['LOCALIZACAO_MERCADORIA']-x['FASE_LOCALIZACAO_MERCADORIA'],axis=1)
     data.loc[:,'MEDIA'] = media
     media= media.mean()
+    media = str(media)
+    media = media[0:1] + ' dias'
+        
 
     return media
 
 #///////////////////////////////// END MICHEL //////////////////////////////////
-
 
 def media_separacao_sc():
 
@@ -293,6 +295,7 @@ def RelatorioGeral():
     ,'Média de Dias para Separação SC' : media_separacao_sc()['texto']
     ,'Dock Stock SP' : kpi_dock_stock_time['SP']
     ,'Dock Stock SC' : kpi_dock_stock_time['SC']
+    ,'Localização de Mercadoria - LR' : Localizacao_MediaDias()
     }
     
     return render_template("Relatorio_logistica.html", tabela = tabela, cards = dict_variaveis)
