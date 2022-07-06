@@ -146,7 +146,7 @@ class Estoque(KPI):
         df_fator_multiplicador = sql_to_pd(sql.query_fator_multiplicador_show_room)
         df_com_fator = df_com_fator.merge(df_fator_multiplicador.drop_duplicates(subset='SKU'),how='left',left_on='Cód. Merc.',right_on='SKU')
         df_com_fator['FatorMultiplicador'] = df_com_fator['FatorMultiplicador_x'].fillna(df_com_fator['FatorMultiplicador_y'])
-        df_com_fator.drop(columns=['SKU_x','SKU_y','FatorMultiplicador_x','FatorMultiplicador_y'])
+        df_com_fator.drop(columns=['SKU_x','SKU_y','FatorMultiplicador_x','FatorMultiplicador_y'],inplace=True)
         df_com_fator['QuantidadeAjustada'] = df_com_fator['Qt. Disp.']*df_com_fator['FatorMultiplicador']
         return df_com_fator
 
@@ -177,27 +177,25 @@ class Estoque(KPI):
                         pedidos_rejeicao = pd.concat([pedidos_rejeicao,grupo.loc[index:,['CodigoPedido','SKU','QuantidadePedida']]])
             except:
                 pass
-        return pedidos_rejeicao
+        return pedidos_rejeicao.to_excel('rejeicoes_futuras.xlsx')
 
-    def count_excesso(self):
-        diff = self.df_quantidade_do_sistema['Quantidade'] - self.df['QuantidadeAjustada']
-        diff.dropna(inplace=True)
-        #diff = diff.apply(lambda x: 'certo' if x == 0 else x)
-        #diff = diff.iloc[:,0] > 0
-        diff = diff.apply(lambda x: self.classify(x))
-        return diff.value_counts()
+    def count_estoque(self):
 
-    def classify(self,x):
-        if x == 0:
-            return 0
-        if x>0:
-            return 'excesso'
-        if x<0:
-            return 'falta'
+        def classify(x):
+            if x == 0:
+                return 0
+            if x>0:
+                return 'excesso'
+            if x<0:
+                return 'falta'
+
+        diff = pd.merge(self.df_quantidade_do_sistema, self.df, left_on='CodigoProduto',right_on='Cód. Merc.')
+        diff['diferenca'] = diff['QuantidadeAjustada'] - diff['Quantidade']
+        diff['situacao'] = diff['diferenca'].apply(lambda x: classify(x))
+        return diff
+        #return diff['situacao'].value_counts()
 
     
-    def count_falta(self):
-        pass
 
 class LeadTime(KPI):
 

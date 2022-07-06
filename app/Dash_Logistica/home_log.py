@@ -5,7 +5,7 @@ from app.Dash_Logistica.kpis_luiz import kpi
 from ..controllers.controller_logistica import IntegracaoWms, Transporte
 import pandas as pd
 from datetime import datetime
-from ..Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_ja_atrasados,kpi_pedido_perfeito,kpi_dock_stock_time,kpi_acuracidade_do_sistema, IndicadorPerformance
+from ..Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_ja_atrasados,kpi_pedido_perfeito,kpi_dock_stock_time, IndicadorPerformance, estoque
 
 home = Blueprint('home', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
@@ -285,12 +285,14 @@ def RelatorioGeral():
     ,'Taxa de Falhas na Separação e Avarias':FALHAS_E_AVARIAS()
     ,'Pedidos Ativos Atrasados':kpi_pedidos_ja_atrasados
     ,'Pedidos Perfeitos':f'{kpi_pedido_perfeito: .0%}'
-    ,'Acuracidade do Sistema':f'{kpi_acuracidade_do_sistema: .1%}'
     ,'Performance do Time de Logística' : f'{kpi_time_logistica: .1f}' 
     ,'Média de Dias para Separação SP' : media_separacao_sp()['texto']
     ,'Média de Dias para Separação SC' : media_separacao_sc()['texto']
     ,'Dock Stock SP' : kpi_dock_stock_time['SP']
     ,'Dock Stock SC' : kpi_dock_stock_time['SC']
+    ,'Produtos com Saldo a Mais' : estoque.count_estoque()['excesso']
+    ,'Produtos com Saldo a Menos' : estoque.count_estoque()['falta']
+    ,'Acuracidade do Sistema' : f'{estoque.indice: .1%}'
     }
     
     return render_template("Relatorio_logistica.html", tabela = tabela, cards = dict_variaveis)
