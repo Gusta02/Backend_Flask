@@ -67,6 +67,7 @@ class PedidoPerfeito(KPI):
         self.nome = 'pedido_perfeito'
 
     def calcula_indice(self):
+        # df_pipefy = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/pedidos_pipefy.xlsx',usecols=['Numero do pedido'], engine='openpyxl')
         df_pipefy = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/pedidos_pipefy.xlsx',usecols=['Numero do pedido'])
         total_de_pedidos = sql_to_pd(sql.query_total_de_pedidos).iloc[0,0]
         df_pedidos_sem_pipefy = pd.merge(self.df, df_pipefy, left_on=['CodigoPedido'], right_on=['Numero do pedido'], how="outer", indicator=True).query('_merge=="left_only"')
@@ -115,7 +116,9 @@ class DockStockTime(KPI):
 
     def __init__(self):
         self.df = None
+        # self.df1 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WEQ - Documentos Entrada - Periodo - Global - cliente 1.xlsx',usecols=['Dt. Inclusão', 'Dt. Fechamento','DockStockTime','DockStockTimeAjustado'], engine='openpyxl')
         self.df1 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WEQ - Documentos Entrada - Periodo - Global - cliente 1.xlsx',usecols=['Dt. Inclusão', 'Dt. Fechamento','DockStockTime','DockStockTimeAjustado'])
+        # self.df2 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WEQ - Documentos Entrada - Periodo - Global - cliente 2.xlsx',usecols=['Dt. Inclusão', 'Dt. Fechamento','DockStockTime'], engine='openpyxl')
         self.df2 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WEQ - Documentos Entrada - Periodo - Global - cliente 2.xlsx',usecols=['Dt. Inclusão', 'Dt. Fechamento','DockStockTime'])
         self.nome = "DockStockTime"
         self.indice = self.calcula_indice()
@@ -138,7 +141,9 @@ class Estoque(KPI):
         self.indice = self.calcula_indice()
 
     def multiplica_fator(self):
+        # df1 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WQ4 - Estoque Mercadorias Cliente WMS - cliente 1.xlsx',usecols=['Cód. Merc.','Qt. Disp.'], engine='openpyxl')
         df1 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WQ4 - Estoque Mercadorias Cliente WMS - cliente 1.xlsx',usecols=['Cód. Merc.','Qt. Disp.'])
+        # df2 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WQ4 - Estoque Mercadorias Cliente WMS - cliente 2.xlsx',usecols=['Cód. Merc.','Qt. Disp.'], engine='openpyxl')
         df2 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WQ4 - Estoque Mercadorias Cliente WMS - cliente 2.xlsx',usecols=['Cód. Merc.','Qt. Disp.'])
         df_concat = pd.concat([df1,df2])
         df_fator_multiplicador = sql_to_pd(sql.query_fator_multiplicador_prod)
