@@ -240,11 +240,13 @@ def Localizacao_MediaDias():
     media = data.apply(lambda x:x['LOCALIZACAO_MERCADORIA']-x['FASE_LOCALIZACAO_MERCADORIA'],axis=1)
     data.loc[:,'MEDIA'] = media
     media= media.mean()
+    media = str(media)
+    media = media[0:1] + ' dias'
+        
 
     return media
 
 #///////////////////////////////// END MICHEL //////////////////////////////////
-
 
 def media_separacao_sc():
 
@@ -293,6 +295,7 @@ def RelatorioGeral():
     ,'Produtos com Saldo a Mais' : estoque.count_estoque()['excesso']
     ,'Produtos com Saldo a Menos' : estoque.count_estoque()['falta']
     ,'Acuracidade do Sistema' : f'{estoque.indice: .1%}'
+    ,'Localização de Mercadoria - LR' : Localizacao_MediaDias()
     }
     
     return render_template("Relatorio_logistica.html", tabela = tabela, cards = dict_variaveis)
