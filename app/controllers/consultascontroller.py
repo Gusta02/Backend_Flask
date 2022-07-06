@@ -1,4 +1,4 @@
-from asyncio import exceptions
+import asyncio
 from config import get_connection
 from sqlalchemy import text
 
@@ -40,7 +40,7 @@ def retorna_produtos_estoques(skus):
 
                             
                                 lista_dicts.append(dict_items)
-                except exceptions as e:
+                except   asyncio.exceptions as e:
 
                     print("no retorno dos dicts errorr")
 

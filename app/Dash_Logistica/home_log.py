@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request
 from sqlalchemy import true
-
 from app.Dash_Logistica.kpis_luiz import kpi
 from ..controllers.controller_logistica import IntegracaoWms, Transporte
 import pandas as pd
@@ -10,6 +9,7 @@ from ..Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_j
 home = Blueprint('home', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
 #PLANILHA PIPE EXCEL - ATUALIZAR UMA VEZ POR SEMANA
+# data = pd.read_excel('app/Dash_Logistica/planilha/relatorio_kpi3006.xlsx', engine='openpyxl')
 data = pd.read_excel('app/Dash_Logistica/planilha/relatorio_kpi3006.xlsx')
 
 def leadtime():
@@ -217,6 +217,7 @@ def FALHAS_E_AVARIAS():
 
 def media_separacao_sp():
 
+    # Sp = pd.read_excel('app/Dash_Logistica/planilha/Producao_SaoPaulo.xlsx', engine='openpyxl')
     Sp = pd.read_excel('app/Dash_Logistica/planilha/Producao_SaoPaulo.xlsx')
     Sp = (Sp['Dt_Conf_Sep'] - Sp['Dt_Inclusao'])
     Sp = Sp.mean()
@@ -248,6 +249,7 @@ def Localizacao_MediaDias():
 
 def media_separacao_sc():
 
+    # Sc = pd.read_excel('app/Dash_Logistica/planilha/Producao_SantaCatarina.xlsx', engine='openpyxl')
     Sc = pd.read_excel('app/Dash_Logistica/planilha/Producao_SantaCatarina.xlsx')
     Sc = (Sc['Dt_Conf_Sep'] - Sc['Dt_Inclusao'])
     Sc = Sc.mean()
