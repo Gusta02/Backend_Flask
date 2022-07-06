@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request
 from ..controllers.controller_logistica import IntegracaoWms
 import pandas as pd
 from datetime import datetime
+import openpyxl
 
 
 wms = Blueprint('wms', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
@@ -69,18 +70,22 @@ def categoriza_status():
 
 def read_excel(tabela):
 
+        # planilhas = pd.read_excel(f'app/Dash_Logistica/planilha/{tabela}.xlsx',skiprows=[0,1,2,3,4,5], engine='openpyxl')
+        
         planilhas = pd.read_excel(f'app/Dash_Logistica/planilha/{tabela}.xlsx',skiprows=[0,1,2,3,4,5])
 
         return planilhas
  
 #Unifica tabelas wms, renomeia colunas e concatena
 def uni_tabela_wms():
+        # dfwxd1 = read_excel('WXDpart1', engine='openpyxl')
         dfwxd1 = read_excel('WXDpart1')
         dfwxd1['UNIDADE_CD'] = 'Hausz-SP'
         dfwxd1[['Dt. Inclusão','Dt. Mov.','Dt. Reserva','Dt. Conf. Sep.'
         ,'Dt. Embarque','No. D.P.','No. Cli.','Obs. Resumida','No. Ped. Cli.'
         ,'No. N.F.','Sit. Fase','Transp. (Ped.)','Destinatário','Doca','Vols.', 'UNIDADE_CD']]
         
+        # dfwxd2 = read_excel('WXDpart2', engine='openpyxl')
         dfwxd2 = read_excel('WXDpart2')
         dfwxd2['UNIDADE_CD'] = 'Hausz-SC'
         dfwxd2[['Dt. Inclusão','Dt. Mov.','Dt. Reserva','Dt. Conf. Sep.'
@@ -102,6 +107,7 @@ def uni_tabela_wms():
                 ,'DATA_NOTA_FISCAL','DATA_EMBARQUE']] = unificalocwms.loc[:,['DATA_INCLUSAO_PEDIDO','DATA_MOVIMENTO','DATA_RESERVA'
                 ,'DATA_CONFERENCIA_SEPARACAO','DATA_NOTA_FISCAL','DATA_EMBARQUE']].apply(pd.to_datetime, errors='coerce',dayfirst=True)
 
+        # dfwms1 = read_excel('WD6part1', engine='openpyxl')
         dfwms1 = read_excel('WD6part1')
         dfwms1['UNIDADE_CD'] = 'Hausz-SP'
         dfwms1[['Dt. Mov.', 'No. D.P.', 'Situação', 'M', 'Observação Resumida',
@@ -109,6 +115,7 @@ def uni_tabela_wms():
         'Vols.', 'Rep.', 'No. Emb.', 'Razão Social Transp.', 'SKU', 'Qt. Total',
         'T.I.', 'T.I. Pend.']]
 
+        # dfwms2 = read_excel('WD6part2', engine='openpyxl')
         dfwms2 = read_excel('WD6part2')
         dfwms2['UNIDADE_CD'] = 'Hausz-SC'
         dfwms2[['Dt. Mov.', 'No. D.P.', 'Situação', 'M', 'Observação Resumida',
@@ -123,8 +130,10 @@ def uni_tabela_wms():
         unifica_pedidos_wms['REFERENCIA_PEDIDOHAUSZ'].fillna('valornaoencontrado', inplace=True)
         unifica_pedidos_wms['Situação'].fillna('valornaoencontrado', inplace=True)
 
+        # dfwpj1 = read_excel('WPJpart1', engine='openpyxl')
         dfwpj1 = read_excel('WPJpart1')
         dfwpj1['UNIDADE_CD'] = 'Hausz-SP'
+        # dfwpj2 = read_excel('WPJpart2', engine='openpyxl')
         dfwpj2 = read_excel('WPJpart2')
         dfwpj2['UNIDADE_CD'] = 'Hausz-SC'
 

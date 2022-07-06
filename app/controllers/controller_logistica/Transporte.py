@@ -1,4 +1,4 @@
-from asyncio import exceptions
+import asyncio
 from config import get_connection
 from sqlalchemy import text
 from datetime import date,datetime
