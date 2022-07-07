@@ -14,7 +14,7 @@ home = Blueprint('home', __name__ , template_folder='templates', static_folder='
 
 #PLANILHA PIPE EXCEL - ATUALIZAR UMA VEZ POR SEMANA
 # data = pd.read_excel('app/Dash_Logistica/planilha/relatorio_kpi3006.xlsx', engine='openpyxl')
-data = pd.read_excel('app/Dash_Logistica/planilha/relatorio_kpi3006.xlsx')
+data = pd.read_excel('app/Dash_Logistica/planilha/relatorio_kpi0707.xlsx')
 
 def leadtime():
     tabela = IntegracaoWms.leadtime_log()
@@ -199,38 +199,25 @@ def NotaItemfaltante():
     return faltandoitem
 
 # CARD taxa falha separacao X entregue, PERCENTUAL DE FALHA SEPARAÇÃO / ENTREGUE 
-# def FalhaSeparacao():
-#     soma =  QuantidadeErrada() + EntregueErrado() + NotaItemfaltante()  #somando todos os motivos de faLhas da logistica Reversa
-#     entregue = TotalEntregue()
+def FalhaSeparacao():
+    soma =  QuantidadeErrada() + EntregueErrado() + NotaItemfaltante()  #somando todos os motivos de faLhas da logistica Reversa
+    entregue = TotalEntregue()
 
-#     taxa = soma / entregue
-#     taxa = "{:.2%}".format(taxa)
+    taxa = soma / entregue
+    taxa = "{:.2%}".format(taxa)
     
-#     return taxa
+    return taxa
 
 #///////////////////////// PERCENTUAL DE TODAS AS FALHAS DE ENTREGA E AVARIAS DO SISTEMA ////////////////////////// 
-# def FALHAS_E_AVARIAS():
-#      # ///////////////////////// CARD Taxa de Avaria + falha separação / entregue     ///////////////////////////////
-#     somatoria = QuantidadeErrada() + EntregueErrado() + NotaItemfaltante() + TotalAvaria()
-#     entregue =  TotalEntregue()
+def FALHAS_E_AVARIAS():
+     # ///////////////////////// CARD Taxa de Avaria + falha separação / entregue     ///////////////////////////////
+    somatoria = QuantidadeErrada() + EntregueErrado() + NotaItemfaltante() + TotalAvaria()
+    entregue =  TotalEntregue()
 
-#     taxa_fseparacao_avaria = somatoria / entregue
-#     taxa_fseparacao_avaria = "{:.2%}".format(taxa_fseparacao_avaria)
+    taxa_fseparacao_avaria = somatoria / entregue
+    taxa_fseparacao_avaria = "{:.2%}".format(taxa_fseparacao_avaria)
 
-#     return taxa_fseparacao_avaria
-
-def media_separacao_sp():
-
-    # Sp = pd.read_excel('app/Dash_Logistica/planilha/Producao_SaoPaulo.xlsx', engine='openpyxl')
-    Sp = pd.read_excel('app/Dash_Logistica/planilha/Producao_SaoPaulo.xlsx')
-    Sp = (Sp['Dt_Conf_Sep'] - Sp['Dt_Inclusao'])
-    Sp = Sp.mean()
-    Sp = str(Sp)
-    horas = Sp[7:9]
-    minutos = Sp[10:12]
-    SP = horas + 'h' + minutos + 'm'
-    valor = int(horas) + int(minutos)/60
-    return {'texto':SP,'valor':valor}
+    return taxa_fseparacao_avaria
 
 #localização mercadoria
 # def Localizacao_MediaDias():
@@ -251,6 +238,19 @@ def media_separacao_sp():
 #     return str(media)[0:1]
 
 #///////////////////////////////// END MICHEL //////////////////////////////////
+
+def media_separacao_sp():
+
+    # Sp = pd.read_excel('app/Dash_Logistica/planilha/Producao_SaoPaulo.xlsx', engine='openpyxl')
+    Sp = pd.read_excel('app/Dash_Logistica/planilha/Producao_SaoPaulo.xlsx')
+    Sp = (Sp['Dt_Conf_Sep'] - Sp['Dt_Inclusao'])
+    Sp = Sp.mean()
+    Sp = str(Sp)
+    horas = Sp[7:9]
+    minutos = Sp[10:12]
+    SP = horas + 'h' + minutos + 'm'
+    valor = int(horas) + int(minutos)/60
+    return {'texto':SP,'valor':valor}
 
 def media_separacao_sc():
 
@@ -293,8 +293,8 @@ def RelatorioGeral():
     ,'Percentual de Entregas Atrasadas': f'{1-kpi_entregues_no_prazo: .0%}'
     ,'Percentual de Coletas no Prazo': percentual_coleta_Prazo()
     ,'Percentual de Coletas Fora do Prazo': percentual_coleta_fora_prazo()
-    #,'Taxa de Falhas na Separação': FalhaSeparacao()
-    # ,'Taxa de Falhas na Separação e Avarias':FALHAS_E_AVARIAS()
+    ,'Taxa de Falhas na Separação': FalhaSeparacao()
+    ,'Taxa de Falhas na Separação e Avarias':FALHAS_E_AVARIAS()
     ,'Pedidos Ativos Atrasados':kpi_pedidos_ja_atrasados
     ,'Pedidos Perfeitos':f'{kpi_pedido_perfeito: .0%}'
     ,'Performance do Time de Logística' : f'{kpi_time_logistica: .1f}' 
