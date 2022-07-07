@@ -271,7 +271,7 @@ dict_performance_time_logistica = dict(         #função adicionada 07/07
 ind_localizacaoLR = IndicadorPerformance(7,4,5,Localizacao_MediaDias()) #nao consigo incluir a função do michel. Valor aidicionado manualmente
 #,ind_tempocicloLR = IndicadorPerformance(25,20,5,23) #Parece que não está no Asana, remover?
 ,ind_pedidoperfeito = IndicadorPerformance(80,90,5,kpi_pedido_perfeito*100)
-,ind_separacao = IndicadorPerformance(24,18,5,(media_separacao_sc()['valor']+media_separacao_sc()['valor'])) #posso dar o mesmo peso para SP e SC?
+,ind_separacao = IndicadorPerformance(24,18,5,(media_separacao_sc()['valor']+media_separacao_sc()['valor'])/2) #posso dar o mesmo peso para SP e SC?
 ,ind_dockstocktime = IndicadorPerformance(3,1.5,4,kpi_dock_stock_time['Media'])
 )
 
@@ -303,7 +303,7 @@ def RelatorioGeral():
     ,'Dock Stock SP' : kpi_dock_stock_time['SP']
     ,'Dock Stock SC' : kpi_dock_stock_time['SC']
     ,'Acuracidade do Sistema' : f'{estoque.indice: .1%}'
-    ,'Localização de Mercadoria - LR' : Localizacao_MediaDias()
+    ,'Localização de Mercadoria - LR' : str(Localizacao_MediaDias()) + ' dias'
     }
     
     return render_template("Relatorio_logistica.html", tabela = tabela, rejeicoes_futuras = rejeicoes_futuras, produtos_ausentes_sistema = produtos_ausentes_sistema, produtos_ausentes_wms = produtos_ausentes_wms, produtos_excesso = produtos_excesso, produtos_falta = produtos_falta,cards = dict_variaveis)
