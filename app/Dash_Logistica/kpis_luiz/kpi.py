@@ -67,14 +67,12 @@ class PedidoPerfeito(KPI):
         self.nome = 'pedido_perfeito'
 
     def calcula_indice(self):
-        # df_pipefy = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/pedidos_pipefy.xlsx',usecols=['Numero do pedido'], engine='openpyxl')
-        df_pipefy = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/pedidos_pipefy.xlsx',usecols=['Numero do pedido'])
+        df_pipefy = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/pedidos_pipefy.xlsx',usecols=['Numero do pedido'], engine='openpyxl')
         total_de_pedidos = sql_to_pd(sql.query_total_de_pedidos).iloc[0,0]
         df_pedidos_sem_pipefy = pd.merge(self.df, df_pipefy, left_on=['CodigoPedido'], right_on=['Numero do pedido'], how="outer", indicator=True).query('_merge=="left_only"')
         pedidos_perfeitos = df_pedidos_sem_pipefy.shape[0]
         return round(pedidos_perfeitos/total_de_pedidos,2)
 
-#,tempoLR,pedidoperfeito,separacao,dockstock
 
 class IndicadorPerformance():
 
@@ -116,14 +114,12 @@ class DockStockTime(KPI):
 
     def __init__(self):
         self.df = None
-        # self.df1 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WEQ - Documentos Entrada - Periodo - Global - cliente 1.xlsx',usecols=['Dt. Inclusão', 'Dt. Fechamento','DockStockTime','DockStockTimeAjustado'], engine='openpyxl')
-        self.df1 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WEQ - Documentos Entrada - Periodo - Global - cliente 1.xlsx',usecols=['Dt. Inclusão', 'Dt. Fechamento','DockStockTime','DockStockTimeAjustado'])
-        # self.df2 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WEQ - Documentos Entrada - Periodo - Global - cliente 2.xlsx',usecols=['Dt. Inclusão', 'Dt. Fechamento','DockStockTime'], engine='openpyxl')
-        self.df2 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WEQ - Documentos Entrada - Periodo - Global - cliente 2.xlsx',usecols=['Dt. Inclusão', 'Dt. Fechamento','DockStockTime'])
+        self.df1 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WEQ - Documentos Entrada - Periodo - Global - cliente 1.xlsx',usecols=['Dt. Inclusão', 'Dt. Fechamento','DockStockTime','DockStockTimeAjustado'], engine='openpyxl')
+        self.df2 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WEQ - Documentos Entrada - Periodo - Global - cliente 2.xlsx',usecols=['Dt. Inclusão', 'Dt. Fechamento','DockStockTime'], engine='openpyxl')
         self.nome = "DockStockTime"
         self.indice = self.calcula_indice()
-
-    
+        
+        
     def calcula_indice(self):
         dockmediocliente1 = str(self.df1['DockStockTimeAjustado'].iloc[-1])[:5]
         dockmediocliente2 = str(self.df2['DockStockTime'].iloc[-1])[:5]
@@ -134,45 +130,66 @@ class DockStockTime(KPI):
 
 class Estoque(KPI):
 
-    def __init__(self):
-        self.df = self.multiplica_fator()
-        self.nome = 'estoque'
-        self.df_quantidade_do_sistema = self.quantidade_do_sistema()
-        self.indice = self.calcula_indice()
 
+    def __init__(self):
+        self.df,self.df_produtos_nao_encontrados_sistema = self.multiplica_fator()
+        self.df_quantidade_do_sistema = self.quantidade_do_sistema()
+        self.nome = 'estoque'
+        self.indice = self.calcula_indice()
+        self.df_rejeicoes_futuras = self.rejeicoes_futuras()
+        self.df_produtos_nao_encontrados_wms = self.find_produtos_nao_econtrados_wms()
+        self.df_produtos_excesso_wms, self.df_produtos_falta_wms = self.count_estoque()
+
+        
     def multiplica_fator(self):
-        # df1 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WQ4 - Estoque Mercadorias Cliente WMS - cliente 1.xlsx',usecols=['Cód. Merc.','Qt. Disp.'], engine='openpyxl')
-        df1 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WQ4 - Estoque Mercadorias Cliente WMS - cliente 1.xlsx',usecols=['Cód. Merc.','Qt. Disp.'])
-        # df2 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WQ4 - Estoque Mercadorias Cliente WMS - cliente 2.xlsx',usecols=['Cód. Merc.','Qt. Disp.'], engine='openpyxl')
-        df2 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WQ4 - Estoque Mercadorias Cliente WMS - cliente 2.xlsx',usecols=['Cód. Merc.','Qt. Disp.'])
+        df1 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WQ4 - Estoque Mercadorias Cliente WMS - cliente 1.xlsx',usecols=['Cód. Merc.','Qt. Disp.'], engine='openpyxl')
+        df2 = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/WQ4 - Estoque Mercadorias Cliente WMS - cliente 2.xlsx',usecols=['Cód. Merc.','Qt. Disp.'], engine='openpyxl')
         df_concat = pd.concat([df1,df2])
+        df_concat['Cód. Merc.'] = df_concat['Cód. Merc.'].apply(lambda x: str(x).strip().upper())
         df_fator_multiplicador = sql_to_pd(sql.query_fator_multiplicador_prod)
-        df_com_fator = pd.merge(df_concat,df_fator_multiplicador.drop_duplicates(subset='SKU'),how='left',left_on='Cód. Merc.',right_on='SKU')
+        df_fator_multiplicador['SKU'] = df_fator_multiplicador['SKU'].apply(lambda x: str(x).strip().upper())
+        df_com_fator = pd.merge(df_concat,df_fator_multiplicador,how='left',left_on='Cód. Merc.',right_on='SKU')
         df_fator_multiplicador = sql_to_pd(sql.query_fator_multiplicador_show_room)
-        df_com_fator = df_com_fator.merge(df_fator_multiplicador.drop_duplicates(subset='SKU'),how='left',left_on='Cód. Merc.',right_on='SKU')
+        df_fator_multiplicador['SKU'] = df_fator_multiplicador['SKU'].apply(lambda x: str(x).strip().upper())
+        df_com_fator = df_com_fator.merge(df_fator_multiplicador,how='left',left_on='Cód. Merc.',right_on='SKU')
         df_com_fator['FatorMultiplicador'] = df_com_fator['FatorMultiplicador_x'].fillna(df_com_fator['FatorMultiplicador_y'])
+        df_produtos_nao_encontrados_sistema = df_com_fator[df_com_fator['FatorMultiplicador'].isna()]
+        df_produtos_nao_encontrados_sistema = df_produtos_nao_encontrados_sistema.drop(columns=['SKU_x','SKU_y','FatorMultiplicador_x','FatorMultiplicador_y','FatorMultiplicador'])
+        df_com_fator['FatorMultiplicador'] = df_com_fator['FatorMultiplicador'].fillna(1)
         df_com_fator.drop(columns=['SKU_x','SKU_y','FatorMultiplicador_x','FatorMultiplicador_y'],inplace=True)
         df_com_fator['QuantidadeAjustada'] = df_com_fator['Qt. Disp.']*df_com_fator['FatorMultiplicador']
-        df_com_fator['Cód. Merc.'] = df_com_fator['Cód. Merc.'].apply(lambda x: str(x).strip())
-        return df_com_fator
+        return (df_com_fator,df_produtos_nao_encontrados_sistema)
+
 
     def quantidade_do_sistema(self):
         df_quantidade_do_sistema = sql_to_pd(sql.query_quantidade_do_sistema)
+        df_quantidade_do_sistema = df_quantidade_do_sistema.drop(columns=['IdProduto','IdEstoque'])
+        df_quantidade_do_sistema.dropna(inplace=True)
         df_quantidade_do_sistema['Quantidade'] = df_quantidade_do_sistema['Quantidade'].apply(lambda x: x if x>=0 else 0)
-        df_quantidade_do_sistema['CodigoProduto'] = df_quantidade_do_sistema['CodigoProduto'].apply(lambda x: str(x).strip())
-        return df_quantidade_do_sistema
+        df_quantidade_do_sistema['CodigoProduto'] = df_quantidade_do_sistema['CodigoProduto'].apply(lambda x: str(x).strip().upper())
+        df_quantidade_do_sistema = df_quantidade_do_sistema.groupby('CodigoProduto').agg('sum')
+        return df_quantidade_do_sistema.reset_index()
+
+
+    def find_produtos_nao_econtrados_wms(self):
+        df_produtos_com_estoque = self.df_quantidade_do_sistema[self.df_quantidade_do_sistema['Quantidade'] > 0]
+        df_merge = self.df.merge(df_produtos_com_estoque,how='right',left_on='Cód. Merc.',right_on='CodigoProduto')
+        df_merge = df_merge[df_merge['Cód. Merc.'].isna()]
+        df_merge = df_merge.drop(columns=['Cód. Merc.','Qt. Disp.','FatorMultiplicador','QuantidadeAjustada'])
+        return df_merge
+
 
     #Acuracidade do Sistema
     def calcula_indice(self):
-        soma_wms = self.multiplica_fator()['QuantidadeAjustada'].sum()
+        soma_wms = self.df['QuantidadeAjustada'].sum()
         soma_sistema = self.df_quantidade_do_sistema['Quantidade'].sum()
         return soma_wms/soma_sistema
 
-    #Rejeicoes Futuras
+
     def rejeicoes_futuras(self):
         df_produtos_por_pedido = sql_to_pd(sql.query_produtos_por_pedido)
         grupos_SKU = df_produtos_por_pedido.groupby('SKU')
-        pedidos_rejeicao = pd.DataFrame(columns=['CodigoPedido','SKU'])
+        pedidos_rejeicao = pd.DataFrame(columns=['CodigoPedido','SKU','QuantidadePedida'])
         for k in grupos_SKU.groups.keys():
             try:
                 pos = pd.Index(self.df['Cód. Merc.']).get_loc(k)
@@ -182,9 +199,11 @@ class Estoque(KPI):
                     qt_estoque -= row['QuantidadePedida']
                     if qt_estoque < 0:
                         pedidos_rejeicao = pd.concat([pedidos_rejeicao,grupo.loc[index:,['CodigoPedido','SKU','QuantidadePedida']]])
+                        break
             except:
                 pass
         return pedidos_rejeicao
+
 
     def count_estoque(self):
 
@@ -200,7 +219,15 @@ class Estoque(KPI):
         #return diff
         diff['diferenca'] = diff['QuantidadeAjustada'] - diff['Quantidade']
         diff['situacao'] = diff['diferenca'].apply(lambda x: classify(x))
-        return diff['situacao'].value_counts()
+        df_excesso = diff.query('situacao == "excesso"')
+        df_excesso = df_excesso.drop(columns=['Cód. Merc.','FatorMultiplicador','Qt. Disp.','diferenca','situacao'])
+        df_excesso.rename(columns={'Quantidade': 'Quantidade Sistema', 'QuantidadeAjustada':'Quantidade WMS'})
+        df_excesso.reset_index(inplace=True)
+        df_falta = diff.query('situacao == "falta"')
+        df_falta = df_falta.drop(columns=['Cód. Merc.','FatorMultiplicador','Qt. Disp.','diferenca','situacao'])
+        df_falta.rename(columns={'Quantidade': 'Quantidade Sistema', 'QuantidadeAjustada':'Quantidade WMS'})
+        df_falta.reset_index(inplace=True)
+        return df_excesso,df_falta
 
     
 class LeadTime(KPI):

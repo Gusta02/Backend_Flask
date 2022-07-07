@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, request, send_file,send_from_directory, Response
 from sqlalchemy import true
 
+from app.Dash_Logistica.kpis_luiz.kpi import Estoque
+
 from ..controllers.controller_logistica import IntegracaoWms, Transporte
 import pandas as pd
 from datetime import datetime
@@ -197,25 +199,25 @@ def NotaItemfaltante():
     return faltandoitem
 
 # CARD taxa falha separacao X entregue, PERCENTUAL DE FALHA SEPARAÇÃO / ENTREGUE 
-def FalhaSeparacao():
-    soma =  QuantidadeErrada() + EntregueErrado() + NotaItemfaltante()  #somando todos os motivos de faLhas da logistica Reversa
-    entregue = TotalEntregue()
+# def FalhaSeparacao():
+#     soma =  QuantidadeErrada() + EntregueErrado() + NotaItemfaltante()  #somando todos os motivos de faLhas da logistica Reversa
+#     entregue = TotalEntregue()
 
-    taxa = soma / entregue
-    taxa = "{:.2%}".format(taxa)
+#     taxa = soma / entregue
+#     taxa = "{:.2%}".format(taxa)
     
-    return taxa
+#     return taxa
 
 #///////////////////////// PERCENTUAL DE TODAS AS FALHAS DE ENTREGA E AVARIAS DO SISTEMA ////////////////////////// 
-def FALHAS_E_AVARIAS():
-     # ///////////////////////// CARD Taxa de Avaria + falha separação / entregue     ///////////////////////////////
-    somatoria = QuantidadeErrada() + EntregueErrado() + NotaItemfaltante() + TotalAvaria()
-    entregue =  TotalEntregue()
+# def FALHAS_E_AVARIAS():
+#      # ///////////////////////// CARD Taxa de Avaria + falha separação / entregue     ///////////////////////////////
+#     somatoria = QuantidadeErrada() + EntregueErrado() + NotaItemfaltante() + TotalAvaria()
+#     entregue =  TotalEntregue()
 
-    taxa_fseparacao_avaria = somatoria / entregue
-    taxa_fseparacao_avaria = "{:.2%}".format(taxa_fseparacao_avaria)
+#     taxa_fseparacao_avaria = somatoria / entregue
+#     taxa_fseparacao_avaria = "{:.2%}".format(taxa_fseparacao_avaria)
 
-    return taxa_fseparacao_avaria
+#     return taxa_fseparacao_avaria
 
 def media_separacao_sp():
 
@@ -231,22 +233,22 @@ def media_separacao_sp():
     return {'texto':SP,'valor':valor}
 
 #localização mercadoria
-def Localizacao_MediaDias():
-    data.columns = ['CODIGO', 'FASE_ATUAL', 'CRIADOR', 'PV_CRIADO','NUMERO_PV','NUMERO_NF','MOTIVO_SOLICITACAO'
-    ,'OBSERVACOES_SOLICITACAO','FASE_INICIAL'
-    ,'FASE_GESTAO','FASE_CLIENTE','FASE_IMPLANTACAO_REPOSICAO','FASE_SHOW_ROOM'
-    ,'PEDIDOS_REPROVADOS','FASE_AJUSTE_FISCAL','FASE_LOCALIZACAO_MERCADORIA','ROTEIRIZACAO_PV_LOCALIZADO'
-    ,'SOLICITACAO_COLETA'
-    ,'COLETA_APROVADA','COLETA_REPROVADA','SOLICITACAO_REEMBOLSO','ENVIO_EMAIL','CONCLUIDO','SEM_REPOSICAO'
-    ,'LOCALIZACAO_MERCADORIA']
+# def Localizacao_MediaDias():
+#     data.columns = ['CODIGO', 'FASE_ATUAL', 'CRIADOR', 'PV_CRIADO','NUMERO_PV','NUMERO_NF','MOTIVO_SOLICITACAO'
+#     ,'OBSERVACOES_SOLICITACAO','FASE_INICIAL'
+#     ,'FASE_GESTAO','FASE_CLIENTE','FASE_IMPLANTACAO_REPOSICAO','FASE_SHOW_ROOM'
+#     ,'PEDIDOS_REPROVADOS','FASE_AJUSTE_FISCAL','FASE_LOCALIZACAO_MERCADORIA','ROTEIRIZACAO_PV_LOCALIZADO'
+#     ,'SOLICITACAO_COLETA'
+#     ,'COLETA_APROVADA','COLETA_REPROVADA','SOLICITACAO_REEMBOLSO','ENVIO_EMAIL','CONCLUIDO','SEM_REPOSICAO'
+#     ,'LOCALIZACAO_MERCADORIA']
 
-    media = data.apply(lambda x:x['LOCALIZACAO_MERCADORIA']-x['FASE_LOCALIZACAO_MERCADORIA'],axis=1)
-    data.loc[:,'MEDIA'] = media
-    media= media.mean()
-    #media = str(media)
-    #media = media[0:1]
+#     media = data.apply(lambda x:x['LOCALIZACAO_MERCADORIA']-x['FASE_LOCALIZACAO_MERCADORIA'],axis=1)
+#     data.loc[:,'MEDIA'] = media
+#     media= media.mean()
+#     #media = str(media)
+#     #media = media[0:1]
         
-    return str(media)[0:1]
+#     return str(media)[0:1]
 
 #///////////////////////////////// END MICHEL //////////////////////////////////
 
@@ -280,14 +282,19 @@ def RelatorioGeral():
 
     tabela = leadtime()
     tabela = tabela.to_dict('records')
+    rejeicoes_futuras = estoque.rejeicoes_futuras().shape[0]
+    produtos_ausentes_sistema = estoque.df_produtos_nao_encontrados_sistema.shape[0]
+    produtos_ausentes_wms = estoque.df_produtos_nao_encontrados_wms.shape[0]
+    produtos_excesso = estoque.df_produtos_excesso_wms.shape[0]
+    produtos_falta = estoque.df_produtos_falta_wms.shape[0]
 
     dict_variaveis = {
     'Percentual Entregue no Prazo':f'{kpi_entregues_no_prazo: .0%}'
     ,'Percentual de Entregas Atrasadas': f'{1-kpi_entregues_no_prazo: .0%}'
     ,'Percentual de Coletas no Prazo': percentual_coleta_Prazo()
     ,'Percentual de Coletas Fora do Prazo': percentual_coleta_fora_prazo()
-    ,'Taxa de Falhas na Separação': FalhaSeparacao()
-    ,'Taxa de Falhas na Separação e Avarias':FALHAS_E_AVARIAS()
+    #,'Taxa de Falhas na Separação': FalhaSeparacao()
+    # ,'Taxa de Falhas na Separação e Avarias':FALHAS_E_AVARIAS()
     ,'Pedidos Ativos Atrasados':kpi_pedidos_ja_atrasados
     ,'Pedidos Perfeitos':f'{kpi_pedido_perfeito: .0%}'
     ,'Performance do Time de Logística' : f'{kpi_time_logistica: .1f}' 
@@ -295,21 +302,21 @@ def RelatorioGeral():
     ,'Média de Dias para Separação SC' : media_separacao_sc()['texto']
     ,'Dock Stock SP' : kpi_dock_stock_time['SP']
     ,'Dock Stock SC' : kpi_dock_stock_time['SC']
-    ,'Produtos com Saldo a Mais' : estoque.count_estoque()['excesso']
-    ,'Produtos com Saldo a Menos' : estoque.count_estoque()['falta']
     ,'Acuracidade do Sistema' : f'{estoque.indice: .1%}'
-    ,'Localização de Mercadoria - LR' : Localizacao_MediaDias() + ' dias'
+    # ,'Localização de Mercadoria - LR' : Localizacao_MediaDias() + ' dias'
     }
     
-    return render_template("Relatorio_logistica.html", tabela = tabela, cards = dict_variaveis)
+    return render_template("Relatorio_logistica.html", tabela = tabela, rejeicoes_futuras = rejeicoes_futuras, produtos_ausentes_sistema = produtos_ausentes_sistema, produtos_ausentes_wms = produtos_ausentes_wms, produtos_excesso = produtos_excesso, produtos_falta = produtos_falta,cards = dict_variaveis)
 
-@home.route('/download_rejeicoes',methods=['GET']) # this is a job for GET, not POST
-def download_rejeicoes():
+@home.route('/download/<df>/<filename>',methods=['GET']) # this is a job for GET, not POST
+def download_excel(df,filename):
 
+    tabela = getattr(estoque, df)
     buffer = io.BytesIO()
-    estoque.rejeicoes_futuras().to_excel(buffer)
+    tabela.to_excel(buffer)
     headers = {
-    'Content-Disposition': 'attachment; filename=rejeicoes_futuras.xlsx',
+    'Content-Disposition': 'attachment; filename={}.xlsx'.format(filename),
     'Content-type': 'application/vnd.ms-excel'
     }
     return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
+    
