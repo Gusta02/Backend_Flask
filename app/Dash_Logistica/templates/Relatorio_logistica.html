@@ -101,13 +101,50 @@
               </div>
             </div>  
             {% endfor %}
+            <!-- CARDS COM DOWNDLOAD -->
             <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
               <div class="bg-holder bg-card" style="background-image:url(../static/assets/img/illustrations/corner-1.png);">
               </div>
               <div class="card-body position-relative">
-                <h6> Rejeições Futuras <span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
-                <!-- <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"> v </div> -->
-                <div class="card-footer text-center border-top"><a class="card-link d-block" href="/download/rejeicoes">Download</a></div>
+                <h6> Pedidos que não serão atendidos <span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"> {{rejeicoes_futuras}} </div>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/download/rejeicoes_futuras/rejeicoes">Download</a> </div>
+              </div>
+            </div>
+            <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+              <div class="bg-holder bg-card" style="background-image:url(../static/assets/img/illustrations/corner-1.png);">
+              </div>
+              <div class="card-body position-relative">
+                <h6> Produtos Ausentes no Sistema <span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"> {{produtos_ausentes_sistema}} </div>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/download/df_produtos_nao_encontrados_sistema/ausentes_sistema">Download</a> </div>
+              </div>
+            </div>
+            <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+              <div class="bg-holder bg-card" style="background-image:url(../static/assets/img/illustrations/corner-1.png);">
+              </div>
+              <div class="card-body position-relative">
+                <h6> Produtos Ausentes no WMS <span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"> {{produtos_ausentes_wms}} </div>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/download/df_produtos_nao_encontrados_wms/ausentes_wms">Download</a> </div>
+              </div>
+            </div>
+            <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+              <div class="bg-holder bg-card" style="background-image:url(../static/assets/img/illustrations/corner-1.png);">
+              </div>
+              <div class="card-body position-relative">
+                <h6> Produtos Com Saldo em Excesso no WMS <span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"> {{produtos_excesso}} </div>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/download/df_produtos_excesso_wms/produtos_excesso">Download</a> </div>
+              </div>
+            </div>
+            <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+              <div class="bg-holder bg-card" style="background-image:url(../static/assets/img/illustrations/corner-1.png);">
+              </div>
+              <div class="card-body position-relative">
+                <h6> Produtos Com Saldo em Falta no WMS <span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"> {{produtos_falta}} </div>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/download/df_produtos_falta_wms/produtos_falta">Download</a> </div>
               </div>
             </div>
             

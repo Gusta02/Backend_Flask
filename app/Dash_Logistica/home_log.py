@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, request, send_file,send_from_directory, Response
 from sqlalchemy import true
 
+from app.Dash_Logistica.kpis_luiz.kpi import Estoque
+
 from ..controllers.controller_logistica import IntegracaoWms, Transporte
 import pandas as pd
 from datetime import datetime
@@ -280,6 +282,11 @@ def RelatorioGeral():
 
     tabela = leadtime()
     tabela = tabela.to_dict('records')
+    rejeicoes_futuras = estoque.rejeicoes_futuras().shape[0]
+    produtos_ausentes_sistema = estoque.df_produtos_nao_encontrados_sistema.shape[0]
+    produtos_ausentes_wms = estoque.df_produtos_nao_encontrados_wms.shape[0]
+    produtos_excesso = estoque.df_produtos_excesso_wms.shape[0]
+    produtos_falta = estoque.df_produtos_falta_wms.shape[0]
 
     dict_variaveis = {
     'Percentual Entregue no Prazo':f'{kpi_entregues_no_prazo: .0%}'
@@ -295,20 +302,18 @@ def RelatorioGeral():
     ,'Média de Dias para Separação SC' : media_separacao_sc()['texto']
     ,'Dock Stock SP' : kpi_dock_stock_time['SP']
     ,'Dock Stock SC' : kpi_dock_stock_time['SC']
-    ,'Produtos com Saldo a Mais' : estoque.count_estoque().situacao.value_counts()['excesso']
-    ,'Produtos com Saldo a Menos' : estoque.count_estoque().situacao.value_counts()['falta']
     ,'Acuracidade do Sistema' : f'{estoque.indice: .1%}'
     ,'Localização de Mercadoria - LR' : Localizacao_MediaDias() + ' dias'
-    ,'Rejeições Futuras' : estoque.rejeicoes_futuras().shape[0]
     }
     
-    return render_template("Relatorio_logistica.html", tabela = tabela, cards = dict_variaveis)
+    return render_template("Relatorio_logistica.html", tabela = tabela, rejeicoes_futuras = rejeicoes_futuras, produtos_ausentes_sistema = produtos_ausentes_sistema, produtos_ausentes_wms = produtos_ausentes_wms, produtos_excesso = produtos_excesso, produtos_falta = produtos_falta,cards = dict_variaveis)
 
-@home.route('/download/<filename>',methods=['GET']) # this is a job for GET, not POST
-def download_excel(filename):
+@home.route('/download/<df>/<filename>',methods=['GET']) # this is a job for GET, not POST
+def download_excel(df,filename):
 
+    tabela = getattr(estoque, df)
     buffer = io.BytesIO()
-    estoque.rejeicoes_futuras().to_excel(buffer)
+    tabela.to_excel(buffer)
     headers = {
     'Content-Disposition': 'attachment; filename={}.xlsx'.format(filename),
     'Content-type': 'application/vnd.ms-excel'
