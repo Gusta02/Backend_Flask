@@ -199,25 +199,25 @@ def NotaItemfaltante():
     return faltandoitem
 
 # CARD taxa falha separacao X entregue, PERCENTUAL DE FALHA SEPARAÇÃO / ENTREGUE 
-def FalhaSeparacao():
-    soma =  QuantidadeErrada() + EntregueErrado() + NotaItemfaltante()  #somando todos os motivos de faLhas da logistica Reversa
-    entregue = TotalEntregue()
+# def FalhaSeparacao():
+#     soma =  QuantidadeErrada() + EntregueErrado() + NotaItemfaltante()  #somando todos os motivos de faLhas da logistica Reversa
+#     entregue = TotalEntregue()
 
-    taxa = soma / entregue
-    taxa = "{:.2%}".format(taxa)
+#     taxa = soma / entregue
+#     taxa = "{:.2%}".format(taxa)
     
-    return taxa
+#     return taxa
 
 #///////////////////////// PERCENTUAL DE TODAS AS FALHAS DE ENTREGA E AVARIAS DO SISTEMA ////////////////////////// 
-def FALHAS_E_AVARIAS():
-     # ///////////////////////// CARD Taxa de Avaria + falha separação / entregue     ///////////////////////////////
-    somatoria = QuantidadeErrada() + EntregueErrado() + NotaItemfaltante() + TotalAvaria()
-    entregue =  TotalEntregue()
+# def FALHAS_E_AVARIAS():
+#      # ///////////////////////// CARD Taxa de Avaria + falha separação / entregue     ///////////////////////////////
+#     somatoria = QuantidadeErrada() + EntregueErrado() + NotaItemfaltante() + TotalAvaria()
+#     entregue =  TotalEntregue()
 
-    taxa_fseparacao_avaria = somatoria / entregue
-    taxa_fseparacao_avaria = "{:.2%}".format(taxa_fseparacao_avaria)
+#     taxa_fseparacao_avaria = somatoria / entregue
+#     taxa_fseparacao_avaria = "{:.2%}".format(taxa_fseparacao_avaria)
 
-    return taxa_fseparacao_avaria
+#     return taxa_fseparacao_avaria
 
 def media_separacao_sp():
 
@@ -233,22 +233,22 @@ def media_separacao_sp():
     return {'texto':SP,'valor':valor}
 
 #localização mercadoria
-def Localizacao_MediaDias():
-    data.columns = ['CODIGO', 'FASE_ATUAL', 'CRIADOR', 'PV_CRIADO','NUMERO_PV','NUMERO_NF','MOTIVO_SOLICITACAO'
-    ,'OBSERVACOES_SOLICITACAO','FASE_INICIAL'
-    ,'FASE_GESTAO','FASE_CLIENTE','FASE_IMPLANTACAO_REPOSICAO','FASE_SHOW_ROOM'
-    ,'PEDIDOS_REPROVADOS','FASE_AJUSTE_FISCAL','FASE_LOCALIZACAO_MERCADORIA','ROTEIRIZACAO_PV_LOCALIZADO'
-    ,'SOLICITACAO_COLETA'
-    ,'COLETA_APROVADA','COLETA_REPROVADA','SOLICITACAO_REEMBOLSO','ENVIO_EMAIL','CONCLUIDO','SEM_REPOSICAO'
-    ,'LOCALIZACAO_MERCADORIA']
+# def Localizacao_MediaDias():
+#     data.columns = ['CODIGO', 'FASE_ATUAL', 'CRIADOR', 'PV_CRIADO','NUMERO_PV','NUMERO_NF','MOTIVO_SOLICITACAO'
+#     ,'OBSERVACOES_SOLICITACAO','FASE_INICIAL'
+#     ,'FASE_GESTAO','FASE_CLIENTE','FASE_IMPLANTACAO_REPOSICAO','FASE_SHOW_ROOM'
+#     ,'PEDIDOS_REPROVADOS','FASE_AJUSTE_FISCAL','FASE_LOCALIZACAO_MERCADORIA','ROTEIRIZACAO_PV_LOCALIZADO'
+#     ,'SOLICITACAO_COLETA'
+#     ,'COLETA_APROVADA','COLETA_REPROVADA','SOLICITACAO_REEMBOLSO','ENVIO_EMAIL','CONCLUIDO','SEM_REPOSICAO'
+#     ,'LOCALIZACAO_MERCADORIA']
 
-    media = data.apply(lambda x:x['LOCALIZACAO_MERCADORIA']-x['FASE_LOCALIZACAO_MERCADORIA'],axis=1)
-    data.loc[:,'MEDIA'] = media
-    media= media.mean()
-    #media = str(media)
-    #media = media[0:1]
+#     media = data.apply(lambda x:x['LOCALIZACAO_MERCADORIA']-x['FASE_LOCALIZACAO_MERCADORIA'],axis=1)
+#     data.loc[:,'MEDIA'] = media
+#     media= media.mean()
+#     #media = str(media)
+#     #media = media[0:1]
         
-    return str(media)[0:1]
+#     return str(media)[0:1]
 
 #///////////////////////////////// END MICHEL //////////////////////////////////
 
@@ -293,8 +293,8 @@ def RelatorioGeral():
     ,'Percentual de Entregas Atrasadas': f'{1-kpi_entregues_no_prazo: .0%}'
     ,'Percentual de Coletas no Prazo': percentual_coleta_Prazo()
     ,'Percentual de Coletas Fora do Prazo': percentual_coleta_fora_prazo()
-    ,'Taxa de Falhas na Separação': FalhaSeparacao()
-    ,'Taxa de Falhas na Separação e Avarias':FALHAS_E_AVARIAS()
+    #,'Taxa de Falhas na Separação': FalhaSeparacao()
+    # ,'Taxa de Falhas na Separação e Avarias':FALHAS_E_AVARIAS()
     ,'Pedidos Ativos Atrasados':kpi_pedidos_ja_atrasados
     ,'Pedidos Perfeitos':f'{kpi_pedido_perfeito: .0%}'
     ,'Performance do Time de Logística' : f'{kpi_time_logistica: .1f}' 
@@ -303,7 +303,7 @@ def RelatorioGeral():
     ,'Dock Stock SP' : kpi_dock_stock_time['SP']
     ,'Dock Stock SC' : kpi_dock_stock_time['SC']
     ,'Acuracidade do Sistema' : f'{estoque.indice: .1%}'
-    ,'Localização de Mercadoria - LR' : Localizacao_MediaDias() + ' dias'
+    # ,'Localização de Mercadoria - LR' : Localizacao_MediaDias() + ' dias'
     }
     
     return render_template("Relatorio_logistica.html", tabela = tabela, rejeicoes_futuras = rejeicoes_futuras, produtos_ausentes_sistema = produtos_ausentes_sistema, produtos_ausentes_wms = produtos_ausentes_wms, produtos_excesso = produtos_excesso, produtos_falta = produtos_falta,cards = dict_variaveis)
@@ -319,3 +319,4 @@ def download_excel(df,filename):
     'Content-type': 'application/vnd.ms-excel'
     }
     return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
+    

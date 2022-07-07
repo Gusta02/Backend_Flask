@@ -154,7 +154,7 @@ class Estoque(KPI):
         df_com_fator = df_com_fator.merge(df_fator_multiplicador,how='left',left_on='Cód. Merc.',right_on='SKU')
         df_com_fator['FatorMultiplicador'] = df_com_fator['FatorMultiplicador_x'].fillna(df_com_fator['FatorMultiplicador_y'])
         df_produtos_nao_encontrados_sistema = df_com_fator[df_com_fator['FatorMultiplicador'].isna()]
-        df_produtos_nao_encontrados_sistema.drop(columns=['SKU_x','SKU_y','FatorMultiplicador_x','FatorMultiplicador_y','FatorMultiplicador'],inplace=True)
+        df_produtos_nao_encontrados_sistema = df_produtos_nao_encontrados_sistema.drop(columns=['SKU_x','SKU_y','FatorMultiplicador_x','FatorMultiplicador_y','FatorMultiplicador'])
         df_com_fator['FatorMultiplicador'] = df_com_fator['FatorMultiplicador'].fillna(1)
         df_com_fator.drop(columns=['SKU_x','SKU_y','FatorMultiplicador_x','FatorMultiplicador_y'],inplace=True)
         df_com_fator['QuantidadeAjustada'] = df_com_fator['Qt. Disp.']*df_com_fator['FatorMultiplicador']
@@ -163,7 +163,7 @@ class Estoque(KPI):
 
     def quantidade_do_sistema(self):
         df_quantidade_do_sistema = sql_to_pd(sql.query_quantidade_do_sistema)
-        df_quantidade_do_sistema.drop(columns=['IdProduto','IdEstoque'],inplace=True)
+        df_quantidade_do_sistema = df_quantidade_do_sistema.drop(columns=['IdProduto','IdEstoque'])
         df_quantidade_do_sistema.dropna(inplace=True)
         df_quantidade_do_sistema['Quantidade'] = df_quantidade_do_sistema['Quantidade'].apply(lambda x: x if x>=0 else 0)
         df_quantidade_do_sistema['CodigoProduto'] = df_quantidade_do_sistema['CodigoProduto'].apply(lambda x: str(x).strip().upper())
@@ -175,7 +175,7 @@ class Estoque(KPI):
         df_produtos_com_estoque = self.df_quantidade_do_sistema[self.df_quantidade_do_sistema['Quantidade'] > 0]
         df_merge = self.df.merge(df_produtos_com_estoque,how='right',left_on='Cód. Merc.',right_on='CodigoProduto')
         df_merge = df_merge[df_merge['Cód. Merc.'].isna()]
-        df_merge.drop(columns=['Cód. Merc.','Qt. Disp.','FatorMultiplicador','QuantidadeAjustada'],inplace=True)
+        df_merge = df_merge.drop(columns=['Cód. Merc.','Qt. Disp.','FatorMultiplicador','QuantidadeAjustada'])
         return df_merge
 
 
@@ -220,11 +220,11 @@ class Estoque(KPI):
         diff['diferenca'] = diff['QuantidadeAjustada'] - diff['Quantidade']
         diff['situacao'] = diff['diferenca'].apply(lambda x: classify(x))
         df_excesso = diff.query('situacao == "excesso"')
-        df_excesso.drop(columns=['Cód. Merc.','FatorMultiplicador','Qt. Disp.','diferenca','situacao'],inplace=True)
+        df_excesso = df_excesso.drop(columns=['Cód. Merc.','FatorMultiplicador','Qt. Disp.','diferenca','situacao'])
         df_excesso.rename(columns={'Quantidade': 'Quantidade Sistema', 'QuantidadeAjustada':'Quantidade WMS'})
         df_excesso.reset_index(inplace=True)
         df_falta = diff.query('situacao == "falta"')
-        df_falta.drop(columns=['Cód. Merc.','FatorMultiplicador','Qt. Disp.','diferenca','situacao'],inplace=True)
+        df_falta = df_falta.drop(columns=['Cód. Merc.','FatorMultiplicador','Qt. Disp.','diferenca','situacao'])
         df_falta.rename(columns={'Quantidade': 'Quantidade Sistema', 'QuantidadeAjustada':'Quantidade WMS'})
         df_falta.reset_index(inplace=True)
         return df_excesso,df_falta
