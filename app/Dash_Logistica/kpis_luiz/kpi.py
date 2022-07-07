@@ -25,9 +25,6 @@ class KPI(ABC):
     def calcula_indice(self):
         pass
 
-    def gera_excel(self):
-        self.df.to_excel(f'out/{self.nome}.xlsx')
-
 
 class Entregas(KPI):
 
@@ -36,7 +33,7 @@ class Entregas(KPI):
         self.nome = f"entregas_{(date.today()+dateutil.relativedelta.relativedelta(months=-1)).strftime('%m_%y')}"
         self.indice = self.calcula_indice()
 
-    def calcula_indice(self):
+    def calcula_indice(self)->float:
         self.df.drop_duplicates(subset =['CodigoPedido'],inplace=True)
         self.df['entregue_no_prazo'] = self.df['DataDeEntrega'] <= self.df['Prazo']
         self.df['TempoMaximo'] =  self.df['Prazo'] - self.df['DataFoiParaSeparacao']
@@ -53,10 +50,10 @@ class SemEtapas(KPI):
     def calcula_indice(self):
         pass
 
-    def calcula_sem_19(self):
+    def calcula_sem_19(self)->float:
         return self.df['DataSaiuParaEntrega'].isna().value_counts(normalize=True)
 
-    def calcula_sem_7(self):
+    def calcula_sem_7(self)->float:
         return self.df['DataFoiParaTransito'].isna().value_counts(normalize=True)
 
 class PedidoPerfeito(KPI):
@@ -66,7 +63,7 @@ class PedidoPerfeito(KPI):
         self.indice = None
         self.nome = 'pedido_perfeito'
 
-    def calcula_indice(self):
+    def calcula_indice(self)->float:
         df_pipefy = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/pedidos_pipefy.xlsx',usecols=['Numero do pedido'], engine='openpyxl')
         total_de_pedidos = sql_to_pd(sql.query_total_de_pedidos).iloc[0,0]
         df_pedidos_sem_pipefy = pd.merge(self.df, df_pipefy, left_on=['CodigoPedido'], right_on=['Numero do pedido'], how="outer", indicator=True).query('_merge=="left_only"')
@@ -76,12 +73,12 @@ class PedidoPerfeito(KPI):
 
 class IndicadorPerformance():
 
-    def __init__(self,nota7,nota10,peso=5,notaobtida=0):
-        self.peso = peso
-        self.nota7 = nota7
-        self.nota10 = nota10
-        self.notaobtida = int(notaobtida) if type(notaobtida) == str else notaobtida
-        self.fatornota7 = abs(nota7-nota10)/math.log(4,10)
+    def __init__(self,nota7:float,nota10:float,peso:int=5,notaobtida:float=0):
+        self.peso:int = peso
+        self.nota7:float = nota7
+        self.nota10:float = nota10
+        self.notaobtida:float = int(notaobtida) if type(notaobtida) == str else notaobtida
+        self.fatornota7:float = abs(nota7-nota10)/math.log(4,10)
 
     def trunca_nota(self,nota):
 
