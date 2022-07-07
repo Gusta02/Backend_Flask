@@ -171,12 +171,14 @@ query_pedidos_ja_atrasados = '''
 query_fator_multiplicador_prod ='''
   SELECT SKU
       ,[FatorMultiplicador]
-FROM [HauszMapa].[Produtos].[ProdutoDetalhe] 
+FROM [HauszMapa].[Produtos].[ProdutoDetalhe]
+WHERE bitAtivo = 1 
 '''
 query_fator_multiplicador_show_room ='''
 SELECT [SKU]
       ,[FatorMultiplicador]
   FROM [HauszMapa].[ShowRoom].[ProdutoBasico]
+  WHERE bitAtivo = 1
 '''
 
 query_quantidade_do_sistema = '''
@@ -273,24 +275,35 @@ SELECT
 '''
 
 query_produtos_por_pedido = '''
-Select CodigoPedido,SKU,Quantidade AS QuantidadePedida
+Select CodigoPedido
+			,SKU
+			,Quantidade AS QuantidadePedida
+			,IdEstoque
+			,StatusPedido
+			,TipoPedido
 from (SELECT StatusPedido
 		,itens.CodigoPedido
 		,itens.SKU
 		,itens.Quantidade
+		,itens.IdEstoque
+		,'Cliente' AS TipoPedido
 		FROM [HauszMapa].[Pedidos].[PedidoFlexy] pedidos
-		JOIN (SELECT CodigoPedido,SKU, Quantidade FROM [HauszMapa].[Pedidos].[ItensFlexy]
+		JOIN (SELECT CodigoPedido,SKU, Quantidade,IdEstoque,bitAtivo FROM [HauszMapa].[Pedidos].[ItensFlexy]
 		WHERE IdEstoque IN (1,5)) itens
 		ON pedidos.CodigoPedido = itens.CodigoPedido
+		WHERE itens.bitAtivo = 1
 		UNION
 	SELECT StatusPedido
 			,itens.CodigoPedidoSw as CodigoPedido
 			,itens.SKU
 			,itens.Quantidade
+			,itens.IdEstoque
+			,'Showroom' AS TipoPedido
 	FROM [HauszMapa].[ShowRoom].[Pedido] showroom
-	JOIN (SELECT CodigoPedidoSw,SKU,Quantidade  FROM  [HauszMapa].[ShowRoom].[ItensPedido]
+	JOIN (SELECT CodigoPedidoSw,SKU,Quantidade,IdEstoque,bitAtivo  FROM  [HauszMapa].[ShowRoom].[ItensPedido]
 	WHERE IdEstoque IN (1,5)) itens
-	ON showroom.CodigoPedidoSw = itens.CodigoPedidoSw) AS pedidos_ativos
-WHERE pedidos_ativos.StatusPedido IN ('Pago','Aguardando Arquiteto','Aguardando confirmação do cliente','Entrega Futura','Verificando Estoque')
-ORDER BY CodigoPedido
+	ON showroom.CodigoPedidoSw = itens.CodigoPedidoSw
+	WHERE itens.bitAtivo = 1) AS pedidos_ativos
+	WHERE pedidos_ativos.StatusPedido IN ('Pago','Aguardando Arquiteto','Aguardando confirmação do cliente','Entrega Futura','Verificando Estoque')
+	ORDER BY CodigoPedido
 '''
