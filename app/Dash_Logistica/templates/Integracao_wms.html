@@ -61,30 +61,52 @@
 
               <button class="btn navbar-toggler-humburger-icon navbar-vertical-toggle" data-toggle="tooltip" data-placement="left" title="Menu"><span class="navbar-toggle-icon"><span class="toggle-line"></span></span></button>
 
-            </div><a class="navbar-brand" href="{{ url_for('home.RelatorioGeral') }}">
-              <div class="d-flex align-items-center py-3"><img class="mr-2" src="{{ url_for('home.static', filename='assets/img/illustrations/Imagem4.png') }}" alt="" width="40" /><span class="text-sans-serif">Hausz</span>
+            </div><a class="navbar-brand" href="#">
+              <div class="d-flex align-items-center py-3"><img class="mr-2" src="{{ url_for('index.static', filename='assets/img/illustrations/Imagem4.png') }}" alt="" width="40" /><span class="text-sans-serif">Hausz</span>
               </div>
             </a>
           </div>
           <div class="collapse navbar-collapse" id="navbarVerticalCollapse">
             <div class="navbar-vertical-content perfect-scrollbar scrollbar">
               <ul class="navbar-nav flex-column">
+                <li class="nav-item"><a class="nav-link dropdown-indicator" href="#home" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="home">
+                  <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-chart-pie"></span></span><span class="nav-link-text">Home</span>
+                  </div>
+                </a>
+                <ul class="nav collapse show" id="home" data-parent="#navbarVerticalCollapse">
+                  <li class="nav-item "><a class="nav-link" href="{{ url_for('index.home') }}">Home</a>
+                  </li>
+                </ul>
+              </li>
+              </ul>
+              <ul class="navbar-nav flex-column">
                 <li class="nav-item"><a class="nav-link dropdown-indicator" href="#logistica" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="logistica">
                   <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-chart-pie"></span></span><span class="nav-link-text">Logistica</span>
                   </div>
                 </a>
                 <ul class="nav collapse show" id="logistica" data-parent="#navbarVerticalCollapse">
-                  <li class="nav-item "><a class="nav-link" href="{{ url_for('home.RelatorioGeral') }}">Relatório Logistica</a>
+                  <li class="nav-item"><a class="nav-link" href="{{ url_for('home.RelatorioGeral') }}">Relatório Logistica</a>
                   </li>
                   <li class="nav-item"><a class="nav-link" href="{{ url_for('transporte.Transporte_rota') }}">Relatório Transportes</a>
                   </li>
-                  <li class="nav-item active"><a class="nav-link" href="#">Integração WMS</a>
+                  <li class="nav-item active"><a class="nav-link" href="{{ url_for('wms.Integracao_wms_first_page', page = 1) }}">Integração WMS</a>
+                  </li> 
+                </ul>
+              </li>
+              </ul>
+              <ul class="navbar-nav flex-column">
+                <li class="nav-item"><a class="nav-link dropdown-indicator" href="#Financeiro" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="Financeiro">
+                  <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-chart-pie"></span></span><span class="nav-link-text">Financeiro</span>
+                  </div>
+                </a>
+                <ul class="nav collapse show" id="Financeiro" data-parent="#navbarVerticalCollapse">
+                  <li class="nav-item"><a class="nav-link" href="{{ url_for('financeiro.home_financeiro') }}">Relatorio Financeiro</a>
                   </li>
                 </ul>
               </li>
               </ul>
           </div>
-        </nav>
+        </nav>      
         <div class="content">
           <nav class="navbar navbar-light navbar-glass navbar-top sticky-kit navbar-expand">
 

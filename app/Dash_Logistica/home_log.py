@@ -277,7 +277,7 @@ ind_localizacaoLR = IndicadorPerformance(7,4,5,7) #nao consigo incluir a funçã
 
 kpi_time_logistica = IndicadorPerformance.calcula_kpi_time(dict_performance_time_logistica)
 
-@home.route("/", methods=["GET","POST"])
+@home.route("/dashboard/logistica", methods=["GET","POST"])
 def RelatorioGeral():
 
     tabela = leadtime()
