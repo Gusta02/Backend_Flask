@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, send_file,send_from_directory, Response
 from sqlalchemy import true
+import numpy as np
 
 from app.Dash_Logistica.kpis_luiz.kpi import Estoque
 
@@ -220,22 +221,21 @@ def FALHAS_E_AVARIAS():
     return taxa_fseparacao_avaria
 
 #localização mercadoria
-# def Localizacao_MediaDias():
-#     data.columns = ['CODIGO', 'FASE_ATUAL', 'CRIADOR', 'PV_CRIADO','NUMERO_PV','NUMERO_NF','MOTIVO_SOLICITACAO'
-#     ,'OBSERVACOES_SOLICITACAO','FASE_INICIAL'
-#     ,'FASE_GESTAO','FASE_CLIENTE','FASE_IMPLANTACAO_REPOSICAO','FASE_SHOW_ROOM'
-#     ,'PEDIDOS_REPROVADOS','FASE_AJUSTE_FISCAL','FASE_LOCALIZACAO_MERCADORIA','ROTEIRIZACAO_PV_LOCALIZADO'
-#     ,'SOLICITACAO_COLETA'
-#     ,'COLETA_APROVADA','COLETA_REPROVADA','SOLICITACAO_REEMBOLSO','ENVIO_EMAIL','CONCLUIDO','SEM_REPOSICAO'
-#     ,'LOCALIZACAO_MERCADORIA']
+def Localizacao_MediaDias():
+    data.columns = ['CODIGO', 'FASE_ATUAL', 'CRIADOR', 'PV_CRIADO','NUMERO_PV','NUMERO_NF','MOTIVO_SOLICITACAO'
+    ,'OBSERVACOES_SOLICITACAO','FASE_INICIAL'
+    ,'FASE_GESTAO','FASE_CLIENTE','FASE_IMPLANTACAO_REPOSICAO','FASE_SHOW_ROOM'
+    ,'PEDIDOS_REPROVADOS','FASE_AJUSTE_FISCAL','FASE_LOCALIZACAO_MERCADORIA','ROTEIRIZACAO_PV_LOCALIZADO'
+    ,'SOLICITACAO_COLETA'
+    ,'COLETA_APROVADA','COLETA_REPROVADA','SOLICITACAO_REEMBOLSO','ENVIO_EMAIL','CONCLUIDO','SEM_REPOSICAO'
+    ,'LOCALIZACAO_MERCADORIA']
 
-#     media = data.apply(lambda x:x['LOCALIZACAO_MERCADORIA']-x['FASE_LOCALIZACAO_MERCADORIA'],axis=1)
-#     data.loc[:,'MEDIA'] = media
-#     media= media.mean()
-#     #media = str(media)
-#     #media = media[0:1]
+    media = data.apply(lambda x:x['LOCALIZACAO_MERCADORIA']-x['FASE_LOCALIZACAO_MERCADORIA'],axis=1).mean()
+    media = np.timedelta64(media)
+    ajuste = media.astype('timedelta64[D]').astype(int)
+    dia= ajuste
         
-#     return str(media)[0:1]
+    return dia
 
 #///////////////////////////////// END MICHEL //////////////////////////////////
 
@@ -267,8 +267,8 @@ def media_separacao_sc():
 
 #################################### Indicadores de Performance do Time De Logística ############################################
 
-dict_performance_time_logistica = dict(
-ind_localizacaoLR = IndicadorPerformance(7,4,5,7) #nao consigo incluir a função do michel. Valor aidicionado manualmente
+dict_performance_time_logistica = dict(         #função adicionada 07/07
+ind_localizacaoLR = IndicadorPerformance(7,4,5,Localizacao_MediaDias()) #nao consigo incluir a função do michel. Valor aidicionado manualmente
 #,ind_tempocicloLR = IndicadorPerformance(25,20,5,23) #Parece que não está no Asana, remover?
 ,ind_pedidoperfeito = IndicadorPerformance(80,90,5,kpi_pedido_perfeito*100)
 ,ind_separacao = IndicadorPerformance(24,18,5,(media_separacao_sc()['valor']+media_separacao_sc()['valor'])) #posso dar o mesmo peso para SP e SC?
@@ -303,7 +303,7 @@ def RelatorioGeral():
     ,'Dock Stock SP' : kpi_dock_stock_time['SP']
     ,'Dock Stock SC' : kpi_dock_stock_time['SC']
     ,'Acuracidade do Sistema' : f'{estoque.indice: .1%}'
-    # ,'Localização de Mercadoria - LR' : Localizacao_MediaDias() + ' dias'
+    ,'Localização de Mercadoria - LR' : Localizacao_MediaDias()
     }
     
     return render_template("Relatorio_logistica.html", tabela = tabela, rejeicoes_futuras = rejeicoes_futuras, produtos_ausentes_sistema = produtos_ausentes_sistema, produtos_ausentes_wms = produtos_ausentes_wms, produtos_excesso = produtos_excesso, produtos_falta = produtos_falta,cards = dict_variaveis)
