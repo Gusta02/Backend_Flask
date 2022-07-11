@@ -10,7 +10,7 @@
     <!-- ===============================================-->
     <!--    Document Title-->
     <!-- ===============================================-->
-    <title>Hausz | Dashboard Logistica</title>
+    <title>Hausz | Dashboard Financeiro</title>
 
     <!-- ===============================================-->
     <!--    Favicons-->
@@ -37,8 +37,9 @@
     <link href="{{ url_for('home.static', filename='assets/lib/leaflet.markercluster/MarkerCluster.Default.css') }}" rel="stylesheet">
     <link href="{{ url_for('home.static', filename='assets/css/theme.css') }}" rel="stylesheet">
     <link href="{{ url_for('home.static', filename='assets/css/mapa_home.css') }}" rel="stylesheet">
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+   
 
   </head>
 
@@ -113,6 +114,13 @@
               </div>
             </a>
           </nav>
+          <!-- DropDown de Marcas -->
+          <select name="marca" method="POST" action="/Itagres">
+            <option value="{{marcas[0]}}" selected>{{marcas[0]}}</option>
+            {% for marca in marcas[1:] %}
+              <option value="{{marca}}">{{marca}}</option>
+            {% endfor %}
+          </select>
           <!-- CARDS -->
           <div class="card-deck">
           {% for k,v in cards.items() %}
@@ -207,6 +215,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js" ></script>
     <script src="{{ url_for('home.static', filename='assets/js/theme.js') }}"></script>
     <script src="{{ url_for('home.static', filename='assets/js/mapa.js') }}"></script>
+    
 
   </body>
 
