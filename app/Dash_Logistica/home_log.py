@@ -1,9 +1,6 @@
 from flask import Blueprint, render_template, request, send_file,send_from_directory, Response
 from sqlalchemy import true
 import numpy as np
-
-from app.Dash_Logistica.kpis_luiz.kpi import Estoque
-
 from ..controllers.controller_logistica import IntegracaoWms, Transporte
 import pandas as pd
 from datetime import datetime

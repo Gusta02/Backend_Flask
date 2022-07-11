@@ -100,6 +100,7 @@ class IndicadorPerformance():
             return self.trunca_nota(11 - 10 ** ((
                                                             self.notaobtida - self.nota10) / self.fatornota7) if self.nota7 - self.nota10 >= 0 else 11 - 10 ** (
                         (self.nota10 - self.notaobtida) / self.fatornota7))
+                        
         except:
             pass
 
@@ -217,6 +218,7 @@ class Estoque(KPI):
                                                                          'IdEstoque', 'StatusPedido', 'TipoPedido']]])
             except:
                 pass
+
         return pedidos_rejeicao
 
     def count_estoque(self):
@@ -244,6 +246,31 @@ class Estoque(KPI):
         df_falta.reset_index(inplace=True)
         return df_excesso, df_falta
 
+    def inventario(self,marca:str='')->object:
+
+        df_preco = sql_to_pd(sql.query_preco_produtos_estoque)
+
+        if marca:
+            df_preco = df_preco.query(f'NomeFantasia == "{marca}"')
+
+        df_preco_com_estoque = self.df.merge(df_preco,left_on='Cód. Merc.',right_on='SKU')
+        df_preco_com_estoque['Inventário'] = df_preco_com_estoque['Preco']*df_preco_com_estoque['QuantidadeAjustada']
+        return df_preco_com_estoque
+
+    def vendas_ano_atual(self,marca:str='',mes:int=0)->object:
+        
+        df_vendas = sql_to_pd(sql.query_vendas_ano_atual)
+
+        if marca:
+            df_vendas = df_vendas.query(f'NomeFantasia == "{marca}"')
+
+        if mes:
+            df_vendas = df_vendas.query(f'NomeFantasia == {mes}')
+
+        return df_vendas
+        
+        
+        
 
 class LeadTime(KPI):
 

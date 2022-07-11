@@ -307,3 +307,68 @@ from (SELECT StatusPedido
 	WHERE pedidos_ativos.StatusPedido IN ('Pago','Aguardando Arquiteto','Aguardando confirmação do cliente','Entrega Futura','Verificando Estoque')
 	ORDER BY CodigoPedido
 '''
+
+query_preco_produtos_estoque = '''
+SELECT pp.[SKU]
+      ,[Preco]
+	  ,prodsfornec.NomeFantasia
+  FROM [HauszMapa].[Produtos].[ProdutoPreco] pp
+  JOIN (SELECT SKU, prods.IdMarca, fornec.NomeFantasia 
+		FROM HauszMapa.Produtos.ProdutoBasico prods
+		JOIN (SELECT fornecmarca.CnpjFornecedor,IdMarca,fornecnome.NomeFantasia FROM [HauszMapa].[Produtos].[FornecedorMarca] fornecmarca 
+		JOIN (SELECT NomeFantasia, CnpjFornecedor FROM [HauszMapa].[Cadastro].[Fornecedor]) fornecnome 
+			ON fornecmarca.CnpjFornecedor = fornecnome.CnpjFornecedor
+		WHERE IdMarca NOT IN (71)) fornec
+	ON fornec.IdMarca = prods.IdMarca) prodsfornec	
+	ON prodsfornec.SKU = pp.SKU
+	WHERE IdUnidade = 1
+	AND IdEstoque IN (1,5)
+'''
+
+query_vendas_ano_atual = '''
+	SELECT FORMAT(SUM(Quantidade*PrecoUnitarioDescontado),'c','pt-br') ValorVenda
+	  ,prodsfornec.NomeFantasia
+	  ,MONTH(itens.DataInserido) MesDeVenda
+  FROM [HauszMapa].[Pedidos].[ItensFlexy] itens
+  JOIN (SELECT CodigoPedido
+			,IdEtapaFlexy
+		FROM [HauszMapa].[Pedidos].[PedidoFlexy]
+		WHERE IdEtapaFlexy != 11 -- remove cancelados
+		) pedidos
+	ON itens.CodigoPedido = pedidos.CodigoPedido
+	JOIN (SELECT SKU, prods.IdMarca, fornec.NomeFantasia 
+		FROM HauszMapa.Produtos.ProdutoBasico prods
+		JOIN (SELECT fornecmarca.CnpjFornecedor,IdMarca,fornecnome.NomeFantasia FROM [HauszMapa].[Produtos].[FornecedorMarca] fornecmarca 
+		JOIN (SELECT NomeFantasia, CnpjFornecedor FROM [HauszMapa].[Cadastro].[Fornecedor]) fornecnome 
+			ON fornecmarca.CnpjFornecedor = fornecnome.CnpjFornecedor
+		WHERE IdMarca NOT IN (71)) fornec
+	ON fornec.IdMarca = prods.IdMarca) prodsfornec
+	ON itens.SKU = prodsfornec.SKU
+	WHERE DATEDIFF(YEAR,itens.DataInserido,GETDATE()) = 0
+	AND bitAtivo = 1
+  Group by prodsfornec.NomeFantasia, MONTH(itens.DataInserido)
+
+  UNION
+
+  SELECT FORMAT(SUM(Quantidade*PrecoUnitario),'c','pt-br') ValorVenda
+	  ,prodsfornec.NomeFantasia
+	  ,MONTH(itens.DataInserido) MesDeVenda
+  FROM [HauszMapa].[ShowRoom].[ItensPedido] itens
+  JOIN (SELECT CodigoPedidoSw
+			,IdEtapaFlexy
+		FROM [HauszMapa].[ShowRoom].[Pedido]
+		WHERE IdEtapaFlexy != 11 -- remove cancelados
+		) pedidos
+	ON itens.CodigoPedidoSw = pedidos.CodigoPedidoSw
+	JOIN (SELECT SKU, prods.IdMarca, fornec.NomeFantasia 
+		FROM HauszMapa.Produtos.ProdutoBasico prods
+		JOIN (SELECT fornecmarca.CnpjFornecedor,IdMarca,fornecnome.NomeFantasia FROM [HauszMapa].[Produtos].[FornecedorMarca] fornecmarca 
+		JOIN (SELECT NomeFantasia, CnpjFornecedor FROM [HauszMapa].[Cadastro].[Fornecedor]) fornecnome 
+			ON fornecmarca.CnpjFornecedor = fornecnome.CnpjFornecedor
+		WHERE IdMarca NOT IN (71)) fornec
+	ON fornec.IdMarca = prods.IdMarca) prodsfornec
+	ON itens.SKU = prodsfornec.SKU
+	WHERE DATEDIFF(YEAR,itens.DataInserido,GETDATE()) = 0
+	AND bitAtivo = 1
+  Group by prodsfornec.NomeFantasia, MONTH(itens.DataInserido)
+  '''
