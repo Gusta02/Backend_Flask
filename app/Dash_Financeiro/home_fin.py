@@ -6,7 +6,7 @@ from datetime import date
 import locale
 import io
 
-finaceiro = Blueprint('finaceiro', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
+finaceiro = Blueprint('financeiro', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
 
 @finaceiro.route("/dashboard/financeiro", methods=["GET","POST"])
