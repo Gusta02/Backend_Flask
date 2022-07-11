@@ -157,6 +157,10 @@ class Estoque(KPI):
         self.df_inventario_por_marca.Inventário = self.df_inventario_por_marca.Inventário.apply(lambda x: locale.currency(x, grouping=True))
         self.df_vendas_2022 = self.vendas_ano_atual().loc[:,['NomeFantasia','ValorVenda']].groupby('NomeFantasia').agg('sum')
         self.df_vendas_2022.ValorVenda = self.df_vendas_2022.ValorVenda.apply(lambda x: locale.currency(x, grouping=True))
+        self.df_vendas_por_mes = self.vendas_ano_atual().loc[:,['DataDaVenda','ValorVenda']]
+        self.df_vendas_por_mes.DataDaVenda = self.df_vendas_por_mes.DataDaVenda.apply(lambda x: datetime.strptime(x,'%d/%m/%Y').month)
+        self.df_vendas_por_mes = self.df_vendas_por_mes.groupby('DataDaVenda').agg('sum')
+        self.df_vendas_por_mes.ValorVenda = self.df_vendas_por_mes.ValorVenda.apply(lambda x: round(float(x),2))
 
     def multiplica_fator(self):
         df1 = pd.read_excel(
