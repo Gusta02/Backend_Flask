@@ -117,8 +117,12 @@
           <!-- DropDown de Marcas -->
           <center> <form method="POST" action="/dashboard/financeiro">
             <select name="marca">
-                  <option selected disabled value=''>{{marca_selecionada}}</option>
-                  <option value="">Todas</option>
+                 {% if not marca_selecionada %} 
+                 <option selected disabled value=''>Todas Marcas</option>  
+                 {% else %} 
+                 <option selected disabled value=''>{{marca_selecionada}}</option>
+                 {% endif %}
+                  <option value="">Todas Marcas</option>
                   <option value="{{marcas[0]}}">{{marcas[0]}}</option>
                   {% for marca in marcas[1:] %}
                     <option value="{{marca}}">{{marca}}</option>
