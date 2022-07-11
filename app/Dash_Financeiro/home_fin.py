@@ -18,11 +18,16 @@ def home_financeiro():
     inventario_total = locale.currency(estoque.inventario().Inventário.sum(), grouping=True)
     venda_anual = locale.currency(estoque.vendas_ano_atual().ValorVenda.sum(), grouping=True)
 
+    labels_vendas = []
+    for row in range(1,8):
+        labels_vendas.append(row)
+    values_vendas = estoque.df_vendas_por_mes.ValorVenda.tolist()
+
     dict_variaveis = {
     # 'Inventário': inventario_total
     }
 
-    return render_template('home_financeiro.html',cards = dict_variaveis, inventario_total = inventario_total,venda_anual = venda_anual, ano = ano)
+    return render_template('home_financeiro.html',cards = dict_variaveis, inventario_total = inventario_total,venda_anual = venda_anual, ano = ano,labels_vendas = labels_vendas, values_vendas = values_vendas)
 
 @finaceiro.route('/download/<df>/<filename>',methods=['GET']) # Gera Arquivos em Excel para Download
 def download_excel(df,filename):
