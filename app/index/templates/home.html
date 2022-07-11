@@ -15,31 +15,29 @@
     <!-- ===============================================-->
     <!--    Favicons-->
     <!-- ===============================================-->
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('transporte.static', filename='assets/img/favicons/apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="72x72" href="{{ url_for('transporte.static', filename='assets/img/favicons/Icon_Hausz_72x72.png') }}">
-    <link rel="icon" type="image/png" sizes="96x96" href="{{ url_for('transporte.static', filename='assets/img/favicons/Icon_Hausz_96x96.png') }}">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('transporte.static', filename='assets/img/favicons/Icon_Hausz_96x96.png') }}">
-    <link rel="manifest" href="{{ url_for('transporte.static', filename='assets/img/favicons/manifest.json') }}">
-    <meta name="msapplication-TileImage" content="{{ url_for('transporte.static', filename='assets/img/favicons/mstile-150x150.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('index.static', filename='assets/img/favicons/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="72x72" href="{{ url_for('index.static', filename='assets/img/favicons/Icon_Hausz_72x72.png') }}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{{ url_for('index.static', filename='assets/img/favicons/Icon_Hausz_96x96.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('index.static', filename='assets/img/favicons/Icon_Hausz_96x96.png') }}">
+    <link rel="manifest" href="{{ url_for('index.static', filename='assets/img/favicons/manifest.json') }}">
+    <meta name="msapplication-TileImage" content="{{ url_for('index.static', filename='assets/img/favicons/mstile-150x150.png') }}">
     <meta name="theme-color" content="#ffffff">
 
 
     <!-- ===============================================-->
     <!--    Stylesheets-->
     <!-- ===============================================-->
-    <script src="{{ url_for('transporte.static', filename='assets/js/config.navbar-vertical.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/js/config.navbar-vertical.js') }}"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
-    <link href="{{ url_for('transporte.static', filename='assets/lib/perfect-scrollbar/perfect-scrollbar.css') }}" rel="stylesheet">
-    <link href="{{ url_for('transporte.static', filename='assets/lib/datatables-bs4/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
-    <link href="{{ url_for('transporte.static', filename='assets/lib/datatables.net-responsive-bs4/responsive.bootstrap4.css') }}" rel="stylesheet">
-    <link href="{{ url_for('transporte.static', filename='assets/lib/leaflet/leaflet.css') }}" rel="stylesheet">
-    <link href="{{ url_for('transporte.static', filename='assets/lib/leaflet.markercluster/MarkerCluster.css') }}" rel="stylesheet">
-    <link href="{{ url_for('transporte.static', filename='assets/lib/leaflet.markercluster/MarkerCluster.Default.css') }}" rel="stylesheet">
-    <link href="{{ url_for('transporte.static', filename='assets/css/theme.css') }}" rel="stylesheet">
-    <link href="{{ url_for('transporte.static', filename='assets/css/mapa_home.css') }}" rel="stylesheet">
-
+    <link href="{{ url_for('index.static', filename='assets/lib/perfect-scrollbar/perfect-scrollbar.css') }}" rel="stylesheet">
+    <link href="{{ url_for('index.static', filename='assets/lib/datatables-bs4/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('index.static', filename='assets/lib/datatables.net-responsive-bs4/responsive.bootstrap4.css') }}" rel="stylesheet">
+    <link href="{{ url_for('index.static', filename='assets/lib/leaflet/leaflet.css') }}" rel="stylesheet">
+    <link href="{{ url_for('index.static', filename='assets/lib/leaflet.markercluster/MarkerCluster.css') }}" rel="stylesheet">
+    <link href="{{ url_for('index.static', filename='assets/lib/leaflet.markercluster/MarkerCluster.Default.css') }}" rel="stylesheet">
+    <link href="{{ url_for('index.static', filename='assets/css/theme.css') }}" rel="stylesheet">
+    <link href="{{ url_for('index.static', filename='assets/css/mapa_index.css') }}" rel="stylesheet">
   </head>
-
 
   <body>
 
@@ -68,7 +66,7 @@
                   </div>
                 </a>
                 <ul class="nav collapse show" id="home" data-parent="#navbarVerticalCollapse">
-                  <li class="nav-item"><a class="nav-link" href="{{ url_for('index.home') }}">Home</a>
+                  <li class="nav-item active"><a class="nav-link" href="#">Home</a>
                   </li>
                 </ul>
               </li>
@@ -81,7 +79,7 @@
                 <ul class="nav collapse show" id="logistica" data-parent="#navbarVerticalCollapse">
                   <li class="nav-item"><a class="nav-link" href="{{ url_for('home.RelatorioGeral') }}">Relatório Logistica</a>
                   </li>
-                  <li class="nav-item"><a class="nav-link active" href="{{ url_for('transporte.Transporte_rota') }}">Relatório Transportes</a>
+                  <li class="nav-item"><a class="nav-link" href="{{ url_for('transporte.Transporte_rota') }}">Relatório Transportes</a>
                   </li>
                   <li class="nav-item"><a class="nav-link" href="{{ url_for('wms.Integracao_wms_first_page', page = 1) }}">Integração WMS</a>
                   </li> 
@@ -101,31 +99,24 @@
               </ul>
           </div>
         </nav>      
-        
         <div class="content">
           <nav class="navbar navbar-light navbar-glass navbar-top sticky-kit navbar-expand">
-
             <button class="btn navbar-toggler-humburger-icon navbar-toggler mr-1 mr-sm-3" type="button" data-toggle="collapse" data-target="#navbarVerticalCollapse" aria-controls="navbarVerticalCollapse" aria-expanded="false" aria-label="Toggle Navigation"><span class="navbar-toggle-icon"><span class="toggle-line"></span></span></button>
             <a class="navbar-brand mr-1 mr-sm-3" href="{{ url_for('home.RelatorioGeral') }}">
-              <div class="d-flex align-items-center"><img class="mr-2" src="{{ url_for('transporte.static', filename='assets/img/illustrations/falcon.png') }}" alt="" width="40" /><span class="text-sans-serif">Hausz</span>
+              <div class="d-flex align-items-center"><img class="mr-2" src="{{ url_for('home.static', filename='assets/img/illustrations/falcon.png') }}" alt="" width="40" /><span class="text-sans-serif">Hausz</span>
               </div>
             </a>
           </nav>
-          <!-- CARDS -->
           <div class="card-deck">
-            {% for k,v in cards.items() %}
             <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
               <div class="bg-holder bg-card" style="background-image:url(../static/assets/img/illustrations/corner-1.png);">
               </div>
               <div class="card-body position-relative">
-                <h6>{{ k }}<span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
-                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light">{{ v }}</div>
+                <h6>Home<span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><h6><span>Em Desenvolvimento</span></h6></div>
               </div>
             </div>  
-            {% endfor %} 
-            
           </div>
-        </div>
       </div>
     </main>
     <!-- ===============================================-->
@@ -135,27 +126,27 @@
     <!-- ===============================================-->
     <!--    JavaScripts-->
     <!-- ===============================================-->
-    <script src="{{ url_for('transporte.static', filename='assets/js/jquery.min.js') }}"></script>
-    <script src="{{ url_for('transporte.static', filename='assets/js/popper.min.js') }}"></script>
-    <script src="{{ url_for('transporte.static', filename='assets/js/bootstrap.min.js') }}"></script>
-    <script src="{{ url_for('transporte.static', filename='assets/lib/@fortawesome/all.min.js') }}"></script>
-    <script src="{{ url_for('transporte.static', filename='assets/lib/stickyfilljs/stickyfill.min.js') }}"></script>
-    <script src="{{ url_for('transporte.static', filename='assets/lib/sticky-kit/sticky-kit.min.js') }}"></script>
-    <script src="{{ url_for('transporte.static', filename='assets/lib/is_js/is.min.js') }}"></script>
-    <script src="{{ url_for('transporte.static', filename='assets/lib/lodash/lodash.min.js') }}"></script>
-    <script src="{{ url_for('transporte.static', filename='assets/lib/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/js/popper.min.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/lib/@fortawesome/all.min.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/lib/stickyfilljs/stickyfill.min.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/lib/sticky-kit/sticky-kit.min.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/lib/is_js/is.min.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/lib/lodash/lodash.min.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/lib/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,700%7cPoppins:100,200,300,400,500,600,700,800,900&amp;display=swap" rel="stylesheet">
-    <script src="{{ url_for('transporte.static', filename='assets/lib/chart.js/Chart.min.js') }}"></script>
-    <script src="{{ url_for('transporte.static', filename='assets/lib/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ url_for('transporte.static', filename='assets/lib/datatables-bs4/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ url_for('transporte.static', filename='assets/lib/datatables.net-responsive/dataTables.responsive.js') }}"></script>
-    <script src="{{ url_for('transporte.static', filename='assets/lib/datatables.net-responsive-bs4/responsive.bootstrap4.js') }}"></script>
-    <script src="{{ url_for('transporte.static', filename='assets/lib/leaflet/leaflet.js') }}"></script>
-    <script src="{{ url_for('transporte.static', filename='assets/lib/leaflet.markercluster/leaflet.markercluster.js') }}"></script>
-    <script src="{{ url_for('transporte.static', filename='assets/lib/leaflet.tilelayer.colorfilter/leaflet-tilelayer-colorfilter.min.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/lib/chart.js/Chart.min.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/lib/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/lib/datatables-bs4/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/lib/datatables.net-responsive/dataTables.responsive.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/lib/datatables.net-responsive-bs4/responsive.bootstrap4.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/lib/leaflet/leaflet.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/lib/leaflet.markercluster/leaflet.markercluster.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/lib/leaflet.tilelayer.colorfilter/leaflet-tilelayer-colorfilter.min.js') }}"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js" ></script>
-    <script src="{{ url_for('transporte.static', filename='assets/js/theme.js') }}"></script>
-    <script src="{{ url_for('transporte.static', filename='assets/js/mapa.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/js/theme.js') }}"></script>
+    <script src="{{ url_for('index.static', filename='assets/js/mapa.js') }}"></script>
 
   </body>
 

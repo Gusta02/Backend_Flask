@@ -47,10 +47,10 @@ def register_handlers(app):
         return render_template("405.html"), 405
 
 index = Blueprint("index",__name__
-        ,template_folder='templates',static_folder='static',static_url_path='/static/imagens')
+        ,template_folder='templates',static_folder='static',static_url_path='/static/')
         
-# @index.route("/aa", methods=["GET","POST"])
-# def home():   
-#         return render_template("500.html")
+@index.route("/", methods=["GET","POST"])
+def home():   
+        return render_template("home.html")
 
 register_handlers(current_app)
