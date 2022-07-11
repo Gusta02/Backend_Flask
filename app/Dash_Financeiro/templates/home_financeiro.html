@@ -37,7 +37,7 @@
     <link href="{{ url_for('home.static', filename='assets/lib/leaflet.markercluster/MarkerCluster.Default.css') }}" rel="stylesheet">
     <link href="{{ url_for('home.static', filename='assets/css/theme.css') }}" rel="stylesheet">
     <link href="{{ url_for('home.static', filename='assets/css/mapa_home.css') }}" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!--Importação do Charts.js para criação de gráficos-->
 
    
 
@@ -115,17 +115,19 @@
             </a>
           </nav>
           <!-- DropDown de Marcas -->
-        <form method="POST" action="/dashboard/financeiro">
-              <select name="marca">
-                  <option selected disabled value=''>Marca</option>
+          <center> <form method="POST" action="/dashboard/financeiro">
+            <select name="marca">
+                  <option selected disabled value=''>{{marca_selecionada}}</option>
                   <option value="">Todas</option>
                   <option value="{{marcas[0]}}">{{marcas[0]}}</option>
                   {% for marca in marcas[1:] %}
                     <option value="{{marca}}">{{marca}}</option>
                   {% endfor %}
               </select>
+              <br><br>
               <button type="submit">Selecionar</button>
-        </form>
+        </form> </center>
+        <br>
           <!-- CARDS -->
           <div class="card-deck">
           {% for k,v in cards.items() %}
@@ -143,21 +145,26 @@
             <div class="bg-holder bg-card" style="background-image:url(../static/assets/img/illustrations/corner-1.png);">
             </div>
             <div class="card-body position-relative">
-              <h6> Inventário <span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
-              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"> {{inventario_total}} </div>
-              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/download/df_inventario_por_marca/Inventário">Download</a> </div>
+              <br>
+              <h6> <center> Inventário </center><span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
+              <br>
+              <br>
+              <br>
+              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"> <center> {{inventario_total}} </center> </div>
+              <br>
+              <br>
+              <br>
+              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/download/df_inventario_por_marca/Inventário"><center>Download</center></a> </div>
             </div>
           </div>
           <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
             <div class="bg-holder bg-card" style="background-image:url(../static/assets/img/illustrations/corner-1.png);">
             </div>
             <div class="card-body position-relative">
-              <h6> Vendas {{ano}} <span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
-              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"> {{venda_anual}} </div>
-              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/download/df_vendas_2022/Vendas">Download</a> </div>
-            </div>
-          </div>
-          <canvas id="ChartVendas" width="500" height="300"></canvas>
+              <h6> <center> Vendas {{ano}} </center> <span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
+              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"> <center> {{venda_anual}} </center></div>
+              <!--Gráfico de Vendas-->
+          <canvas id="ChartVendas"></canvas> <!--width="500" height="300"-->
           <script>
             var ctx = document.getElementById("ChartVendas").getContext("2d")
             var ChartVendas = new Chart(ctx, {
@@ -175,20 +182,38 @@
                 ]
               },
               options: {
-                responsive: false
+                //responsive: false
               }
             });
           </script>
-          <!-- <div class="card-deck">
-            <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
-              <div class="bg-holder bg-card" style="background-image:url(../static/assets/img/illustrations/corner-1.png);">
-              </div>
-              <div class="card-body position-relative">
-                <h6>Tela Financeiro<span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
-                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><h6>Em Desenvolvimento</h6></div>
-              </div>
-            </div>  
-        </div> -->
+        <!--Gráfico de Vendas-->
+              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/download/df_vendas_2022/Vendas"><center>Download</center></a> </div>
+            </div>
+          </div>
+          <!--Gráfico de Vendas-->
+          <!-- <canvas id="ChartVendas" width="500" height="300"></canvas>></canvas>
+          <script>
+            var ctx = document.getElementById("ChartVendas").getContext("2d")
+            var ChartVendas = new Chart(ctx, {
+              type: "line",
+              data: {
+                labels: {{ labels_vendas | safe }},
+                datasets: [
+                  {
+                    label: "Vendas 2022 por mês",
+                    data: {{ values_vendas | safe }},
+                    fill: false,
+                    borderCorlor: "rgb(75,192,192)",
+                    lineTension: 0.1
+                  }
+                ]
+              },
+              options: {
+                 responsive: false
+              }
+            });
+          </script> -->
+        <!--Gráfico de Vendas-->
         </div>
       </div>
     </main>

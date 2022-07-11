@@ -155,12 +155,7 @@ class Estoque(KPI):
         self.df_produtos_excesso_wms, self.df_produtos_falta_wms = self.count_estoque()
         self.df_inventario_por_marca = self.inventario().loc[:,['NomeFantasia','Inventário']].groupby('NomeFantasia').agg('sum')
         self.df_inventario_por_marca.Inventário = self.df_inventario_por_marca.Inventário.apply(lambda x: locale.currency(x, grouping=True))
-        self.df_vendas_2022 = self.vendas_ano_atual().loc[:,['NomeFantasia','ValorVenda']].groupby('NomeFantasia').agg('sum')
-        self.df_vendas_2022.ValorVenda = self.df_vendas_2022.ValorVenda.apply(lambda x: locale.currency(x, grouping=True))
-        self.df_vendas_por_mes = self.vendas_ano_atual().loc[:,['DataDaVenda','ValorVenda']]
-        self.df_vendas_por_mes.DataDaVenda = self.df_vendas_por_mes.DataDaVenda.apply(lambda x: datetime.strptime(x,'%d/%m/%Y').month)
-        self.df_vendas_por_mes = self.df_vendas_por_mes.groupby('DataDaVenda').agg('sum')
-        self.df_vendas_por_mes.ValorVenda = self.df_vendas_por_mes.ValorVenda.apply(lambda x: round(float(x),2))
+        self.df_vendas_2022 = self.vendas_ano_atual_tratada()
 
     def multiplica_fator(self):
         df1 = pd.read_excel(
@@ -269,17 +264,27 @@ class Estoque(KPI):
         df_preco_com_estoque['Inventário'] = df_preco_com_estoque['Preco']*df_preco_com_estoque['QuantidadeAjustada']
         return df_preco_com_estoque
 
-    def vendas_ano_atual(self,marca:str='',mes:int=0)->object:
+    def vendas_ano_atual(self,marca:str='')->object:
         
         df_vendas = sql_to_pd(sql.query_vendas_ano_atual)
 
         if marca:
             df_vendas = df_vendas.query(f'NomeFantasia == "{marca}"')
 
-        if mes:
-            df_vendas = df_vendas.query(f'NomeFantasia == {mes}')
-
         return df_vendas
+
+    def vendas_ano_atual_tratada(self,marca:str='')->object:
+        df_vendas_2022 = self.vendas_ano_atual(marca).loc[:,['NomeFantasia','ValorVenda']].groupby('NomeFantasia').agg('sum')
+        df_vendas_2022.ValorVenda = df_vendas_2022.ValorVenda.apply(lambda x: locale.currency(x, grouping=True))
+        return df_vendas_2022
+
+
+    def vendas_por_mes(self,marca:str='')->object:
+        df_vendas_por_mes = self.vendas_ano_atual(marca).loc[:,['DataDaVenda','ValorVenda']]
+        df_vendas_por_mes.DataDaVenda = df_vendas_por_mes.DataDaVenda.apply(lambda x: datetime.strptime(x,'%d/%m/%Y').month)
+        df_vendas_por_mes = df_vendas_por_mes.groupby('DataDaVenda').agg('sum')
+        df_vendas_por_mes.ValorVenda = df_vendas_por_mes.ValorVenda.apply(lambda x: round(float(x),2))
+        return df_vendas_por_mes
         
         
         
