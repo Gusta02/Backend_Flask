@@ -30,8 +30,9 @@ def home_financeiro():
     ano = date.today().year
     inventario_total = locale.currency(estoque.inventario().Inventário.sum(), grouping=True)
     venda_anual = locale.currency(estoque.vendas_ano_atual().ValorVenda.sum(), grouping=True)
+    marcas = ['Itagres','Elizabeth','Gaudi','Level']
 
-    marcas = ['','Itagres','Elizabeth','Gaudi','Level']
+    marca_selecionada = ''
 
     labels_vendas = []
     for row in range(1,8):
@@ -42,7 +43,7 @@ def home_financeiro():
     # 'Inventário': inventario_total
     }
 
-    return render_template('home_financeiro.html',cards = dict_variaveis, inventario_total = inventario_total,venda_anual = venda_anual, ano = ano,labels_vendas = labels_vendas, values_vendas = values_vendas, marcas = marcas)
+    return render_template('home_financeiro.html',cards = dict_variaveis, inventario_total = inventario_total,venda_anual = venda_anual, ano = ano,labels_vendas = labels_vendas, values_vendas = values_vendas, marcas = marcas,marca_selecionada = marca_selecionada)
 
 @financeiro.route('/download/<df>/<filename>',methods=['GET']) # Gera Arquivos em Excel para Download
 def download_excel(df,filename):
@@ -55,7 +56,3 @@ def download_excel(df,filename):
     'Content-type': 'application/vnd.ms-excel'
     }
     return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
-
-@financeiro.route("/dashboard/financeiro/<marca_selecionada>", methods=["GET","POST"])
-def marca_selecionada(marca = ''):
-    pass
