@@ -155,6 +155,8 @@ class Estoque(KPI):
         self.df_produtos_excesso_wms, self.df_produtos_falta_wms = self.count_estoque()
         self.df_inventario_por_marca = self.inventario().loc[:,['NomeFantasia','Inventário']].groupby('NomeFantasia').agg('sum')
         self.df_inventario_por_marca.Inventário = self.df_inventario_por_marca.Inventário.apply(lambda x: locale.currency(x, grouping=True))
+        self.df_vendas_2022 = self.vendas_ano_atual().loc[:,['NomeFantasia','ValorVenda']].groupby('NomeFantasia').agg('sum')
+        self.df_vendas_2022.ValorVenda = self.df_vendas_2022.ValorVenda.apply(lambda x: locale.currency(x, grouping=True))
 
     def multiplica_fator(self):
         df1 = pd.read_excel(

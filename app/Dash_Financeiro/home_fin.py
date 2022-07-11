@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, send_file,send_from_direc
 from sqlalchemy import true
 from ..controllers.controller_logistica import IntegracaoWms, Transporte
 from ..Dash_Logistica.kpis_luiz.main import estoque
+from datetime import date
 import locale
 import io
 
@@ -13,13 +14,15 @@ def home_financeiro():
 
     locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")
 
+    ano = date.today().year
     inventario_total = locale.currency(estoque.inventario().Inventário.sum(), grouping=True)
-    
+    venda_anual = locale.currency(estoque.vendas_ano_atual().ValorVenda.sum(), grouping=True)
+
     dict_variaveis = {
     # 'Inventário': inventario_total
     }
 
-    return render_template('home_financeiro.html',cards = dict_variaveis, inventario_total = inventario_total)
+    return render_template('home_financeiro.html',cards = dict_variaveis, inventario_total = inventario_total,venda_anual = venda_anual, ano = ano)
 
 @finaceiro.route('/download/<df>/<filename>',methods=['GET']) # Gera Arquivos em Excel para Download
 def download_excel(df,filename):
