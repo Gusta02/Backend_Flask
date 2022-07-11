@@ -12,6 +12,10 @@ from datetime import datetime, date
 import dateutil.relativedelta
 import math
 import pandas as pd
+import locale
+
+
+locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")
 
 
 class KPI(ABC):
@@ -149,6 +153,8 @@ class Estoque(KPI):
         self.df_rejeicoes_futuras = self.rejeicoes_futuras()
         self.df_produtos_nao_encontrados_wms = self.find_produtos_nao_econtrados_wms()
         self.df_produtos_excesso_wms, self.df_produtos_falta_wms = self.count_estoque()
+        self.df_inventario_por_marca = self.inventario().loc[:,['NomeFantasia','Inventário']].groupby('NomeFantasia').agg('sum')
+        self.df_inventario_por_marca.Inventário = self.df_inventario_por_marca.Inventário.apply(lambda x: locale.currency(x, grouping=True))
 
     def multiplica_fator(self):
         df1 = pd.read_excel(

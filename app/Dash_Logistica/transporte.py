@@ -22,7 +22,7 @@ def frete_arrecadado():
 
         resultado = (int(pedido) + int(showroom))
 
-        resultado = locale.currency(resultado)
+        resultado = locale.currency(resultado,grouping=True)
 
         return resultado
 
