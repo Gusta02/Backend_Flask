@@ -8,7 +8,6 @@ import io
 
 financeiro = Blueprint('financeiro', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
-
 @financeiro.route("/dashboard/financeiro", methods=["GET","POST"])
 def home_financeiro():
 
