@@ -149,15 +149,8 @@
             <div class="bg-holder bg-card" style="background-image:url(../static/assets/img/illustrations/corner-1.png);">
             </div>
             <div class="card-body position-relative">
-              <br>
               <h6> <center> Inventário </center><span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
-              <br>
-              <br>
-              <br>
               <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"> <center> {{inventario_total}} </center> </div>
-              <br>
-              <br>
-              <br>
               <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/download/df_inventario_por_marca/Inventário"><center>Download</center></a> </div>
             </div>
           </div>
@@ -167,57 +160,79 @@
             <div class="card-body position-relative">
               <h6> <center> Vendas {{ano}} </center> <span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
               <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"> <center> {{venda_anual}} </center></div>
+              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/download/df_vendas_por_mes_por_marca/Vendas"><center>Download</center></a> </div>
+            </div>
+          </div>
               <!--Gráfico de Vendas-->
           <canvas id="ChartVendas"></canvas> <!--width="500" height="300"-->
           <script>
             var ctx = document.getElementById("ChartVendas").getContext("2d")
             var ChartVendas = new Chart(ctx, {
-              type: "line",
+              type: 'line',
               data: {
                 labels: {{ labels_vendas | safe }},
                 datasets: [
                   {
-                    label: "Vendas 2022 por mês",
+                    label: "R$",
                     data: {{ values_vendas | safe }},
-                    fill: false,
-                    borderCorlor: "rgb(75,192,192)",
-                    lineTension: 0.1
+                    //fill: false,
+                    borderCorlor: "rgb(0, 255, 255)",
+                    //backgroundColor: "rgb(0, 255, 255)",
+                    //lineTension: 0.1
+                    //stack: 'combined',
+                    type: 'bar',
+                    yAxisID: 'y',
+                  },
+                  {
+                    label: "%",
+                    data: {{ values_vendas_pct | safe }},
+                    //fill: false,
+                    borderColor: "rgb(255, 0, 0)",
+                    backgroundColor: "rgb(255, 0, 0)",  
+                    //borderCorlor: "rgb(75,192,192)",
+                    //lineTension: 0.1
+                    //stack: 'combined',
+                    yAxisID: 'y1',
+                   //type: 'bar'
                   }
                 ]
               },
-              options: {
-                //responsive: false
-              }
-            });
+                  options: {
+                  responsive: true,
+                  interaction: {
+                    mode: 'index',
+                    intersect: false,
+                  },
+                  stacked: false,
+                  plugins: {
+                    title: {
+                      display: true,
+                      text: 'Vendas 2022'
+                    },
+                  },
+                scales: {
+                      y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                      },
+                      y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+
+                        // grid line settings
+                  grid: {
+                    drawOnChartArea: false, // only want the grid lines for one axis to show up
+                          },
+                        },
+                      },
+                    },
+                },);
           </script>
         <!--Gráfico de Vendas-->
-              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/download/df_vendas_2022/Vendas"><center>Download</center></a> </div>
-            </div>
-          </div>
-          <!--Gráfico de Vendas-->
-          <!-- <canvas id="ChartVendas" width="500" height="300"></canvas>></canvas>
-          <script>
-            var ctx = document.getElementById("ChartVendas").getContext("2d")
-            var ChartVendas = new Chart(ctx, {
-              type: "line",
-              data: {
-                labels: {{ labels_vendas | safe }},
-                datasets: [
-                  {
-                    label: "Vendas 2022 por mês",
-                    data: {{ values_vendas | safe }},
-                    fill: false,
-                    borderCorlor: "rgb(75,192,192)",
-                    lineTension: 0.1
-                  }
-                ]
-              },
-              options: {
-                 responsive: false
-              }
-            });
-          </script> -->
-        <!--Gráfico de Vendas-->
+              
+          
         </div>
       </div>
     </main>
