@@ -1,10 +1,10 @@
-from flask import Blueprint, render_template, request, send_file,send_from_directory, Response
-from sqlalchemy import true
-from ..controllers.controller_logistica import IntegracaoWms, Transporte
+from flask import Blueprint, render_template, request, Response
 from ..Dash_Logistica.kpis_luiz.main import estoque
+from ..Dash_Financeiro.kpis_michel.contas import Pagar_30dias, Pagar_60dias, Pagar_90dias, Receber_30dias, Receber_60dias, Receber_90dias
 from datetime import date
 import locale
 import io
+import pandas as pd
 
 financeiro = Blueprint('financeiro', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
@@ -44,6 +44,42 @@ def download_excel(df,filename):
     tabela.to_excel(buffer)
     headers = {
     'Content-Disposition': 'attachment; filename={}.xlsx'.format(filename),
+    'Content-type': 'application/vnd.ms-excel'
+    }
+    return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
+
+@financeiro.route('/download/pagar',methods=['GET'])
+def Pagar_Contas():
+    trinta =  Pagar_30dias()
+    sessenta = Pagar_60dias()
+    noventa = Pagar_90dias()
+    
+    buffer = io.BytesIO()
+    with pd.ExcelWriter(buffer) as writer:
+        trinta.to_excel(writer, sheet_name = '30Dias')
+        sessenta.to_excel(writer, sheet_name = '60Dias')
+        noventa.to_excel(writer, sheet_name = '90Dias')
+
+    headers = {
+    'Content-Disposition': 'attachment; filename=DadosPagar.xlsx',
+    'Content-type': 'application/vnd.ms-excel'
+    }
+    return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
+
+@financeiro.route('/download/receber',methods=['GET'])
+def Receber_Contas():
+    trinta = Receber_30dias()
+    sessenta = Receber_60dias()
+    noventa = Receber_90dias()
+
+    buffer = io.BytesIO()
+    with pd.ExcelWriter(buffer) as writer:
+        trinta.to_excel(writer, sheet_name = '30Dias')
+        sessenta.to_excel(writer, sheet_name = '60Dias')
+        noventa.to_excel(writer, sheet_name = '90Dias')
+    
+    headers = {
+    'Content-Disposition': 'attachment; filename=DadosReceber.xlsx',
     'Content-type': 'application/vnd.ms-excel'
     }
     return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
