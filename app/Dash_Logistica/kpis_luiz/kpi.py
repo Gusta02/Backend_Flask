@@ -26,7 +26,7 @@ class Entregas():
         self.nome = f"entregas_{(date.today() + dateutil.relativedelta.relativedelta(months=-1)).strftime('%m_%y')}"
         self.indice = self.calcula_indice()
 
-    @cache
+    
     def calcula_indice(self) -> float:
         self.df.drop_duplicates(subset=['CodigoPedido'], inplace=True)
         self.df['entregue_no_prazo'] = self.df['DataDeEntrega'] <= self.df['Prazo']
@@ -42,11 +42,10 @@ class SemEtapas():
         self.df = sql_to_pd(sql.query_sem_etapas)
         self.nome = 'entregas_por_estado'
 
-    @cache
     def calcula_sem_19(self) -> float:
         return self.df['DataSaiuParaEntrega'].isna().value_counts(normalize=True)
 
-    @cache
+    
     def calcula_sem_7(self) -> float:
         return self.df['DataFoiParaTransito'].isna().value_counts(normalize=True)
 
@@ -58,6 +57,7 @@ class PedidoPerfeito():
         self.indice = None
         self.nome = 'pedido_perfeito'
 
+    
     def calcula_indice(self) -> float:
         df_pipefy = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/pedidos_pipefy.xlsx',
                                   usecols=['Numero do pedido'], engine='openpyxl')
