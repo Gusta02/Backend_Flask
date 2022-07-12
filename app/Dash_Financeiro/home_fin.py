@@ -1,15 +1,36 @@
+from re import T
 from flask import Blueprint, render_template, request, send_file,send_from_directory, Response
 from sqlalchemy import true
-from ..controllers.controller_logistica import IntegracaoWms, Transporte
+from ..controllers.controller_logistica import ControllerFinanceiro, IntegracaoWms
 from ..Dash_Logistica.kpis_luiz.main import estoque
-from datetime import date
+from datetime import date,datetime
 import locale
 import io
+import pandas as pd
 
 financeiro = Blueprint('financeiro', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
+def grafico_volumeXfinanceiro():
+    pedidonovos = ControllerFinanceiro.PedidosBdNovo()
+    pedidonovos = pd.DataFrame(pedidonovos)
+
+    showroomnovo = ControllerFinanceiro.ShowroomBdNovo()
+    showroomnovo = pd.DataFrame(showroomnovo)
+
+    Pedidosantigos = pd.read_csv('app/Dash_Financeiro/planilhas/dados_banco_antigo.csv')
+
+    tabelao = pd.concat([pedidonovos,showroomnovo,Pedidosantigos], sort=False, ignore_index=True)
+    tabelao = tabelao.groupby(['Marca','Mes','Ano']).agg('sum')
+    tabelao.valorTotal = tabelao.valorTotal.apply(lambda x: round(float(x),2))
+
+    
+    return tabelao
+
+
 @financeiro.route("/dashboard/financeiro", methods=["GET","POST"])
 def home_financeiro():
+
+    teste = grafico_volumeXfinanceiro()
 
     ################# Seleção da moeda brasileira e do ano atual
     locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")  

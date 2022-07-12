@@ -16,6 +16,7 @@ database = env['database']
 usuario = env['usuario']
 password = env['password']
 
+
 patharquivos = os.path.abspath(os.path.dirname(__file__))
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','csv','xlsx'}
 
@@ -31,6 +32,12 @@ def get_connection() -> URL:
     url_db = quote_plus(connection_string)
     connection_url = f'mssql+pyodbc:///?odbc_connect=+{url_db}'
     return create_engine(connection_url,fast_executemany=True)
+
+# def connection() -> URL:
+#     connection_string = """{};SERVER={};DATABASE={};UID={};PWD={}""".format(driv,servidor,banco,uid,pwd)
+#     url_db = quote_plus(connection_string)
+#     connection_url = f'mssql+pyodbc:///?odbc_connect=+{url_db}'
+#     return create_engine(connection_url,fast_executemany=True)
 
 
 
