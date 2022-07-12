@@ -2,42 +2,31 @@
 """
 Created on Wed Jun 29 14:23:23 2022
 
-@author: Hausz
+@author: Luiz Gagliardi
 
 """
 from app.Dash_Logistica.kpis_luiz import sql_queries as sql
 from app.Dash_Logistica.kpis_luiz.data_extractor import sql_to_pd
-from abc import ABC, abstractmethod
 from datetime import datetime, date
+from functools import cache
 import dateutil.relativedelta
 import math
 import pandas as pd
 import locale
+import numpy as np
+
 
 
 locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")
 
-
-class KPI(ABC):
-
-    @abstractmethod
-    def __init__(self):
-        self.df = None
-        self.indice = None
-        self.nome = 'no_name'
-
-    @abstractmethod
-    def calcula_indice(self):
-        pass
-
-
-class Entregas(KPI):
+class Entregas():
 
     def __init__(self):
         self.df = sql_to_pd(sql.query_entregaxprazo)
         self.nome = f"entregas_{(date.today() + dateutil.relativedelta.relativedelta(months=-1)).strftime('%m_%y')}"
         self.indice = self.calcula_indice()
 
+    @cache
     def calcula_indice(self) -> float:
         self.df.drop_duplicates(subset=['CodigoPedido'], inplace=True)
         self.df['entregue_no_prazo'] = self.df['DataDeEntrega'] <= self.df['Prazo']
@@ -47,23 +36,22 @@ class Entregas(KPI):
         return entregues_no_prazo
 
 
-class SemEtapas(KPI):
+class SemEtapas():
 
     def __init__(self):
         self.df = sql_to_pd(sql.query_sem_etapas)
         self.nome = 'entregas_por_estado'
 
-    def calcula_indice(self):
-        pass
-
+    @cache
     def calcula_sem_19(self) -> float:
         return self.df['DataSaiuParaEntrega'].isna().value_counts(normalize=True)
 
+    @cache
     def calcula_sem_7(self) -> float:
         return self.df['DataFoiParaTransito'].isna().value_counts(normalize=True)
 
 
-class PedidoPerfeito(KPI):
+class PedidoPerfeito():
 
     def __init__(self):
         self.df = sql_to_pd(sql.query_pedido_perfeito)
@@ -120,7 +108,7 @@ class IndicadorPerformance():
         return valor_total / peso_total
 
 
-class DockStockTime(KPI):
+class DockStockTime():
 
     def __init__(self):
         self.df = None
@@ -143,7 +131,7 @@ class DockStockTime(KPI):
         return {'SP': dockformatado2, 'SC': dockformatado1, 'Media': media}
 
 
-class Estoque(KPI):
+class Estoque():
 
     def __init__(self):
         self.df, self.df_produtos_nao_encontrados_sistema = self.multiplica_fator()
@@ -155,7 +143,9 @@ class Estoque(KPI):
         self.df_produtos_excesso_wms, self.df_produtos_falta_wms = self.count_estoque()
         self.df_inventario_por_marca = self.inventario().loc[:,['NomeFantasia','Inventário']].groupby('NomeFantasia').agg('sum')
         self.df_inventario_por_marca.Inventário = self.df_inventario_por_marca.Inventário.apply(lambda x: locale.currency(x, grouping=True))
-        self.df_vendas_2022 = self.vendas_ano_atual_tratada()
+        self.df_vendas_por_mes_por_marca = self.vendas_por_mes_por_marca()
+        self.marcas = self.df_vendas_por_mes_por_marca.index.tolist()
+        # self.df_vendas_2022 = self.vendas_ano_atual_tratada()
 
     def multiplica_fator(self):
         df1 = pd.read_excel(
@@ -264,32 +254,51 @@ class Estoque(KPI):
         df_preco_com_estoque['Inventário'] = df_preco_com_estoque['Preco']*df_preco_com_estoque['QuantidadeAjustada']
         return df_preco_com_estoque
 
-    def vendas_ano_atual(self,marca:str='')->object:
+    def vendas_por_mes_por_marca(self)->object:
         
         df_vendas = sql_to_pd(sql.query_vendas_ano_atual)
+        df_vendas = df_vendas.loc[:,['NomeFantasia','DataDaVenda','ValorVenda']]
+        df_vendas.DataDaVenda = df_vendas.DataDaVenda.apply(lambda x: datetime.strptime(x,'%d/%m/%Y').month)
+        df_vendas = df_vendas.groupby(['DataDaVenda','NomeFantasia']).agg('sum').unstack(0)
+        df_vendas = df_vendas.fillna(0)
+        df_vendas = df_vendas.applymap(lambda x: round(float(x),2))
 
-        if marca:
-            df_vendas = df_vendas.query(f'NomeFantasia == "{marca}"')
-
+        # if marca:
+        #     df_vendas = df_vendas.query(f'NomeFantasia == "{marca}"')
+        # else:
+        #     df_vendas = df_vendas.sum()
+        
         return df_vendas
 
-    def vendas_ano_atual_tratada(self,marca:str='')->object:
-        df_vendas_2022 = self.vendas_ano_atual(marca).loc[:,['NomeFantasia','ValorVenda']].groupby('NomeFantasia').agg('sum')
-        df_vendas_2022.ValorVenda = df_vendas_2022.ValorVenda.apply(lambda x: locale.currency(x, grouping=True))
-        return df_vendas_2022
+    def calcula_venda_total(self,marca:str=''):
+
+        return self.filtra_marca(marca).sum()
 
 
-    def vendas_por_mes(self,marca:str='')->object:
-        df_vendas_por_mes = self.vendas_ano_atual(marca).loc[:,['DataDaVenda','ValorVenda']]
-        df_vendas_por_mes.DataDaVenda = df_vendas_por_mes.DataDaVenda.apply(lambda x: datetime.strptime(x,'%d/%m/%Y').month)
-        df_vendas_por_mes = df_vendas_por_mes.groupby('DataDaVenda').agg('sum')
-        df_vendas_por_mes.ValorVenda = df_vendas_por_mes.ValorVenda.apply(lambda x: round(float(x),2))
-        return df_vendas_por_mes
-        
-        
-        
+    def filtra_marca(self,marca:str=''):
 
-class LeadTime(KPI):
+        if marca:
+            df_vendas = self.df_vendas_por_mes_por_marca.query(f'NomeFantasia == "{marca}"').sum()
+        else:
+            df_vendas = self.df_vendas_por_mes_por_marca.sum()
+
+        return df_vendas
+    
+    def calcula_pct(self,marca:str=''):
+        pct = self.filtra_marca(marca).ValorVenda.pct_change().apply(lambda x: round(x*100,1)).fillna(0)
+        pct = pct.replace([np.inf, -np.inf], 0)
+        pct = pct.tolist()
+        pct[0] = 0
+        return pct
+     
+
+    # def vendas_ano_atual_tratada(self,marca:str='')->object:
+    #     df_vendas_2022 = self.df_vendas_por_mes_por_marca
+    #     df_vendas_2022.ValorVenda = df_vendas_2022.ValorVenda.apply(lambda x: locale.currency(x, grouping=True))
+    #     return df_vendas_2022
+        
+        
+class LeadTime():
 
     def __init__(self):
         self.df = sql_to_pd(sql.query_entregas_por_estado)

@@ -42,20 +42,22 @@ def home_financeiro():
     if request.method == 'POST':
         marca_selecionada = request.form.get('marca')
     
-    marcas = estoque.vendas_ano_atual().NomeFantasia.unique().tolist()
+    marcas = estoque.marcas
     inventario_total = locale.currency(estoque.inventario(marca=marca_selecionada).Inventário.sum(), grouping=True)
-    venda_anual = locale.currency(estoque.vendas_ano_atual(marca=marca_selecionada).ValorVenda.sum(), grouping=True)
+    venda_anual = locale.currency(estoque.calcula_venda_total(marca=marca_selecionada), grouping=True)
     
     meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
     labels_vendas = meses[:date.today().month]
-    values_vendas = estoque.vendas_por_mes(marca_selecionada).ValorVenda.tolist()
+    values_vendas = estoque.filtra_marca(marca_selecionada).ValorVenda.tolist()
+    values_vendas_pct = estoque.calcula_pct(marca_selecionada)
+        
 
     ################# Dicionário para a geração automática de cards ######################
     dict_variaveis = {
     # 'Inventário': inventario_total
     }
     
-    return render_template('home_financeiro.html',cards = dict_variaveis, inventario_total = inventario_total,venda_anual = venda_anual, ano = ano,labels_vendas = labels_vendas, values_vendas = values_vendas, marcas = marcas,marca_selecionada = marca_selecionada)
+    return render_template('home_financeiro.html',cards = dict_variaveis, inventario_total = inventario_total,venda_anual = venda_anual, ano = ano,labels_vendas = labels_vendas, values_vendas = values_vendas, marcas = marcas,marca_selecionada = marca_selecionada, values_vendas_pct = values_vendas_pct)
 
 @financeiro.route('/download/<df>/<filename>',methods=['GET']) # Gera Arquivos em Excel para Download
 def download_excel(df,filename):
