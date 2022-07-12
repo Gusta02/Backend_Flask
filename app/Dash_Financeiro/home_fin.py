@@ -3,8 +3,11 @@ from sqlalchemy import true
 from ..controllers.controller_logistica import IntegracaoWms, Transporte
 from ..Dash_Logistica.kpis_luiz.main import estoque
 from datetime import date
+from..Dash_Financeiro.kpis_michel.contas import Pagar_30dias,Pagar_60dias,Pagar_90dias, Receber_30dias,Receber_60dias,Receber_90dias
 import locale
 import io
+import pandas as pd
+
 
 finaceiro = Blueprint('financeiro', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
@@ -37,6 +40,43 @@ def download_excel(df,filename):
     tabela.to_excel(buffer)
     headers = {
     'Content-Disposition': 'attachment; filename={}.xlsx'.format(filename),
+    'Content-type': 'application/vnd.ms-excel'
+    }
+    return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
+
+
+@finaceiro.route('/download/pagar',methods=['GET']) # Gera Arquivos em Excel para Download
+def pagar_excel():
+    trinta =  Pagar_30dias()
+    sessenta = Pagar_60dias()
+    noventa = Pagar_90dias()
+
+    buffer = io.BytesIO()
+    with pd.ExcelWriter (buffer) as writer:
+        trinta.to_excel(writer, sheet_name = '30dias')
+        sessenta.to_excel(writer, sheet_name = '60Dias')
+        noventa.to_excel(writer, sheet_name = '90Dias')
+
+    headers = {
+    'Content-Disposition': 'attachment; filename=PivotDadosPagar.xlsx',
+    'Content-type': 'application/vnd.ms-excel'
+    }
+    return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
+
+@finaceiro.route('/download/receber',methods=['GET'])
+def receber_excel():
+    trinta = Receber_30dias()
+    sessenta = Receber_60dias()
+    noventa = Receber_90dias()
+
+    buffer = io.BytesIO()
+    with pd.ExcelWriter(buffer) as writer:
+        trinta.to_excel(writer, sheet_name = '30Dias')
+        sessenta.to_excel(writer, sheet_name = '60Dias')
+        noventa.to_excel(writer, sheet_name = '90Dias')
+
+    headers = {
+    'Content-Disposition': 'attachment; filename=PivotDadosReceber.xlsx',
     'Content-type': 'application/vnd.ms-excel'
     }
     return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
