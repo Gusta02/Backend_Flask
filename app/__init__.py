@@ -55,7 +55,7 @@ def create_app():
         from .Dash_Logistica.Integracao_wms import wms
         from .Dash_Logistica.home_log import home
         from .Dash_Logistica.transporte import transporte
-        from . Dash_Financeiro.home_fin import finaceiro
+        from . Dash_Financeiro.home_fin import financeiro
         # from .uploads.uploads import uploads
         # from .relatorios.relatorios import relatorios
         # from .admin_app.admin_app import admin_app
@@ -69,7 +69,7 @@ def create_app():
         app.register_blueprint(wms)
         app.register_blueprint(home)
         app.register_blueprint(transporte)
-        app.register_blueprint(finaceiro)
+        app.register_blueprint(financeiro)
         #app.register_blueprint(relatorios)
         #app.register_blueprint(admin_app)
         #app.register_blueprint(relatoriosgraficos)
