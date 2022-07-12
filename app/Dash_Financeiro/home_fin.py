@@ -58,7 +58,7 @@ def Pagar_Contas():
     
     buffer = io.BytesIO()
     with pd.ExcelWriter(buffer) as writer:
-        trinta.to_excel(writer, sheet_name = '30Dias')
+        trinta.to_excel(writer, sheet_name = '30Dias', index = False)
         sessenta.to_excel(writer, sheet_name = '60Dias')
         noventa.to_excel(writer, sheet_name = '90Dias')
 
@@ -76,7 +76,7 @@ def Receber_Contas():
 
     buffer = io.BytesIO()
     with pd.ExcelWriter(buffer) as writer:
-        trinta.to_excel(writer, sheet_name = '30Dias')
+        trinta.to_excel(writer, sheet_name = '30Dias', index = False)
         sessenta.to_excel(writer, sheet_name = '60Dias')
         noventa.to_excel(writer, sheet_name = '90Dias')
     

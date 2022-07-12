@@ -1,3 +1,4 @@
+from time import strftime
 import pandas as pd
 from flask import Flask 
 from datetime import datetime, timedelta, date
@@ -41,6 +42,8 @@ def Pagar_30dias():
     Filtro_pagar = data.loc[data['TIPO'] == 'CONTAS A PAGAR',['DATA_VENCIMENTO','TIPO','CATEGORIA','SITUACAO',
     'CLIENTE_FORNECEDOR','OBSERVACAO_CONTA','VALOR_CONTA']]
 
+    Filtro_pagar['DATA_VENCIMENTO'] = strftime('%d-%m-%Y')
+
     
     return Filtro_pagar
 
@@ -61,6 +64,8 @@ def Pagar_60dias():
     
     Filtro_pagar = data.loc[data['TIPO'] == 'CONTAS A PAGAR',['DATA_VENCIMENTO','TIPO','CATEGORIA','SITUACAO',
     'CLIENTE_FORNECEDOR','OBSERVACAO_CONTA','VALOR_CONTA']]
+
+    Filtro_pagar['DATA_VENCIMENTO'] = strftime('%d-%m-%Y')
     
     return Filtro_pagar
 
@@ -82,6 +87,7 @@ def Pagar_90dias():
     Filtro_pagar = data.loc[data['TIPO'] == 'CONTAS A PAGAR',['DATA_VENCIMENTO','TIPO','CATEGORIA','SITUACAO',
     'CLIENTE_FORNECEDOR','OBSERVACAO_CONTA','VALOR_CONTA']]
     
+    Filtro_pagar['DATA_VENCIMENTO'] = strftime('%d-%m-%Y')
     
     return Filtro_pagar
 
@@ -104,6 +110,8 @@ def Receber_30dias():
     
     Filtro_receber = data.loc[data['TIPO'] == 'CONTAS A RECEBER',['DATA_VENCIMENTO','TIPO','CATEGORIA','SITUACAO',
     'CLIENTE_FORNECEDOR','OBSERVACAO_CONTA','VALOR_CONTA']]
+
+    Filtro_receber['DATA_VENCIMENTO'] = strftime('%d-%m-%Y')
  
     return  Filtro_receber
 
@@ -125,6 +133,8 @@ def Receber_60dias():
     Filtro_receber = data.loc[data['TIPO'] == 'CONTAS A RECEBER',['DATA_VENCIMENTO','TIPO','CATEGORIA','SITUACAO',
     'CLIENTE_FORNECEDOR','OBSERVACAO_CONTA','VALOR_CONTA']]
 
+    Filtro_receber['DATA_VENCIMENTO'] = strftime('%d-%m-%Y')
+
     return  Filtro_receber
 
 def Receber_90dias():
@@ -144,5 +154,7 @@ def Receber_90dias():
     
     Filtro_receber = data.loc[data['TIPO'] == 'CONTAS A RECEBER',['DATA_VENCIMENTO','TIPO','CATEGORIA','SITUACAO',
     'CLIENTE_FORNECEDOR','OBSERVACAO_CONTA','VALOR_CONTA']]
+
+    Filtro_receber['DATA_VENCIMENTO'] = strftime('%d-%m-%Y')
 
     return Filtro_receber
