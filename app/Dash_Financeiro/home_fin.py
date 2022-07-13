@@ -74,3 +74,39 @@ def download_excel(df,filename):
     'Content-type': 'application/vnd.ms-excel'
     }
     return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
+
+@financeiro.route('/download/pagar',methods=['GET'])
+def Pagar_Contas():
+    trinta =  Pagar_30dias()
+    sessenta = Pagar_60dias()
+    noventa = Pagar_90dias()
+    
+    buffer = io.BytesIO()
+    with pd.ExcelWriter(buffer) as writer:
+        trinta.to_excel(writer, sheet_name = '30Dias', index = False)
+        sessenta.to_excel(writer, sheet_name = '60Dias')
+        noventa.to_excel(writer, sheet_name = '90Dias')
+
+    headers = {
+    'Content-Disposition': 'attachment; filename=DadosPagar.xlsx',
+    'Content-type': 'application/vnd.ms-excel'
+    }
+    return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
+
+@financeiro.route('/download/receber',methods=['GET'])
+def Receber_Contas():
+    trinta = Receber_30dias()
+    sessenta = Receber_60dias()
+    noventa = Receber_90dias()
+
+    buffer = io.BytesIO()
+    with pd.ExcelWriter(buffer) as writer:
+        trinta.to_excel(writer, sheet_name = '30Dias', index = False)
+        sessenta.to_excel(writer, sheet_name = '60Dias')
+        noventa.to_excel(writer, sheet_name = '90Dias')
+    
+    headers = {
+    'Content-Disposition': 'attachment; filename=DadosReceber.xlsx',
+    'Content-type': 'application/vnd.ms-excel'
+    }
+    return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
