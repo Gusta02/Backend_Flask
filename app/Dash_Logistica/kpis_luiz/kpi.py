@@ -36,7 +36,7 @@ class Entregas():
 
 class SemEtapas():
 
-    def __init__(self):
+    def __init__(self): 
         self.df = sql_to_pd(sql.query_sem_etapas)
         self.nome = 'entregas_por_estado'
 
