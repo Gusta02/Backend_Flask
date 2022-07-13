@@ -8,7 +8,6 @@ Created on Wed Jun 29 14:23:23 2022
 from app.Dash_Logistica.kpis_luiz import sql_queries as sql
 from app.Dash_Logistica.kpis_luiz.data_extractor import sql_to_pd
 from datetime import datetime, date
-from functools import cache
 import dateutil.relativedelta
 import math
 import pandas as pd
@@ -145,7 +144,7 @@ class Estoque():
         self.df_inventario_por_marca.Inventário = self.df_inventario_por_marca.Inventário.apply(lambda x: locale.currency(x, grouping=True))
         self.df_vendas_por_mes_por_marca = self.vendas_por_mes_por_marca()
         self.marcas = self.df_vendas_por_mes_por_marca.index.tolist()
-        # self.df_vendas_2022 = self.vendas_ano_atual_tratada()
+
 
     def multiplica_fator(self):
         df1 = pd.read_excel(
@@ -263,11 +262,6 @@ class Estoque():
         df_vendas = df_vendas.fillna(0)
         df_vendas = df_vendas.applymap(lambda x: round(float(x),2))
 
-        # if marca:
-        #     df_vendas = df_vendas.query(f'NomeFantasia == "{marca}"')
-        # else:
-        #     df_vendas = df_vendas.sum()
-        
         return df_vendas
 
     def calcula_venda_total(self,marca:str=''):
@@ -290,13 +284,7 @@ class Estoque():
         pct = pct.tolist()
         pct[0] = 0
         return pct
-     
 
-    # def vendas_ano_atual_tratada(self,marca:str='')->object:
-    #     df_vendas_2022 = self.df_vendas_por_mes_por_marca
-    #     df_vendas_2022.ValorVenda = df_vendas_2022.ValorVenda.apply(lambda x: locale.currency(x, grouping=True))
-    #     return df_vendas_2022
-        
         
 class LeadTime():
 
