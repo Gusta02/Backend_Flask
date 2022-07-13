@@ -15,7 +15,6 @@ import locale
 import numpy as np
 
 
-
 locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")
 
 class Entregas():
