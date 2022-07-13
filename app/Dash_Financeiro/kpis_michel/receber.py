@@ -33,7 +33,7 @@ doze_meses =  doze.strftime('%Y-%m-%d')
 data = pd.read_excel('app/Dash_Financeiro/planilhas/pivot_202207.xlsx')
 
 # filtro os dados do dia atual até os proximos 15 dias
-def Pagar_15dias():
+def Receber_15dias():
     data = pd.read_excel('app/Dash_Financeiro/planilhas/pivot_202207.xlsx')
     
     data.columns =  ['DATA_EMITIDA','DATA_VENCIMENTO','TIPO','ORIGEM','SITUACAO','GRUPO','CATEGORIA',
@@ -117,7 +117,7 @@ def Receber_90dias():
     return Filtro_receber
 
 # filtro os dados do dia atual até os proximos 12 meses
-def Pagar_12meses():
+def Receber_12meses():
     data = pd.read_excel('app/Dash_Financeiro/planilhas/pivot_202207.xlsx')
     
     data.columns =  ['DATA_EMITIDA','DATA_VENCIMENTO','TIPO','ORIGEM','SITUACAO','GRUPO','CATEGORIA',

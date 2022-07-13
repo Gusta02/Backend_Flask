@@ -76,7 +76,7 @@ def Pagar_30dias():
 
 # filtro os dados do dia atual até os proximos 60 dias
 def Pagar_60dias():
-    data = pd.read_excel('pivot_202207.xlsx')
+    data = pd.read_excel('app/Dash_Financeiro/planilhas/pivot_202207.xlsx')
     
     data.columns =  ['DATA_EMITIDA','DATA_VENCIMENTO','TIPO','ORIGEM','SITUACAO','GRUPO','CATEGORIA',
     'CLIENTE_FORNECEDOR','CNPJ_CPF','OBSERVACAO_CONTA','DOCUMENTO_TIPO','VALOR_CONTA','PAGO_RECEBIDO','A_RECEBER_PAGAR']
