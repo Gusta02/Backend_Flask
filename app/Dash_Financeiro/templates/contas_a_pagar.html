@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -11,7 +10,7 @@
     <!-- ===============================================-->
     <!--    Document Title-->
     <!-- ===============================================-->
-    <title>Contas a Pagar - Hausz</title>
+    <title>Contas a Receber - Hausz</title>
 
     <!-- ===============================================-->
     <!--    Favicons-->
@@ -83,7 +82,7 @@
                   </li>
                   <li class="nav-item"><a class="nav-link" href="{{ url_for('transporte.Transporte_rota') }}">Relatório Transportes</a>
                   </li>
-                  <li class="nav-item active"><a class="nav-link" href="{{ url_for('wms.Integracao_wms_first_page', page = 1) }}">Integração WMS</a>
+                  <li class="nav-item "><a class="nav-link" href="{{ url_for('wms.Integracao_wms_first_page', page = 1) }}">Integração WMS</a>
                   </li> 
                 </ul>
               </li>
@@ -95,6 +94,10 @@
                 </a>
                 <ul class="nav collapse show" id="Financeiro" data-parent="#navbarVerticalCollapse">
                   <li class="nav-item"><a class="nav-link" href="{{ url_for('financeiro.home_financeiro') }}">Relatorio Financeiro</a>
+                  </li>
+                  <li class="nav-item"><a class="nav-link active" href="{{ url_for('Contas_Pagar.Contas_a_Pagar') }}">Contas a Pagar</a>
+                  </li>
+                  <li class="nav-item"><a class="nav-link " href="{{ url_for('Contas_Receber.Contas_a_Receber') }}">Contas a Receber</a>
                   </li>
                 </ul>
               </li>
@@ -160,7 +163,7 @@
               <div class="card-body position-relative">
 
                 <h6>Rejeições do dia anterior</h6>
-              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light">{{ card4[0]['quantidade_de_rejeicao'] }}</div>
+              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light">a</div>
 
               </div>
             </div>
@@ -242,11 +245,11 @@
             </div>
             <div class="card-body px-0 pt-0">
               <div class="dashboard-data-table">
-                {% if aaa == 0: %}
-                <table class="table table-sm table-dashboard fs--1" data-options='{"pageLength":15}'>
-                {% else: %}
+                <!-- {% if aaa == 0: %} -->
+                <!-- <table class="table table-sm table-dashboard fs--1" data-options='{"pageLength":15}'> -->
+                <!-- {% else: %} -->
                 <table class="table table-sm table-dashboard fs--1" data-options='{"pageLength":5}'>
-                {% endif %}
+                <!-- {% endif %} -->
                   <thead class="bg-200 text-900">
                     <tr>
                     
@@ -263,26 +266,26 @@
                   </thead>
                   <tbody id="purchases">
                     <!-- LINHA TABELA -->
-                    {% for i in tabela %}
+                    <!-- {% for i in tabela %} -->
 
                     <tr class="btn-reveal-trigger">
-                      <td class="align-middle">{{ i["CodigoPedido"] }}</td>
-                      <td class="align-middle">{{ i["PedidoCorpEM"] }}</td>
-                      <td class="align-middle">{{ i["sku"] }}</td>
-                      <td class="align-middle">{{ i["Id"] }}</td>
-                      <td class="align-middle">{{ i["Quantidade"] }}</td>
-                      <td class="align-middle">{{ i["Quantidade_faltante"] }}</td>
-                      <td class="align-middle">{{ i["Data_Rejeicao"] }}</td>
+                      <td class="align-middle">a<!--{{ i["CodigoPedido"] }}--></td>
+                      <td class="align-middle">a<!--{{ i["PedidoCorpEM"] }}--></td>
+                      <td class="align-middle">a<!--{{ i["sku"] }}--></td>
+                      <td class="align-middle">a<!--{{ i["Id"] }}--></td>
+                      <td class="align-middle">a<!--{{ i["Quantidade"] }}--></td>
+                      <td class="align-middle">a<!--{{ i["Quantidade_faltante"] }}--></td>
+                      <td class="align-middle">a<!--{{ i["Data_Rejeicao"] }}--></td>
                     </tr>
-                    {% endfor %}
+                    <!-- {% endfor %} -->
                     <!-- FIM DA LINHA TABELA -->
                   </tbody>
 
                 </table>
 
-                {% if aaa == 0: %}
+                <!-- {% if aaa == 0: %}
                 <div></div>
-                {% else: %}
+                {% else: %} -->
                 <div class="align-middle">
                   <th scope="row"><a href="{{page-1}}" class="btn btn-outline-dark">Inicio</a></th>
                   <th scope="row"><a href="{{page}}" class="btn btn-outline-dark">{{page}}</a></th>
@@ -291,7 +294,7 @@
                   <th scope="row"><a href="{{page+3}}" class="btn btn-outline-dark">{{page+3}}</a></th>
                   <th scope="row"><a href="{{page+4}}" class="btn btn-outline-dark">next</a></th>
                 </div>
-                {% endif %}
+                <!-- {% endif %} -->
               </div>
             </div>
           </div>
