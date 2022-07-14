@@ -176,7 +176,6 @@
             var ctx = document.getElementById("ChartVendas").getContext("2d")
             var ChartVendas = new Chart(ctx, {
               plugins: [ChartDataLabels],
-              type: 'line',
               data: {
                 labels: {{ labels_vendas | safe }},
                 datasets: [
@@ -184,24 +183,46 @@
                     label: "R$",
                     data: {{ values_vendas | safe }},
                     //fill: false,
-                    borderCorlor: "rgb(0, 255, 255)",
-                    //backgroundColor: "rgb(0, 255, 255)",
+                    //borderCorlor: "blue",
+                    backgroundColor: "rgb(256,244,236)",
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'start',
+                        color: 'blue',
+                        formatter: function(value) {
+                          return 'R$ ' + Number(value).toLocaleString();
+                        }
+                    },
                     //lineTension: 0.1
                     //stack: 'combined',
                     type: 'bar',
                     yAxisID: 'y',
+                    order: 2
                   },
                   {
+                    type: 'line',
                     label: "%",
                     data: {{ values_vendas_pct | safe }},
                     //fill: false,
-                    borderColor: "rgb(255, 0, 0)",
-                    backgroundColor: "rgb(255, 0, 0)",  
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        offset: 20,
+                        display: 'auto',
+                        color: 'green',
+                        //clip: true,
+                        formatter: function(value) {
+                          return value + '%';
+                        }
+                    },
+                    borderColor: "red",
+                    backgroundColor: "red",  
                     //borderCorlor: "rgb(75,192,192)",
                     //lineTension: 0.1
                     //stack: 'combined',
                     yAxisID: 'y1',
                    //type: 'bar'
+                   order: 1
                   }
                 ]
               },
@@ -218,11 +239,9 @@
                       text: 'Vendas 2022'
                     },
                     datalabels: {
-                        formatter: function(value, context) {
-                          return context.dataIndex + ': ' + value + '%';
-                        },
-                       color: 'blue',
-                      
+                        // formatter: function(value) {
+                        //   return value + '%';
+                        // },                      
                       labels: {
                         title: {
                           font: {
