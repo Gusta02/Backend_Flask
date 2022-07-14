@@ -93,7 +93,7 @@
                   </div>
                 </a>
                 <ul class="nav collapse show" id="Financeiro" data-parent="#navbarVerticalCollapse">
-                  <li class="nav-item"><a class="nav-link" href="{{ url_for('financeiro.home_financeiro') }}">Relatorio Financeiro</a>
+                  <li class="nav-item"><a class="nav-link" href="{{ url_for('financeiro.home_financeiro') }}">Dossiê Financeiro</a>
                   </li>
                   <li class="nav-item"><a class="nav-link active" href="{{ url_for('Contas_Pagar.Contas_a_Pagar') }}">Contas a Pagar</a>
                   </li>
@@ -131,22 +131,23 @@
               <div class="bg-holder bg-card">
               </div>
               <div class="card-body position-relative">
-                <h6> Rejeições do dia</h6>
-                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light">{{ card1 }}</div>
+                <h5> <center> UHome </center><span class="badge badge-soft-warning rounded-capsule ml-2"></span></h5>
+                <h6> <center>Contas a Pagar</h6>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/download/Contas_a_Pagar"><center>Download Excel</center></a> </div>
               </div>
             </div>
             <!-- FIM CARD -->
             <!-- CARD2 -->
-            <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+            <!-- <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
               <div class="bg-holder bg-card">
               </div>
               <div class="card-body position-relative">
                 <h6>Percentual com base no dia anterior</h6>
                 <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light">{{ card2 }}%</div>
               </div>
-            </div>
+            </div> -->
             <!-- FIM CARD -->
-            <!-- CARD3 -->
+            <!-- CARD3
             <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
               <div class="bg-holder bg-card">
               </div>
@@ -157,19 +158,19 @@
             </div>
             <!-- FIM CARD -->
             <!-- CARD4 -->
-            <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+            <!-- <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
               <div class="bg-holder bg-card">
               </div>
               <div class="card-body position-relative">
 
                 <h6>Rejeições do dia anterior</h6>
-              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light">a</div>
-
+              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light">a</div> -->
+<!-- 
               </div>
-            </div>
+            </div> -->
             <!-- FIM CARD -->
             <!-- CARD5 -->
-            <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+            <!-- <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
               <div class="bg-holder bg-card">
               </div>
       
@@ -177,10 +178,10 @@
                 <h6>Numero de rejeicoes do mes anterior</h6>
                 <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light">{{ card5 }}</div>
               </div>
-            </div>
+            </div> -->
             <!-- FIM CARD -->
             <!-- CARD6 -->
-            <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+            <!-- <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
               <div class="bg-holder bg-card">
               </div>
               <div class="card-body position-relative">
@@ -189,30 +190,30 @@
               </div>
             </div>
              <!-- CARD7 -->
-            <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+            <!-- <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
               <div class="bg-holder bg-card">
               </div>
               <div class="card-body position-relative">
                 <h6> Falhas na integração Hoje </h6>
                 <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light">{{ card7 }}</div>
               </div>
-            </div>
+            </div> --> 
           <!-- FIM DO CARD7 -->
           <!-- CARD8 -->
-          <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+          <!-- <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
             <div class="bg-holder bg-card">
             </div>
             <div class="card-body position-relative">
               <h6> Falhas de Integração Não Resolvidas </h6>
               <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light">{{ card8 }}</div>
             </div>
-          </div>
+          </div> -->
         <!-- FIM DO CARD8 -->
-          </div>
+          </div> 
           <!-- FIM DOS CARDS -->
          
           <!-- TABELA -->
-          <div class="card mb-3">
+          <!-- <div class="card mb-3">
             <div class="card-header">
               <div class="row align-items-center justify-content-between">
                 <div class="col-6 col-sm-auto d-flex align-items-center pr-0">
@@ -244,17 +245,17 @@
               </div>
             </div>
             <div class="card-body px-0 pt-0">
-              <div class="dashboard-data-table">
+              <div class="dashboard-data-table"> -->
                 <!-- {% if aaa == 0: %} -->
                 <!-- <table class="table table-sm table-dashboard fs--1" data-options='{"pageLength":15}'> -->
                 <!-- {% else: %} -->
-                <table class="table table-sm table-dashboard fs--1" data-options='{"pageLength":5}'>
-                <!-- {% endif %} -->
-                  <thead class="bg-200 text-900">
+                <!-- <table class="table table-sm table-dashboard fs--1" data-options='{"pageLength":5}'>
+                {% endif %} -->
+                  <!-- <thead class="bg-200 text-900">
                     <tr>
                     
                       <!-- Cabeçalho Tabela -->
-                      <th class="sort pr-1 align-middle">Cod. Pedido</th>
+                      <!-- <th class="sort pr-1 align-middle">Cod. Pedido</th>
                       <th class="sort pr-1 align-middle">Versão Pedido</th>
                       <th class="sort pr-1 align-middle">SKU</th>
                       <th class="sort pr-1 align-middle">Rejeição ID</th>
@@ -264,37 +265,37 @@
 
                     </tr>
                   </thead>
-                  <tbody id="purchases">
+                  <tbody id="purchases"> --> 
                     <!-- LINHA TABELA -->
                     <!-- {% for i in tabela %} -->
 
-                    <tr class="btn-reveal-trigger">
-                      <td class="align-middle">a<!--{{ i["CodigoPedido"] }}--></td>
-                      <td class="align-middle">a<!--{{ i["PedidoCorpEM"] }}--></td>
-                      <td class="align-middle">a<!--{{ i["sku"] }}--></td>
-                      <td class="align-middle">a<!--{{ i["Id"] }}--></td>
-                      <td class="align-middle">a<!--{{ i["Quantidade"] }}--></td>
-                      <td class="align-middle">a<!--{{ i["Quantidade_faltante"] }}--></td>
-                      <td class="align-middle">a<!--{{ i["Data_Rejeicao"] }}--></td>
-                    </tr>
-                    <!-- {% endfor %} -->
+                    <!-- <tr class="btn-reveal-trigger"> -->
+                      <!-- <td class="align-middle">a{{ i["CodigoPedido"] }}</td> 
+                      <td class="align-middle">a<!--{{ i["PedidoCorpEM"] }}</td>
+                      <td class="align-middle">a{{ i["sku"] }}</td>
+                      <!-- <td class="align-middle">a{{ i["Id"] }}</td> -->
+                      <!-- <td class="align-middle">a{{ i["Quantidade"] }}</td> -->
+                      <!-- <td class="align-middle">a{{ i["Quantidade_faltante"] }}</td> -->
+                      <!-- <td class="align-middle">a{{ i["Data_Rejeicao"] }}</td> -->
+                    <!-- </tr> -->
+                    <!-- {% endfor %} --> 
                     <!-- FIM DA LINHA TABELA -->
-                  </tbody>
+                  <!-- </tbody> -->
 
-                </table>
+                <!-- </table> -->
 
                 <!-- {% if aaa == 0: %}
                 <div></div>
                 {% else: %} -->
-                <div class="align-middle">
-                  <th scope="row"><a href="{{page-1}}" class="btn btn-outline-dark">Inicio</a></th>
-                  <th scope="row"><a href="{{page}}" class="btn btn-outline-dark">{{page}}</a></th>
-                  <th scope="row"><a href="{{page+1}}" class="btn btn-outline-dark">{{page+1}}</a></th>
-                  <th scope="row"><a href="{{page+2}}" class="btn btn-outline-dark">{{page+2}}</a></th>
-                  <th scope="row"><a href="{{page+3}}" class="btn btn-outline-dark">{{page+3}}</a></th>
-                  <th scope="row"><a href="{{page+4}}" class="btn btn-outline-dark">next</a></th>
-                </div>
-                <!-- {% endif %} -->
+                <!-- <div class="align-middle"> -->
+                  <!-- <th scope="row"><a href="{{page-1}}" class="btn btn-outline-dark">Inicio</a></th> -->
+                  <!-- <th scope="row"><a href="{{page}}" class="btn btn-outline-dark">{{page}}</a></th> -->
+                  <!-- <th scope="row"><a href="{{page+1}}" class="btn btn-outline-dark">{{page+1}}</a></th> -->
+                  <!-- <th scope="row"><a href="{{page+2}}" class="btn btn-outline-dark">{{page+2}}</a></th> -->
+                  <!-- <th scope="row"><a href="{{page+3}}" class="btn btn-outline-dark">{{page+3}}</a></th> -->
+                  <!-- <th scope="row"><a href="{{page+4}}" class="btn btn-outline-dark">next</a></th> -->
+                <!-- </div>
+                {% endif %} -->
               </div>
             </div>
           </div>
