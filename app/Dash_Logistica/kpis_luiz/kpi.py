@@ -271,9 +271,9 @@ class Estoque():
     def filtra_marca(self,marca:str=''):
 
         if marca:
-            df_vendas = self.df_vendas_por_mes_por_marca.query(f'NomeFantasia == "{marca}"').sum()
+            df_vendas = self.df_vendas_por_mes_por_marca.query(f'NomeFantasia == "{marca}"').sum().apply(lambda x: round(x))
         else:
-            df_vendas = self.df_vendas_por_mes_por_marca.sum()
+            df_vendas = self.df_vendas_por_mes_por_marca.sum().apply(lambda x: round(x))
 
         return df_vendas
     
