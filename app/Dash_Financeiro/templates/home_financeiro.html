@@ -38,7 +38,8 @@
     <link href="{{ url_for('financeiro.static', filename='assets/css/theme.css') }}" rel="stylesheet">
     <link href="{{ url_for('financeiro.static', filename='assets/css/mapa_home.css') }}" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!--Importação do Charts.js para criação de gráficos-->
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
    
 
   </head>
@@ -189,8 +190,10 @@
               <!--Gráfico de Vendas-->
           <canvas id="ChartVendas"></canvas> <!--width="500" height="300"-->
           <script>
+            Chart.register(ChartDataLabels);
             var ctx = document.getElementById("ChartVendas").getContext("2d")
             var ChartVendas = new Chart(ctx, {
+              plugins: [ChartDataLabels],
               type: 'line',
               data: {
                 labels: {{ labels_vendas | safe }},
@@ -231,6 +234,23 @@
                     title: {
                       display: true,
                       text: 'Vendas 2022'
+                    },
+                    datalabels: {
+                        formatter: function(value, context) {
+                          return context.dataIndex + ': ' + value + '%';
+                        },
+                       color: 'blue',
+                      
+                      labels: {
+                        title: {
+                          font: {
+                            weight: 'bold'
+                          }
+                        },
+                        value: {
+                          color: 'green'
+                        }
+                      }
                     },
                   },
                 scales: {
