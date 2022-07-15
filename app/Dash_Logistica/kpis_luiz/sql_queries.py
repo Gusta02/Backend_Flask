@@ -376,11 +376,20 @@ SELECT pp.[SKU]
 #   Group by prodsfornec.NomeFantasia, MONTH(itens.DataInserido)
 #   '''
 
-with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query_valor_de_venda_por_marca_por_dia_2022_com_showroom_versão_forçada.sql')) as f:
+# with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query_valor_de_venda_por_marca_por_dia_2022_com_showroom_versão_forçada.sql')) as f:
+# 	query_vendas_ano_atual = f.read()
+
+# with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query_valor_de_venda_por_marca_por_dia_ano_atual_cliente.sql')) as f:
+# 	query_vendas_ano_atual_cliente = f.read()
+
+# with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query_valor_de_venda_por_marca_por_dia_ano_atual_showroom.sql')) as f:
+# 	query_vendas_ano_atual_showroom = f.read()
+
+with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query_valor_de_venda_por_marca_por_dia_ano_atual_versão_forçada_mes_ano.sql')) as f:
 	query_vendas_ano_atual = f.read()
 
-with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query_valor_de_venda_por_marca_por_dia_ano_atual_cliente.sql')) as f:
+with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query_valor_de_venda_por_marca_por_dia_ano_atual_cliente_mes_ano.sql')) as f:
 	query_vendas_ano_atual_cliente = f.read()
 
-with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query_valor_de_venda_por_marca_por_dia_ano_atual_showroom.sql')) as f:
+with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query_valor_de_venda_por_marca_por_dia_ano_atual_showroom_mes_ano.sql')) as f:
 	query_vendas_ano_atual_showroom = f.read()

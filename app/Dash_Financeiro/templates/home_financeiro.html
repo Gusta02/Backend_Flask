@@ -139,24 +139,20 @@
                     <option value="{{marca}}">{{marca}}</option>
                   {% endfor %}
               </select>
-              
-              <button type="submit">Selecionar</button>
-        </form> </center>
+  
         </div>
         <div class="col-auto d-none d-sm-block">
-          <center> <form method="POST" action="/dashboard/financeiro">
             
             <select class="custom-select custom-select-sm mb-3" name="ano">
-                 {% if not marca_selecionada %} 
-                 <option selected disabled value=''>Todos Anos</option>  
+                 {% if not ano_selecionado %} 
+                 <option selected disabled value="">Todos Anos</option>  
                  {% else %} 
-                 <option selected disabled value=''>{{marca_selecionada}}</option>
+                 <option selected disabled value="">{{ano_selecionado}}</option>
                  {% endif %}
+                  <option value="2022">2022</option>
+                  <option value="2021">2021</option>
+                  <option value="2020">2020</option>
                   <option value="">Todos Anos</option>
-                  <option value="{{marcas[0]}}">{{marcas[0]}}</option>
-                  {% for marca in marcas[1:] %}
-                    <option value="{{marca}}">{{marca}}</option>
-                  {% endfor %}
               </select>
               
               <button type="submit">Selecionar</button>
@@ -191,11 +187,11 @@
             <div class="bg-holder bg-card" style="background-image:url(../static/assets/img/illustrations/corner-1.png);">
             </div>
             <div class="card-body position-relative">
-              <h6> <center> Vendas {{ano}} </center> <span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
-              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"> <center> {{venda_anual}} </center></div>
+              <h6> <center> Vendas {{ano_selecionado}} </center> <span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
+              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"> <center> {{venda_total}} </center></div>
               <br>
               <h6> <center> Vendas ShowRoom </center> <span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
-              <div> <strong><center> {{venda_anual_showroom}} </center></strong> </div>
+              <div> <strong><center> {{venda_total_showroom}} </center></strong> </div>
               <br>
               <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/download/df_vendas_por_mes_por_marca/Vendas"><center>Download</center></a> </div>
             </div>
@@ -268,7 +264,7 @@
                       plugins: {
                         title: {
                           display: true,
-                          text: 'Vendas 2022'
+                          text:  'Vendas'
                         },
                         datalabels: {
                             // formatter: function(value) {
