@@ -141,8 +141,7 @@ class Estoque():
         self.df_produtos_excesso_wms, self.df_produtos_falta_wms = self.count_estoque()
         self.df_inventario_por_marca = self.inventario().loc[:,['NomeFantasia','Inventário']].groupby('NomeFantasia').agg('sum')
         self.df_inventario_por_marca.Inventário = self.df_inventario_por_marca.Inventário.apply(lambda x: locale.currency(x, grouping=True))
-        self.df_vendas_por_mes_por_marca = self.vendas_por_mes_por_marca()
-        self.marcas = self.df_vendas_por_mes_por_marca.index.tolist()
+        self.marcas = self.vendas_por_mes_por_marca(sql.query_vendas_ano_atual).index.tolist()
 
 
     def multiplica_fator(self):
@@ -252,9 +251,9 @@ class Estoque():
         df_preco_com_estoque['Inventário'] = df_preco_com_estoque['Preco']*df_preco_com_estoque['QuantidadeAjustada']
         return df_preco_com_estoque
 
-    def vendas_por_mes_por_marca(self)->object:
+    def vendas_por_mes_por_marca(self,query)->object:
         
-        df_vendas = sql_to_pd(sql.query_vendas_ano_atual)
+        df_vendas = sql_to_pd(query)
         df_vendas = df_vendas.loc[:,['NomeFantasia','DataDaVenda','ValorVenda']]
         df_vendas.DataDaVenda = df_vendas.DataDaVenda.apply(lambda x: datetime.strptime(x,'%d/%m/%Y').month)
         df_vendas = df_vendas.groupby(['DataDaVenda','NomeFantasia']).agg('sum').unstack(0)
@@ -263,22 +262,23 @@ class Estoque():
 
         return df_vendas
 
-    def calcula_venda_total(self,marca:str=''):
+    def calcula_venda_total(self,query,marca:str=''):
 
-        return self.filtra_marca(marca).sum()
+        return self.filtra_marca(query,marca).sum()
 
 
-    def filtra_marca(self,marca:str=''):
+    def filtra_marca(self,query,marca:str=''):
 
         if marca:
-            df_vendas = self.df_vendas_por_mes_por_marca.query(f'NomeFantasia == "{marca}"').sum().apply(lambda x: round(x))
+            df_vendas = self.vendas_por_mes_por_marca(query).query(f'NomeFantasia == "{marca}"').sum().apply(lambda x: round(x))
         else:
-            df_vendas = self.df_vendas_por_mes_por_marca.sum().apply(lambda x: round(x))
+            df_vendas = self.vendas_por_mes_por_marca(query).sum().apply(lambda x: round(x))
+        
 
         return df_vendas
     
-    def calcula_pct(self,marca:str=''):
-        pct = self.filtra_marca(marca).ValorVenda.pct_change().apply(lambda x: round(x*100,1)).fillna(0)
+    def calcula_pct(self, query, marca:str=''):
+        pct = self.filtra_marca(query,marca).ValorVenda.pct_change().apply(lambda x: round(x*100,1)).fillna(0)
         pct = pct.replace([np.inf, -np.inf], 0)
         pct = pct.tolist()
         pct[0] = 0

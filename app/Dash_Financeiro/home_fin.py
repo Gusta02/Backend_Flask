@@ -2,33 +2,13 @@ from flask import Blueprint, render_template, request, send_file,send_from_direc
 from sqlalchemy import true
 from ..controllers.controller_logistica import ControllerFinanceiro, IntegracaoWms
 from ..Dash_Logistica.kpis_luiz.main import estoque
+from app.Dash_Logistica.kpis_luiz import sql_queries as sql
 from datetime import date,datetime
 import locale
 import io
 import pandas as pd
 
 financeiro = Blueprint('financeiro', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
-
-# def grafico_volumeXfinanceiro():
-#     pedidonovos = ControllerFinanceiro.PedidosBdNovo()
-#     pedidonovos = pd.DataFrame(pedidonovos)
-
-#     showroomnovo = ControllerFinanceiro.ShowroomBdNovo()
-#     showroomnovo = pd.DataFrame(showroomnovo)
-
-#     Pedidosantigos = pd.read_csv('app/Dash_Financeiro/planilhas/dados_banco_antigo.csv')
-
-#     tabelao = pd.concat([pedidonovos,showroomnovo,Pedidosantigos], sort=False, ignore_index=True)
-#     tabelao = tabelao.loc[:,['CodigoPedido','Marca','valorTotal','Mes','Ano']]
-#     tabelao = tabelao.groupby(['Marca','Mes','Ano']).agg('sum')
-#     tabelao = tabelao.applymap(lambda x: round(float(x),2))
-
-#     return tabelao
-
-# def filtra_marca(marca:str=''):
-#     if marca:
-#         df_vendas = grafico_volumeXfinanceiro.query(f'Marca == "{marca}"')
-
 
 
 @financeiro.route("/dashboard/financeiro", methods=["GET","POST"])
@@ -48,12 +28,16 @@ def home_financeiro():
     
     marcas = estoque.marcas
     inventario_total = locale.currency(estoque.inventario(marca=marca_selecionada).Inventário.sum(), grouping=True)
-    venda_anual = locale.currency(estoque.calcula_venda_total(marca=marca_selecionada), grouping=True)
+    venda_anual = locale.currency(estoque.calcula_venda_total(sql.query_vendas_ano_atual, marca=marca_selecionada), grouping=True)
+    venda_anual_cliente = locale.currency(estoque.calcula_venda_total(sql.query_vendas_ano_atual_cliente, marca=marca_selecionada), grouping=True)
+    venda_anual_showroom = locale.currency(estoque.calcula_venda_total(sql.query_vendas_ano_atual_showroom, marca=marca_selecionada), grouping=True)
     
     meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
     labels_vendas = meses[:date.today().month]
-    values_vendas = estoque.filtra_marca(marca_selecionada).ValorVenda.tolist()
-    values_vendas_pct = estoque.calcula_pct(marca_selecionada)
+    values_vendas = estoque.filtra_marca(sql.query_vendas_ano_atual, marca_selecionada).ValorVenda.tolist()
+    values_vendas_cliente = estoque.filtra_marca(sql.query_vendas_ano_atual_cliente,marca_selecionada).ValorVenda.tolist()
+    values_vendas_showroom = estoque.filtra_marca(sql.query_vendas_ano_atual_showroom, marca_selecionada).ValorVenda.tolist()
+    values_vendas_pct = estoque.calcula_pct(sql.query_vendas_ano_atual, marca_selecionada)
         
 
     ################# Dicionário para a geração automática de cards ######################
@@ -61,7 +45,7 @@ def home_financeiro():
     # 'Inventário': inventario_total
     }
     
-    return render_template('home_financeiro.html',cards = dict_variaveis, inventario_total = inventario_total,venda_anual = venda_anual, ano = ano,labels_vendas = labels_vendas, values_vendas = values_vendas, marcas = marcas,marca_selecionada = marca_selecionada, values_vendas_pct = values_vendas_pct)
+    return render_template('home_financeiro.html',cards = dict_variaveis, inventario_total = inventario_total,venda_anual = venda_anual, ano = ano,labels_vendas = labels_vendas, values_vendas = values_vendas, marcas = marcas,marca_selecionada = marca_selecionada, values_vendas_pct = values_vendas_pct,venda_anual_showroom=venda_anual_showroom,venda_anual_cliente = venda_anual_cliente, values_vendas_cliente=values_vendas_cliente,values_vendas_showroom=values_vendas_showroom)
 
 @financeiro.route('/download/<df>/<filename>',methods=['GET']) # Gera Arquivos em Excel para Download
 def download_excel(df,filename):

@@ -180,11 +180,31 @@
                 labels: {{ labels_vendas | safe }},
                 datasets: [
                   {
-                    label: "R$",
-                    data: {{ values_vendas | safe }},
+                    label: "ShowRoom",
+                    data: {{ values_vendas_showroom | safe }},
                     //fill: false,
                     //borderCorlor: "blue",
                     backgroundColor: "rgb(256,244,236)",
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'start',
+                        color: 'blue',
+                        formatter: function(value) {
+                          return 'R$ ' + Number(value).toLocaleString();
+                        }
+                    },
+                    //lineTension: 0.1
+                    //stack: 'combined',
+                    type: 'bar',
+                    yAxisID: 'y',
+                    order: 2
+                  },
+                  {
+                    label: "Cliente",
+                    data: {{ values_vendas_cliente | safe }},
+                    //fill: false,
+                    //borderCorlor: "blue",
+                    backgroundColor: 'green',
                     datalabels: {
                         anchor: 'end',
                         align: 'start',
@@ -255,10 +275,14 @@
                     },
                   },
                 scales: {
+                      x: {
+                        stacked: true,
+                       },
                       y: {
                         type: 'linear',
                         display: true,
                         position: 'left',
+                        stacked: true
                       },
                       y1: {
                         type: 'linear',
