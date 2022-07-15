@@ -38,7 +38,8 @@
     <link href="{{ url_for('financeiro.static', filename='assets/css/theme.css') }}" rel="stylesheet">
     <link href="{{ url_for('financeiro.static', filename='assets/css/mapa_home.css') }}" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!--Importação do Charts.js para criação de gráficos-->
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
    
 
   </head>
@@ -171,9 +172,10 @@
               <!--Gráfico de Vendas-->
           <canvas id="ChartVendas"></canvas> <!--width="500" height="300"-->
           <script>
+            Chart.register(ChartDataLabels);
             var ctx = document.getElementById("ChartVendas").getContext("2d")
             var ChartVendas = new Chart(ctx, {
-              type: 'line',
+              plugins: [ChartDataLabels],
               data: {
                 labels: {{ labels_vendas | safe }},
                 datasets: [
@@ -181,24 +183,46 @@
                     label: "R$",
                     data: {{ values_vendas | safe }},
                     //fill: false,
-                    borderCorlor: "rgb(0, 255, 255)",
-                    //backgroundColor: "rgb(0, 255, 255)",
+                    //borderCorlor: "blue",
+                    backgroundColor: "rgb(256,244,236)",
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'start',
+                        color: 'blue',
+                        formatter: function(value) {
+                          return 'R$ ' + Number(value).toLocaleString();
+                        }
+                    },
                     //lineTension: 0.1
                     //stack: 'combined',
                     type: 'bar',
                     yAxisID: 'y',
+                    order: 2
                   },
                   {
+                    type: 'line',
                     label: "%",
                     data: {{ values_vendas_pct | safe }},
                     //fill: false,
-                    borderColor: "rgb(255, 0, 0)",
-                    backgroundColor: "rgb(255, 0, 0)",  
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        offset: 20,
+                        display: 'auto',
+                        color: 'green',
+                        //clip: true,
+                        formatter: function(value) {
+                          return value + '%';
+                        }
+                    },
+                    borderColor: "red",
+                    backgroundColor: "red",  
                     //borderCorlor: "rgb(75,192,192)",
                     //lineTension: 0.1
                     //stack: 'combined',
                     yAxisID: 'y1',
                    //type: 'bar'
+                   order: 1
                   }
                 ]
               },
@@ -213,6 +237,21 @@
                     title: {
                       display: true,
                       text: 'Vendas 2022'
+                    },
+                    datalabels: {
+                        // formatter: function(value) {
+                        //   return value + '%';
+                        // },                      
+                      labels: {
+                        title: {
+                          font: {
+                            weight: 'bold'
+                          }
+                        },
+                        value: {
+                          color: 'green'
+                        }
+                      }
                     },
                   },
                 scales: {
