@@ -8,12 +8,28 @@ import pandas as pd
 
 Contas_Pagar = Blueprint('Contas_Pagar', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
+def tabela():
+    quinze_dias = Pagar_15dias()
+    trinta_dias = Pagar_30dias()
+    sessenta_dias =  Pagar_60dias()
+    noventa_dias = Pagar_90dias()
+    doze_meses = Pagar_12meses()
+    
+    tabela = pd.concat([quinze_dias, trinta_dias, sessenta_dias, noventa_dias, doze_meses])
+    tabela.to_dict('records')
+    print(type(tabela))
+
+    return tabela
 @Contas_Pagar.route("/dashboard/financeiro/ContasPagar", methods=["GET","POST"])
 def Contas_a_Pagar():
-    return render_template('contas_a_pagar.html', page = 1)
+
+    table = tabela()
 
 
-@Contas_Pagar.route("/download/Contas_a_Pagar", methods=["GET","POST"])
+    return render_template('contas_a_pagar.html', page = 1 , tabela = table)
+
+
+@Contas_Pagar.route("/download/ContasPagar", methods=["GET","POST"])
 def PagarDownload_excel():
     quinze =  Pagar_15dias()
     trinta =  Pagar_30dias()
