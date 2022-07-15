@@ -303,3 +303,31 @@ class LeadTime():
             media = (grupo.loc[:, 'DiasPrevistos'] - grupo.loc[:, 'Dias']).mean()
             soma += entregas * media
         return soma / entregas_totais
+
+class Unidades():
+
+    def __init__(self) -> None:
+        self.df_vendas_por_loja_por_mes = sql_to_pd(sql.query_vendas_por_unidade_por_mes)
+
+    def filtra_unidade(self,unidade:str=''):
+
+        if unidade:
+            df_vendas = self.df_vendas_por_loja_por_mes.query(f'Nome == "{unidade}"')
+        else:
+            df_vendas = self.df_vendas_por_loja_por_mes
+
+        return df_vendas
+
+    def calcula_venda_total(self,unidade:str=''):
+
+        return self.filtra_unidade(unidade).ValorVenda.sum()
+
+    def calcula_pct(self,unidade:str=''):
+        pct = self.filtra_unidade(unidade).ValorVenda.pct_change().apply(lambda x: round(x*100,1)).fillna(0)
+        pct = pct.replace([np.inf, -np.inf], 0)
+        pct = pct.tolist()
+        pct[0] = 0
+        return pct
+
+    def retorna_unidades(self):
+        return self.df_vendas_por_loja_por_mes.index.tolist()

@@ -123,16 +123,16 @@
           </nav>
           <!-- DropDown de Marcas -->
           <center> <form method="POST" action="/dashboard/financeiro">
-            <select name="marca">
-                 {% if not marca_selecionada %} 
-                 <option selected disabled value=''>Todas Marcas</option>  
+            <select name="unidade">
+                 {% if not unidade_selecionada %} 
+                 <option selected disabled value=''>Todas Unidades</option>  
                  {% else %} 
-                 <option selected disabled value=''>{{marca_selecionada}}</option>
+                 <option selected disabled value=''>{{unidade_selecionada}}</option>
                  {% endif %}
-                  <option value="">Todas Marcas</option>
-                  <option value="{{marcas[0]}}">{{marcas[0]}}</option>
-                  {% for marca in marcas[1:] %}
-                    <option value="{{marca}}">{{marca}}</option>
+                  <option value="">Todas Unidades</option>
+                  <option value="{{lista_unidades[0]}}">{{lista_unidades[0]}}</option>
+                  {% for unidade in lista_unidades[1:] %}
+                    <option value="{{unidade}}">{{unidade}}</option>
                   {% endfor %}
               </select>
               <br><br>
@@ -153,7 +153,7 @@
           {% endfor %}
           <!-- CARDS Com Download--> 
 
-          <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
+          <!-- <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
             <div class="bg-holder bg-card" style="background-image:url(../static/assets/img/illustrations/corner-1.png);">
             </div>
             <div class="card-body position-relative">
@@ -161,14 +161,14 @@
               <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"> <center> {{inventario_total}} </center> </div>
               <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/download/df_inventario_por_marca/Inventário"><center>Download</center></a> </div>
             </div>
-          </div>
+          </div> -->
           <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
             <div class="bg-holder bg-card" style="background-image:url(../static/assets/img/illustrations/corner-1.png);">
             </div>
             <div class="card-body position-relative">
               <h6> <center> Vendas {{ano}} </center> <span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
-              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"> <center> {{venda_anual}} </center></div>
-              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/download/df_vendas_por_mes_por_marca/Vendas"><center>Download</center></a> </div>
+              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"> <center> {{venda_total}} </center></div>
+              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/download/df_vendas_por_loja_por_mes/Vendas_por_unidade"><center>Download</center></a> </div>
             </div>
           </div>
               <!--Gráfico de Vendas-->
