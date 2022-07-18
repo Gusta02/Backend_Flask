@@ -141,14 +141,14 @@ class Estoque():
         self.df_produtos_excesso_wms, self.df_produtos_falta_wms = self.count_estoque()
         self.df_inventario_por_marca = self.inventario().loc[:,['NomeFantasia','Inventário']].groupby('NomeFantasia').agg('sum')
         self.df_inventario_por_marca.Inventário = self.df_inventario_por_marca.Inventário.apply(lambda x: locale.currency(x, grouping=True))
-        # self.df_vendas_por_mes_por_marca_cliente = self.vendas_por_mes_por_marca(sql_to_pd(sql.query_vendas_ano_atual_cliente))
-        # self.df_vendas_por_mes_por_marca_showroom = self.vendas_por_mes_por_marca(sql_to_pd(sql.query_vendas_ano_atual_showroom))
         self.df_vendas_por_mes_por_marca = self.vendas_por_mes_por_marca(sql_to_pd(sql.query_vendas_ano_atual))
         self.df_vendas_banco_antigo = pd.read_csv('app/Dash_Logistica/kpis_luiz/planilha/dados_banco_antigo.csv', 
                                         usecols=['Marca','valorTotal','Mes','Ano'])
         self.df_vendas_banco_antigo['Tipo'] = 'cliente'
         self.df_vendas_banco_antigo = self.vendas_por_mes_por_marca(self.df_vendas_banco_antigo)
-        self.df_vendas_por_mes_por_marca = pd.concat([self.df_vendas_banco_antigo,self.df_vendas_por_mes_por_marca],axis=1)
+        self.df_vendas_banco_antigo['valorTotal',2021,11] = 0.0
+        self.df_vendas_banco_antigo = self.df_vendas_banco_antigo.sort_index(axis=1)
+        self.df_vendas_por_mes_por_marca = self.df_vendas_por_mes_por_marca.add(self.df_vendas_banco_antigo,fill_value=0)
         self.marcas = self.df_vendas_por_mes_por_marca.index.get_level_values(0).tolist()
 
 
@@ -259,16 +259,6 @@ class Estoque():
         df_preco_com_estoque['Inventário'] = df_preco_com_estoque['Preco']*df_preco_com_estoque['QuantidadeAjustada']
         return df_preco_com_estoque
 
-    # def vendas_por_mes_por_marca(self,query)->object:
-        
-    #     df_vendas = sql_to_pd(query)
-    #     df_vendas = df_vendas.loc[:,['NomeFantasia','DataDaVenda','ValorVenda']]
-    #     df_vendas.DataDaVenda = df_vendas.DataDaVenda.apply(lambda x: datetime.strptime(x,'%d/%m/%Y').month)
-    #     df_vendas = df_vendas.groupby(['DataDaVenda','NomeFantasia']).agg('sum').unstack(0)
-    #     df_vendas = df_vendas.fillna(0)
-    #     df_vendas = df_vendas.applymap(lambda x: round(float(x),2))
-
-    #     return df_vendas
 
     def vendas_por_mes_por_marca(self,df)->object:
         
@@ -278,13 +268,6 @@ class Estoque():
 
         return df_vendas
 
-    # def vendas_por_mes_por_marca_banco_antigo(self)->object:
-            
-    #     df_vendas = self.df_vendas_banco_antigo.groupby(['Ano','Mes','Marca']).agg('sum').unstack(['Ano','Mes'])
-    #     df_vendas = df_vendas.fillna(0)
-    #     df_vendas = df_vendas.applymap(lambda x: round(float(x),2))
-
-    #     return df_vendas
 
     def calcula_venda_mensal(self,ano=0,marca='',tipo=''):
 
@@ -309,26 +292,6 @@ class Estoque():
 
         return df_vendas
 
-    # def filtra_marca(self,df,marca:str=''):
-
-    #     if marca:
-    #         df_vendas = df.query(f'NomeFantasia == "{marca}"').sum().apply(lambda x: round(x))
-    #     else:
-    #         df_vendas = df.sum().apply(lambda x: round(x))
-        
-
-    #     return df_vendas
-    
-    # def filtra_ano(self,ano=0):
-
-    #     if ano==2022:
-    #         return self.df_vendas_por_mes_por_marca
-        
-    #     if ano==2021:
-    #         return self.vendas_por_mes_por_marca(self.df_vendas_banco_antigo)
-
-    #     else:
-    #         return pd.concat([self.vendas_por_mes_por_marca(self.df_vendas_banco_antigo),self.vendas_por_mes_por_marca(self.df_vendas_por_mes_por_marca)])
     
     def calcula_pct(self, ano=0, marca:str='',tipo=''):
         pct = self.calcula_venda_mensal(ano=ano,marca=marca,tipo=tipo).pct_change().apply(lambda x: round(x*100,1)).fillna(0)

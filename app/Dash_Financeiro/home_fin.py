@@ -35,48 +35,14 @@ def home_financeiro():
     venda_total_showroom = locale.currency(estoque.calcula_venda_total(ano=ano_selecionado,marca=marca_selecionada,tipo='showroom'), grouping=True)
     venda_total = locale.currency(estoque.calcula_venda_total(ano=ano_selecionado,marca=marca_selecionada), grouping=True)
     meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
-    labels_vendas = meses[:estoque.filtra(ano=ano_selecionado).columns.get_level_values('Mes').max()]
+    labels_vendas = meses[estoque.filtra(ano=ano_selecionado).columns.get_level_values('Mes').min()-1:estoque.filtra(ano=ano_selecionado).columns.get_level_values('Mes').max()]
     values_vendas = estoque.calcula_venda_mensal(marca=marca_selecionada,ano=ano_selecionado).tolist()
     values_vendas_pct = estoque.calcula_pct(ano = ano_selecionado, marca = marca_selecionada)
     values_vendas_cliente = estoque.calcula_venda_mensal(marca= marca_selecionada,ano=ano_selecionado,tipo='cliente').tolist()
     values_vendas_showroom = estoque.calcula_venda_mensal(marca= marca_selecionada,ano=ano_selecionado,tipo='showroom').tolist()
     marcas = estoque.marcas
     inventario_total = locale.currency(estoque.inventario(marca=marca_selecionada).Inventário.sum(), grouping=True)
-
-    # venda_total = locale.currency(estoque.calcula_venda_total(estoque.df_vendas_por_mes_por_marca, marca=marca_selecionada), grouping=True)
-
-    # if ano_selecionado == '2022':
-
-    #     venda_total = locale.currency(estoque.calcula_venda_total(estoque.df_vendas_por_mes_por_marca, marca=marca_selecionada), grouping=True)
-    #     #venda_total_cliente = locale.currency(estoque.calcula_venda_total(estoque.df_vendas_por_mes_por_marca_cliente, marca=marca_selecionada), grouping=True)
-    #     venda_total_showroom = locale.currency(estoque.calcula_venda_total(estoque.df_vendas_por_mes_por_marca_showroom, marca=marca_selecionada), grouping=True)
-    #     meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
-    #     labels_vendas = meses[:date.today().month]
-    #     values_vendas = estoque.filtra_marca(estoque.df_vendas_por_mes_por_marca, marca_selecionada).valorTotal.tolist()
-    #     values_vendas_pct = estoque.calcula_pct(estoque.df_vendas_por_mes_por_marca, marca_selecionada)
-
-    # elif ano_selecionado == '2021':
-
-    #     venda_total = locale.currency(estoque.calcula_venda_total(estoque.df_vendas_banco_antigo, marca=marca_selecionada), grouping=True)
-    #     meses = ['ago/20','set/20','out/20','nov/20','dez/20','jan/21','fev/21','mar/21','abr/21','mai/21','jun/21','jul/21','ago/21','set/21','out/21','nov/21','dez/21']
-    #     labels_vendas = meses
-    #     values_vendas = estoque.filtra_marca(estoque.df_vendas_banco_antigo, marca_selecionada).valorTotal.tolist()
-    #     values_vendas_pct = estoque.calcula_pct(estoque.df_vendas_banco_antigo, marca_selecionada)
-    #     venda_total_showroom = 0
-    
-    # else: 
-
-    #     df = pd.concat([estoque.df_vendas_por_mes_por_marca,estoque.df_vendas_por_mes_por_marca_showroom],axis=1)
-    #     venda_total = locale.currency(estoque.calcula_venda_total(df, marca=marca_selecionada), grouping=True)
-    #     venda_total_showroom = locale.currency(estoque.calcula_venda_total(estoque.df_vendas_por_mes_por_marca_showroom, marca=marca_selecionada), grouping=True)
-    
-    # meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
-    # labels_vendas = meses[:date.today().month]
-    # values_vendas = estoque.filtra_marca(estoque.df_vendas_por_mes_por_marca, marca_selecionada).valorTotal.tolist()
-    # values_vendas_pct = estoque.calcula_pct(estoque.df_vendas_por_mes_por_marca, marca_selecionada)
-        
-    
-
+ 
     ################# Dicionário para a geração automática de cards ######################
     dict_variaveis = {
     # 'Inventário': inventario_total
