@@ -1,32 +1,19 @@
-from app.Dash_Financeiro.kpis_michel.receber import Receber_15dias
 from ..Dash_Financeiro.kpis_michel.pagar import Pagar_15dias, Pagar_30dias, Pagar_60dias, Pagar_90dias, Pagar_12meses
-from flask import Blueprint, render_template, request, send_file,send_from_directory, Response
-from datetime import date,datetime
+from ..Dash_Financeiro.kpis_michel.main import valor_total, conta_pagar
+from flask import Blueprint, render_template, request, Response
 import locale
 import io
 import pandas as pd
 
 Contas_Pagar = Blueprint('Contas_Pagar', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
-def tabela():
-    quinze_dias = Pagar_15dias()
-    trinta_dias = Pagar_30dias()
-    sessenta_dias =  Pagar_60dias()
-    noventa_dias = Pagar_90dias()
-    doze_meses = Pagar_12meses()
-    
-    tabela = pd.concat([quinze_dias, trinta_dias, sessenta_dias, noventa_dias, doze_meses])
-    tabela.to_dict('records')
-    print(type(tabela))
-
-    return tabela
 @Contas_Pagar.route("/dashboard/financeiro/ContasPagar", methods=["GET","POST"])
 def Contas_a_Pagar():
+    locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")  
+    card_valor_total = locale.currency(conta_pagar, grouping= True)
 
-    table = tabela()
 
-
-    return render_template('contas_a_pagar.html', page = 1 , tabela = table)
+    return render_template('contas_a_pagar.html', page = 1, card2 = card_valor_total )
 
 
 @Contas_Pagar.route("/download/ContasPagar", methods=["GET","POST"])
