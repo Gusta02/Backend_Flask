@@ -141,8 +141,16 @@ class Estoque():
         self.df_produtos_excesso_wms, self.df_produtos_falta_wms = self.count_estoque()
         self.df_inventario_por_marca = self.inventario().loc[:,['NomeFantasia','Inventário']].groupby('NomeFantasia').agg('sum')
         self.df_inventario_por_marca.Inventário = self.df_inventario_por_marca.Inventário.apply(lambda x: locale.currency(x, grouping=True))
-        self.df_vendas_por_mes_por_marca = self.vendas_por_mes_por_marca()
-        self.marcas = self.df_vendas_por_mes_por_marca.index.tolist()
+        self.df_vendas_por_mes_por_marca = self.vendas_por_mes_por_marca(sql_to_pd(sql.query_vendas_ano_atual))
+        self.df_vendas_banco_antigo = pd.read_csv('app/Dash_Logistica/kpis_luiz/planilha/dados_banco_antigo.csv', 
+                                        usecols=['Marca','valorTotal','Mes','Ano'])
+        self.df_vendas_banco_antigo['Tipo'] = 'cliente'
+        self.df_vendas_banco_antigo = self.vendas_por_mes_por_marca(self.df_vendas_banco_antigo)
+        self.df_vendas_banco_antigo['valorTotal',2021,11] = 0.0
+        self.df_vendas_banco_antigo = self.df_vendas_banco_antigo.sort_index(axis=1)
+        self.df_vendas_por_mes_por_marca = self.df_vendas_por_mes_por_marca.add(self.df_vendas_banco_antigo,fill_value=0)
+        #self.df_vendas_por_mes_por_marca = self.df_vendas_por_mes_por_marca.groupby(['Marca', 'Tipo']).sum()
+        self.marcas = self.df_vendas_por_mes_por_marca.index.get_level_values(0).unique().tolist()
 
 
     def multiplica_fator(self):
@@ -252,37 +260,60 @@ class Estoque():
         df_preco_com_estoque['Inventário'] = df_preco_com_estoque['Preco']*df_preco_com_estoque['QuantidadeAjustada']
         return df_preco_com_estoque
 
-    def vendas_por_mes_por_marca(self)->object:
+
+    def vendas_por_mes_por_marca(self,df)->object:
         
-        df_vendas = sql_to_pd(sql.query_vendas_ano_atual)
-        df_vendas = df_vendas.loc[:,['NomeFantasia','DataDaVenda','ValorVenda']]
-        df_vendas.DataDaVenda = df_vendas.DataDaVenda.apply(lambda x: datetime.strptime(x,'%d/%m/%Y').month)
-        df_vendas = df_vendas.groupby(['DataDaVenda','NomeFantasia']).agg('sum').unstack(0)
+        df_vendas = self.renomeia_marcas_similares(df)
+        df_vendas = df_vendas.groupby(['Ano','Mes','Marca','Tipo']).agg('sum').unstack(['Ano','Mes'])
         df_vendas = df_vendas.fillna(0)
         df_vendas = df_vendas.applymap(lambda x: round(float(x),2))
 
         return df_vendas
 
-    def calcula_venda_total(self,marca:str=''):
 
-        return self.filtra_marca(marca).sum()
+    def calcula_venda_mensal(self,ano=0,marca='',tipo=''):
 
+        return self.filtra(ano,marca,tipo).sum()
 
-    def filtra_marca(self,marca:str=''):
+    def calcula_venda_total(self,ano=0,marca='',tipo=''):
+
+        return self.calcula_venda_mensal(ano,marca,tipo).sum()
+    
+    def filtra(self,ano=0,marca='',tipo=''):
+
+        df_vendas = self.df_vendas_por_mes_por_marca
+
+        if ano:
+            df_vendas = df_vendas.loc[:,(df_vendas.columns.get_level_values('Ano') == ano)]
+        else:
+            df_vendas = df_vendas.groupby('Ano',level=0,axis=1).agg('sum')
 
         if marca:
-            df_vendas = self.df_vendas_por_mes_por_marca.query(f'NomeFantasia == "{marca}"').sum().apply(lambda x: round(x))
-        else:
-            df_vendas = self.df_vendas_por_mes_por_marca.sum().apply(lambda x: round(x))
+            df_vendas = df_vendas.query(f"Marca == '{marca}'")
+
+        if tipo:
+            df_vendas = df_vendas.query(f"Tipo == '{tipo}'")
 
         return df_vendas
+
     
-    def calcula_pct(self,marca:str=''):
-        pct = self.filtra_marca(marca).ValorVenda.pct_change().apply(lambda x: round(x*100,1)).fillna(0)
+    def calcula_pct(self, ano=0, marca:str='',tipo=''):
+        pct = self.calcula_venda_mensal(ano=ano,marca=marca,tipo=tipo).pct_change().apply(lambda x: round(x*100,1)).fillna(0)
         pct = pct.replace([np.inf, -np.inf], 0)
         pct = pct.tolist()
-        pct[0] = 0
+        try:
+            pct[0] = 0
+        except:
+            pass
         return pct
+
+    def renomeia_marcas_similares(self,df):
+
+        df_marcas_ajustadas = df
+        lista_nomes_originais = ['NCM Deco','Deca Louças','Desso','Roca Louças Metais','Roca Pisos Revestimentos','Incepa Louças Metais','Incepa Pisos Revestimentos','Loja do Movel','HR','Docol Louças','Docol Metais','Level']
+        lista_nomes_ajustados = ['Gart','Deca','Tarkett','Roca','Roca','Incepa','Incepa','Planejados','Planejados','Docol','Docol','Stato Dell Arte']
+        df_marcas_ajustadas = df_marcas_ajustadas.replace(lista_nomes_originais,lista_nomes_ajustados)
+        return df_marcas_ajustadas
 
         
 class LeadTime():

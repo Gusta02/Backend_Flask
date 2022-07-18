@@ -328,53 +328,11 @@ SELECT pp.[SKU]
 	AND IdEstoque IN (1,5)
 '''
 
-# query_vendas_ano_atual = '''
-# 	SELECT FORMAT(SUM(Quantidade*PrecoUnitarioDescontado),'c','pt-br') ValorVenda
-# 	  ,prodsfornec.NomeFantasia
-# 	  ,MONTH(itens.DataInserido) MesDeVenda
-#   FROM [HauszMapa].[Pedidos].[ItensFlexy] itens
-#   JOIN (SELECT CodigoPedido
-# 			,IdEtapaFlexy
-# 		FROM [HauszMapa].[Pedidos].[PedidoFlexy]
-# 		WHERE IdEtapaFlexy != 11 -- remove cancelados
-# 		) pedidos
-# 	ON itens.CodigoPedido = pedidos.CodigoPedido
-# 	JOIN (SELECT SKU, prods.IdMarca, fornec.NomeFantasia 
-# 		FROM HauszMapa.Produtos.ProdutoBasico prods
-# 		JOIN (SELECT fornecmarca.CnpjFornecedor,IdMarca,fornecnome.NomeFantasia FROM [HauszMapa].[Produtos].[FornecedorMarca] fornecmarca 
-# 		JOIN (SELECT NomeFantasia, CnpjFornecedor FROM [HauszMapa].[Cadastro].[Fornecedor]) fornecnome 
-# 			ON fornecmarca.CnpjFornecedor = fornecnome.CnpjFornecedor
-# 		WHERE IdMarca NOT IN (71)) fornec
-# 	ON fornec.IdMarca = prods.IdMarca) prodsfornec
-# 	ON itens.SKU = prodsfornec.SKU
-# 	WHERE DATEDIFF(YEAR,itens.DataInserido,GETDATE()) = 0
-# 	AND bitAtivo = 1
-#   Group by prodsfornec.NomeFantasia, MONTH(itens.DataInserido)
-
-#   UNION
-
-#   SELECT FORMAT(SUM(Quantidade*PrecoUnitario),'c','pt-br') ValorVenda
-# 	  ,prodsfornec.NomeFantasia
-# 	  ,MONTH(itens.DataInserido) MesDeVenda
-#   FROM [HauszMapa].[ShowRoom].[ItensPedido] itens
-#   JOIN (SELECT CodigoPedidoSw
-# 			,IdEtapaFlexy
-# 		FROM [HauszMapa].[ShowRoom].[Pedido]
-# 		WHERE IdEtapaFlexy != 11 -- remove cancelados
-# 		) pedidos
-# 	ON itens.CodigoPedidoSw = pedidos.CodigoPedidoSw
-# 	JOIN (SELECT SKU, prods.IdMarca, fornec.NomeFantasia 
-# 		FROM HauszMapa.Produtos.ProdutoBasico prods
-# 		JOIN (SELECT fornecmarca.CnpjFornecedor,IdMarca,fornecnome.NomeFantasia FROM [HauszMapa].[Produtos].[FornecedorMarca] fornecmarca 
-# 		JOIN (SELECT NomeFantasia, CnpjFornecedor FROM [HauszMapa].[Cadastro].[Fornecedor]) fornecnome 
-# 			ON fornecmarca.CnpjFornecedor = fornecnome.CnpjFornecedor
-# 		WHERE IdMarca NOT IN (71)) fornec
-# 	ON fornec.IdMarca = prods.IdMarca) prodsfornec
-# 	ON itens.SKU = prodsfornec.SKU
-# 	WHERE DATEDIFF(YEAR,itens.DataInserido,GETDATE()) = 0
-# 	AND bitAtivo = 1
-#   Group by prodsfornec.NomeFantasia, MONTH(itens.DataInserido)
-#   '''
-
-with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query_valor_de_venda_por_marca_por_dia_2022_com_showroom_versão_forçada.sql')) as f:
+with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query_valor_de_venda_por_marca_por_dia_ano_atual_versão_forçada_mes_ano.sql')) as f:
 	query_vendas_ano_atual = f.read()
+
+with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query_valor_de_venda_por_marca_por_dia_ano_atual_cliente_mes_ano.sql')) as f:
+	query_vendas_ano_atual_cliente = f.read()
+
+with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query_valor_de_venda_por_marca_por_dia_ano_atual_showroom_mes_ano.sql')) as f:
+	query_vendas_ano_atual_showroom = f.read()

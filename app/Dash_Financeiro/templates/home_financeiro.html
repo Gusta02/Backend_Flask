@@ -37,8 +37,8 @@
     <link href="{{ url_for('financeiro.static', filename='assets/lib/leaflet.markercluster/MarkerCluster.Default.css') }}" rel="stylesheet">
     <link href="{{ url_for('financeiro.static', filename='assets/css/theme.css') }}" rel="stylesheet">
     <link href="{{ url_for('financeiro.static', filename='assets/css/mapa_home.css') }}" rel="stylesheet">
+    <link href="{{ url_for('financeiro.static', filename='/css/dropdown_filter.css') }}" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!--Importação do Charts.js para criação de gráficos-->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0/dist/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
    
 
@@ -117,8 +117,14 @@
             </a>
           </nav>
           <!-- DropDown de Marcas -->
+
+          
+          
+          <div class="row text-white align-items-center no-gutters">
+            <div class="col-auto d-none d-sm-block">
           <center> <form method="POST" action="/dashboard/financeiro">
-            <select name="marca">
+            
+            <select class="custom-select custom-select-sm mb-3" name="marca">
                  {% if not marca_selecionada %} 
                  <option selected disabled value=''>Todas Marcas</option>  
                  {% else %} 
@@ -130,9 +136,26 @@
                     <option value="{{marca}}">{{marca}}</option>
                   {% endfor %}
               </select>
-              <br><br>
+  
+        </div>
+        <div class="col-auto d-none d-sm-block">
+            
+            <select class="custom-select custom-select-sm mb-3" name="ano">
+                 {% if not ano_selecionado %} 
+                 <option selected disabled value="">Todos Anos</option>  
+                 {% else %} 
+                 <option selected disabled value="">{{ano_selecionado}}</option>
+                 {% endif %}
+                  <option value="2022">2022</option>
+                  <option value="2021">2021</option>
+                  <option value="2020">2020</option>
+                  <option value="">Todos Anos</option>
+              </select>
+              
               <button type="submit">Selecionar</button>
         </form> </center>
+        </div>
+        </div>
         <br>
           <!-- CARDS -->
           <div class="card-deck">
@@ -161,30 +184,142 @@
             <div class="bg-holder bg-card" style="background-image:url(../static/assets/img/illustrations/corner-1.png);">
             </div>
             <div class="card-body position-relative">
-              <h6> <center> Vendas {{ano}} </center> <span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
-              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"> <center> {{venda_anual}} </center></div>
+              <h6> <center> Vendas Total </center> <span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
+              <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"> <center> {{venda_total}} </center></div>
+              <br>
+              <h6> <center> Vendas ShowRoom </center> <span class="badge badge-soft-warning rounded-capsule ml-2"></span></h6>
+              <div> <strong><center> {{venda_total_showroom}} </center></strong> </div>
+              <br>
               <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/download/df_vendas_por_mes_por_marca/Vendas"><center>Download</center></a> </div>
             </div>
           </div>
-              <!--Gráfico de Vendas-->
-          <canvas id="ChartVendas"></canvas> <!--width="500" height="300"-->
+              <!--Gráfico de Vendas Total Com %-->
+
+              <canvas id="ChartVendas"></canvas> <!--width="500" height="300"-->
+              <script>
+                Chart.register(ChartDataLabels);
+                var ctx = document.getElementById("ChartVendas").getContext("2d")
+                var ChartVendas = new Chart(ctx, {
+                  plugins: [ChartDataLabels],
+                  data: {
+                    labels: {{ labels_vendas | safe }},
+                    datasets: [
+                      {
+                        label: "R$",
+                        data: {{ values_vendas | safe }},
+                        //fill: false,
+                        //borderCorlor: "blue",
+                        backgroundColor: "rgb(256,244,236)",
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'top',
+                            color: 'blue',
+                            formatter: function(value) {
+                              return 'R$ ' + Number(value).toLocaleString();
+                            }
+                        },
+                        //lineTension: 0.1
+                        //stack: 'combined',
+                        type: 'bar',
+                        yAxisID: 'y',
+                        order: 2
+                      },
+                      {
+                        type: 'line',
+                        label: "%",
+                        data: {{ values_vendas_pct | safe }},
+                        //fill: false,
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'top',
+                            offset: 20,
+                            display: 'auto',
+                            color: 'green',
+                            //clip: true,
+                            formatter: function(value) {
+                              return value + '%';
+                            }
+                        },
+                        borderColor: "red",
+                        backgroundColor: "red",  
+                        //borderCorlor: "rgb(75,192,192)",
+                        //lineTension: 0.1
+                        //stack: 'combined',
+                        yAxisID: 'y1',
+                       //type: 'bar'
+                       order: 1
+                      }
+                    ]
+                  },
+                      options: {
+                      responsive: true,
+                      interaction: {
+                        mode: 'index',
+                        intersect: false,
+                      },
+                      stacked: false,
+                      plugins: {
+                        title: {
+                          display: true,
+                          text:  'Vendas'
+                        },
+                        datalabels: {
+                            // formatter: function(value) {
+                            //   return value + '%';
+                            // },                      
+                          labels: {
+                            title: {
+                              font: {
+                                weight: 'bold'
+                              }
+                            },
+                            value: {
+                              color: 'green'
+                            }
+                          }
+                        },
+                      },
+                    scales: {
+                          y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                          },
+                          y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+    
+                            // grid line settings
+                      grid: {
+                        drawOnChartArea: false, // only want the grid lines for one axis to show up
+                              },
+                            },
+                          },
+                        },
+                    },);
+              </script>
+            <!--Gráfico de Vendas Total Com %-->
+
+            <!--Gráfico de Vendas Showroom/Cliente-->
+          <canvas id="ChartVendasShowRoomCliente"></canvas> <!--width="500" height="300"-->
           <script>
             Chart.register(ChartDataLabels);
-            var ctx = document.getElementById("ChartVendas").getContext("2d")
-            var ChartVendas = new Chart(ctx, {
+            var ctx2 = document.getElementById("ChartVendasShowRoomCliente").getContext("2d")
+            var ChartVendas = new Chart(ctx2, {
               plugins: [ChartDataLabels],
               data: {
                 labels: {{ labels_vendas | safe }},
                 datasets: [
                   {
-                    label: "R$",
-                    data: {{ values_vendas | safe }},
+                    label: "ShowRoom",
+                    data: {{ values_vendas_showroom | safe }},
                     //fill: false,
                     //borderCorlor: "blue",
                     backgroundColor: "rgb(256,244,236)",
                     datalabels: {
                         anchor: 'end',
-                        align: 'start',
+                        align: 'top',
                         color: 'blue',
                         formatter: function(value) {
                           return 'R$ ' + Number(value).toLocaleString();
@@ -197,30 +332,25 @@
                     order: 2
                   },
                   {
-                    type: 'line',
-                    label: "%",
-                    data: {{ values_vendas_pct | safe }},
+                    label: "Cliente",
+                    data: {{ values_vendas_cliente | safe }},
                     //fill: false,
+                    //borderCorlor: "blue",
+                    backgroundColor: 'green',
                     datalabels: {
                         anchor: 'end',
                         align: 'top',
-                        offset: 20,
-                        display: 'auto',
-                        color: 'green',
-                        //clip: true,
+                        color: 'blue',
                         formatter: function(value) {
-                          return value + '%';
+                          return 'R$ ' + Number(value).toLocaleString();
                         }
                     },
-                    borderColor: "red",
-                    backgroundColor: "red",  
-                    //borderCorlor: "rgb(75,192,192)",
                     //lineTension: 0.1
                     //stack: 'combined',
-                    yAxisID: 'y1',
-                   //type: 'bar'
-                   order: 1
-                  }
+                    type: 'bar',
+                    yAxisID: 'y',
+                    order: 2
+                  },
                 ]
               },
                   options: {
@@ -233,7 +363,7 @@
                   plugins: {
                     title: {
                       display: true,
-                      text: 'Vendas 2022'
+                      text: 'Vendas Cliente X Showroom'
                     },
                     datalabels: {
                         // formatter: function(value) {
@@ -257,21 +387,11 @@
                         display: true,
                         position: 'left',
                       },
-                      y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-
-                        // grid line settings
-                  grid: {
-                    drawOnChartArea: false, // only want the grid lines for one axis to show up
-                          },
-                        },
                       },
                     },
                 },);
           </script>
-        <!--Gráfico de Vendas-->
+        <!--Gráfico de Vendas Showroom/Cliente-->
               
           
         </div>
