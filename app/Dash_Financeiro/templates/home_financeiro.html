@@ -395,7 +395,79 @@
                 },);
           </script>
         <!--Gráfico de Vendas Showroom/Cliente-->
-              
+
+        <!--Gráfico Top3 SKU-->
+
+        <canvas id="ChartVendasTop3SKU"></canvas> <!--width="500" height="300"-->
+        <script>
+          Chart.register(ChartDataLabels);
+          var ctx3 = document.getElementById("ChartVendasTop3SKU").getContext("2d")
+          var ChartVendas = new Chart(ctx3, {
+            plugins: [ChartDataLabels],
+            data: {
+              labels: {{ labels_top3 | safe }},
+              datasets: [
+                {
+                  label: {{ marca_top3 | safe }},
+                  data: {{ values_top3 | safe }},
+                  //fill: false,
+                  //borderCorlor: "blue",
+                  backgroundColor: "rgb(256,244,236)",
+                  datalabels: {
+                      anchor: 'end',
+                      align: 'top',
+                      color: 'blue',
+                      formatter: function(value) {
+                        return 'R$ ' + Number(value).toLocaleString();
+                      }
+                  },
+                  //lineTension: 0.1
+                  //stack: 'combined',
+                  type: 'bar',
+                  yAxisID: 'y',
+                  order: 2
+                },
+              ]
+            },
+                options: {
+                responsive: true,
+                interaction: {
+                  mode: 'index',
+                  intersect: false,
+                },
+                stacked: false,
+                plugins: {
+                  title: {
+                    display: true,
+                    text: "Top 3 Produtos"
+                  },
+                  datalabels: {
+                      // formatter: function(value) {
+                      //   return value + '%';
+                      // },                      
+                    labels: {
+                      title: {
+                        font: {
+                          weight: 'bold'
+                        }
+                      },
+                      value: {
+                        color: 'green'
+                      }
+                    }
+                  },
+                },
+              scales: {
+                    y: {
+                      type: 'linear',
+                      display: true,
+                      position: 'left',
+                    },
+                    },
+                  },
+              },);
+        </script>
+           <!--Gráfico Top3 SKU-->   
           
         </div>
       </div>

@@ -149,9 +149,10 @@ class Estoque():
         self.df_vendas_banco_antigo['valorTotal',2021,11] = 0.0
         self.df_vendas_banco_antigo = self.df_vendas_banco_antigo.sort_index(axis=1)
         self.df_vendas_por_mes_por_marca = self.df_vendas_por_mes_por_marca.add(self.df_vendas_banco_antigo,fill_value=0)
-        #self.df_vendas_por_mes_por_marca = self.df_vendas_por_mes_por_marca.groupby(['Marca', 'Tipo']).sum()
         self.marcas = self.df_vendas_por_mes_por_marca.index.get_level_values(0).unique().tolist()
-
+        self.df_venda_SKU_mensal = sql_to_pd(sql.query_venda_SKU_mensal)
+        self.df_vendas_SKU_banco_antigo = pd.read_csv('app/Dash_Logistica/kpis_luiz/planilha/dados_banco_antigo.csv', 
+                                        usecols=['SKU','Marca','valorTotal','Mes','Ano'])
 
     def multiplica_fator(self):
         df1 = pd.read_excel(
@@ -271,17 +272,17 @@ class Estoque():
         return df_vendas
 
 
-    def calcula_venda_mensal(self,ano=0,marca='',tipo=''):
+    def calcula_venda_mensal(self,df,ano=0,marca='',tipo=''):
 
-        return self.filtra(ano,marca,tipo).sum()
+        return self.filtra(df,ano,marca,tipo).sum()
 
-    def calcula_venda_total(self,ano=0,marca='',tipo=''):
+    def calcula_venda_total(self,df,ano=0,marca='',tipo=''):
 
-        return self.calcula_venda_mensal(ano,marca,tipo).sum()
+        return self.calcula_venda_mensal(df,ano,marca,tipo).sum()
     
-    def filtra(self,ano=0,marca='',tipo=''):
+    def filtra(self,df,ano=0,marca='',tipo=''):
 
-        df_vendas = self.df_vendas_por_mes_por_marca
+        df_vendas = df
 
         if ano:
             df_vendas = df_vendas.loc[:,(df_vendas.columns.get_level_values('Ano') == ano)]
@@ -297,8 +298,8 @@ class Estoque():
         return df_vendas
 
     
-    def calcula_pct(self, ano=0, marca:str='',tipo=''):
-        pct = self.calcula_venda_mensal(ano=ano,marca=marca,tipo=tipo).pct_change().apply(lambda x: round(x*100,1)).fillna(0)
+    def calcula_pct(self,df, ano=0, marca:str='',tipo=''):
+        pct = self.calcula_venda_mensal(df,ano=ano,marca=marca,tipo=tipo).pct_change().apply(lambda x: round(x*100,1)).fillna(0)
         pct = pct.replace([np.inf, -np.inf], 0)
         pct = pct.tolist()
         try:
@@ -310,10 +311,31 @@ class Estoque():
     def renomeia_marcas_similares(self,df):
 
         df_marcas_ajustadas = df
-        lista_nomes_originais = ['NCM Deco','Deca Louças','Desso','Roca Louças Metais','Roca Pisos Revestimentos','Incepa Louças Metais','Incepa Pisos Revestimentos','Loja do Movel','HR','Docol Louças','Docol Metais','Level']
-        lista_nomes_ajustados = ['Gart','Deca','Tarkett','Roca','Roca','Incepa','Incepa','Planejados','Planejados','Docol','Docol','Stato Dell Arte']
+        lista_nomes_originais = ['NCM Deco','Deca Louças','Desso','Roca Louças Metais','Roca Pisos Revestimentos','Incepa Louças Metais','Incepa Pisos Revestimentos','Loja do Movel','HR','Docol Louças','Docol Metais','Level','MINIZI','MVK','KERAMUS DESIGN','KÉRAMUS DESIGN']
+        lista_nomes_ajustados = ['Gart','Deca','Tarkett','Roca','Roca','Incepa','Incepa','Planejados','Planejados','Docol','Docol','Stato Dell Arte','Mobiliário','Mobiliário','Manufatti','Manufatti']
         df_marcas_ajustadas = df_marcas_ajustadas.replace(lista_nomes_originais,lista_nomes_ajustados)
         return df_marcas_ajustadas
+
+    def calcula_top_3 (self,ano=0,marca='',tipo=''):
+        df_venda_total_SKU_banco_novo = self.renomeia_marcas_similares(self.df_venda_SKU_mensal)
+        df_venda_total_SKU_banco_antigo = self.renomeia_marcas_similares(self.df_vendas_SKU_banco_antigo)
+        df_venda_total_SKU_banco_novo = df_venda_total_SKU_banco_novo.loc[:,['SKU','valorTotal','Marca']].groupby(['SKU','Marca']).agg('sum')
+        df_venda_total_SKU_banco_antigo = df_venda_total_SKU_banco_antigo.loc[:,['SKU','valorTotal','Marca']].groupby(['SKU','Marca']).agg('sum')
+        df_venda_total_SKU_banco_novo['valorTotal'] = df_venda_total_SKU_banco_novo['valorTotal'].apply(lambda x: float(x))
+        df_venda_total_SKU = df_venda_total_SKU_banco_novo.add(df_venda_total_SKU_banco_antigo,fill_value=0)
+        df_venda_total_SKU = self.filtra(df=df_venda_total_SKU,ano=0,marca=marca,tipo='')
+        df_venda_total_SKU = df_venda_total_SKU.sort_values(by=['valorTotal'],ascending=False).head(3)
+        return df_venda_total_SKU
+    
+    def retorna_historico_por_SKU_mensal(self):
+        df_venda_total_SKU_banco_novo = self.renomeia_marcas_similares(self.df_venda_SKU_mensal)
+        df_venda_total_SKU_banco_antigo = self.renomeia_marcas_similares(self.df_vendas_SKU_banco_antigo)
+        df_venda_total_SKU_banco_novo['valorTotal'] = df_venda_total_SKU_banco_novo['valorTotal'].apply(lambda x: float(x))
+        df_venda_total_SKU_banco_novo = df_venda_total_SKU_banco_novo.groupby(['SKU','Marca','Ano','Mes']).agg('sum')#.unstack(['Ano','Mes'])
+        df_venda_total_SKU_banco_antigo = df_venda_total_SKU_banco_antigo.groupby(['SKU','Marca','Ano','Mes']).agg('sum')#.unstack(['Ano','Mes'])
+        df_venda_total_SKU = df_venda_total_SKU_banco_novo.add(df_venda_total_SKU_banco_antigo,fill_value=0).reset_index()
+        return df_venda_total_SKU
+
 
         
 class LeadTime():

@@ -336,3 +336,6 @@ with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query
 
 with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query_valor_de_venda_por_marca_por_dia_ano_atual_showroom_mes_ano.sql')) as f:
 	query_vendas_ano_atual_showroom = f.read()
+
+with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query_venda_por_SKU_por_mes.sql')) as f:
+	query_venda_SKU_mensal = f.read()
