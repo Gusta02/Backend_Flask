@@ -78,5 +78,7 @@ def create_app():
         #app.register_blueprint(admin_app)
         #app.register_blueprint(relatoriosgraficos)
         #app.register_blueprint(login)
+        app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
         
     return app
+

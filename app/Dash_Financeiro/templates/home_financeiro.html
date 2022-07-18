@@ -121,44 +121,45 @@
           </nav>
           <!-- DropDown de Marcas -->
 
-          
-          
           <div class="row text-white align-items-center no-gutters">
             <div class="col-auto d-none d-sm-block">
-          <center> <form method="POST" action="/dashboard/financeiro">
+            </center><form method="POST" action="/dashboard/financeiro">
             
-            <select class="custom-select custom-select-sm mb-3" name="marca">
-                 {% if not marca_selecionada %} 
+            <div>
+            <center> <select class="custom-select custom-select-sm mb-3" name="marca">
+                 {% if not session['marca_selecionada'] %} 
                  <option selected disabled value=''>Todas Marcas</option>  
                  {% else %} 
-                 <option selected disabled value=''>{{marca_selecionada}}</option>
+                 <option selected disabled value={{marca_selecionada}}>{{session['marca_selecionada']}}</option>
                  {% endif %}
                   <option value="">Todas Marcas</option>
                   <option value="{{marcas[0]}}">{{marcas[0]}}</option>
                   {% for marca in marcas[1:] %}
                     <option value="{{marca}}">{{marca}}</option>
                   {% endfor %}
-              </select>
+              </select></center>
+            </div>
   
-        </div>
+        
         <div class="col-auto d-none d-sm-block">
             
-            <select class="custom-select custom-select-sm mb-3" name="ano">
-                 {% if not ano_selecionado %} 
+            <center><select class="custom-select custom-select-sm mb-3" name="ano">
+                 {% if not session['ano_selecionado'] %} 
                  <option selected disabled value="">Todos Anos</option>  
                  {% else %} 
-                 <option selected disabled value="">{{ano_selecionado}}</option>
+                 <option selected disabled value={{ano_selecionado}}>{{session['ano_selecionado']}}</option>
                  {% endif %}
                   <option value="2022">2022</option>
                   <option value="2021">2021</option>
                   <option value="2020">2020</option>
                   <option value="">Todos Anos</option>
-              </select>
-              
-              <button type="submit">Selecionar</button>
+              </select></center>
+             
+            </div>
+            <input type="submit"/>
         </form> </center>
         </div>
-        </div>
+      </div>
         <br>
           <!-- CARDS -->
           <div class="card-deck">
