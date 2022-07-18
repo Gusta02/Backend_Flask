@@ -283,6 +283,8 @@ class Estoque():
 
         if ano:
             df_vendas = df_vendas.loc[:,(df_vendas.columns.get_level_values('Ano') == ano)]
+        else:
+            df_vendas = df_vendas.groupby('Ano',level=0,axis=1).agg('sum')
 
         if marca:
             df_vendas = df_vendas.query(f"Marca == '{marca}'")

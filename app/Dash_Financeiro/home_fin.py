@@ -34,8 +34,13 @@ def home_financeiro():
 
     venda_total_showroom = locale.currency(estoque.calcula_venda_total(ano=ano_selecionado,marca=marca_selecionada,tipo='showroom'), grouping=True)
     venda_total = locale.currency(estoque.calcula_venda_total(ano=ano_selecionado,marca=marca_selecionada), grouping=True)
-    meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
-    labels_vendas = meses[estoque.filtra(ano=ano_selecionado).columns.get_level_values('Mes').min()-1:estoque.filtra(ano=ano_selecionado).columns.get_level_values('Mes').max()]
+    
+    if ano_selecionado:
+        meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
+        labels_vendas = meses[estoque.filtra(ano=ano_selecionado).columns.get_level_values('Mes').min()-1:estoque.filtra(ano=ano_selecionado).columns.get_level_values('Mes').max()]
+    else:
+        labels_vendas = ['2020','2021','2022']
+
     values_vendas = estoque.calcula_venda_mensal(marca=marca_selecionada,ano=ano_selecionado).tolist()
     values_vendas_pct = estoque.calcula_pct(ano = ano_selecionado, marca = marca_selecionada)
     values_vendas_cliente = estoque.calcula_venda_mensal(marca= marca_selecionada,ano=ano_selecionado,tipo='cliente').tolist()
