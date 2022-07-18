@@ -149,7 +149,8 @@ class Estoque():
         self.df_vendas_banco_antigo['valorTotal',2021,11] = 0.0
         self.df_vendas_banco_antigo = self.df_vendas_banco_antigo.sort_index(axis=1)
         self.df_vendas_por_mes_por_marca = self.df_vendas_por_mes_por_marca.add(self.df_vendas_banco_antigo,fill_value=0)
-        self.marcas = self.df_vendas_por_mes_por_marca.index.get_level_values(0).tolist()
+        #self.df_vendas_por_mes_por_marca = self.df_vendas_por_mes_por_marca.groupby(['Marca', 'Tipo']).sum()
+        self.marcas = self.df_vendas_por_mes_por_marca.index.get_level_values(0).unique().tolist()
 
 
     def multiplica_fator(self):
@@ -262,7 +263,8 @@ class Estoque():
 
     def vendas_por_mes_por_marca(self,df)->object:
         
-        df_vendas = df.groupby(['Ano','Mes','Marca','Tipo']).agg('sum').unstack(['Ano','Mes'])
+        df_vendas = self.renomeia_marcas_similares(df)
+        df_vendas = df_vendas.groupby(['Ano','Mes','Marca','Tipo']).agg('sum').unstack(['Ano','Mes'])
         df_vendas = df_vendas.fillna(0)
         df_vendas = df_vendas.applymap(lambda x: round(float(x),2))
 
@@ -304,6 +306,14 @@ class Estoque():
         except:
             pass
         return pct
+
+    def renomeia_marcas_similares(self,df):
+
+        df_marcas_ajustadas = df
+        lista_nomes_originais = ['NCM Deco','Deca Louças','Desso','Roca Louças Metais','Roca Pisos Revestimentos','Incepa Louças Metais','Incepa Pisos Revestimentos','Loja do Movel','HR','Docol Louças','Docol Metais','Level']
+        lista_nomes_ajustados = ['Gart','Deca','Tarkett','Roca','Roca','Incepa','Incepa','Planejados','Planejados','Docol','Docol','Stato Dell Arte']
+        df_marcas_ajustadas = df_marcas_ajustadas.replace(lista_nomes_originais,lista_nomes_ajustados)
+        return df_marcas_ajustadas
 
         
 class LeadTime():
