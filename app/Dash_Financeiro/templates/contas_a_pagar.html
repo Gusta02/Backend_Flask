@@ -127,9 +127,13 @@
               <form method="POST" action="/dashboard/financeiro/ContasPagar">
 
                 <select class="custom-select custom-select-sm mb-3" name="empresa">
-                  <!-- <option selected disabled value="Artse"> Todas Empresas</option>
-                  
-                  <option value="">Todas Empresas</option> -->
+
+                  {% if not selecionar_empresa %}             
+                  <option selected disabled value="Todas"> Todas Empresas</option>
+                  {% else %} 
+                 <option selected disabled value=''>{{marca_selecionada}}</option>
+                 {% endif %}
+                  <option value="Todas">Todas Empresas</option>
                   <option value="{{filtro_empresa[0]}}">{{filtro_empresa[0]}}</option>
                   {% for empresa in filtro_empresa[1:] %}
                     <option value="{{empresa}}">{{empresa}}</option>
