@@ -1,5 +1,6 @@
+from threading import local
 from ..Dash_Financeiro.kpis_michel.pagar import Pagar_15dias, Pagar_30dias, Pagar_60dias, Pagar_90dias, Pagar_12meses
-from ..Dash_Financeiro.kpis_michel.main import valor_total, conta_pagar
+from ..Dash_Financeiro.kpis_michel.main import SOMA_TODASEMPRESAS_APAGAR, TODASEMPRESAS_CONTASARECEBER,fluxoCaixa, empresa
 from flask import Blueprint, render_template, request, Response
 import locale
 import io
@@ -21,12 +22,14 @@ def Contas_a_Pagar():
         except:
             periodicidade = 0
 
-    
+    # filtro_empresas = locale.currency(empresa.set_planilha())
 
     #renderizando no front
-    card_total_pagar = locale.currency(conta_pagar, grouping= True)
+    fluxodecaixa = locale.currency(fluxoCaixa, grouping=True)
+    card_total_pagar = locale.currency(SOMA_TODASEMPRESAS_APAGAR, grouping= True)
+    card_total_receber = locale.currency(TODASEMPRESAS_CONTASARECEBER, grouping= True)
 
-    return render_template('contas_a_pagar.html', page = 1, card2 = card_total_pagar )
+    return render_template('contas_a_pagar.html', page = 1, card= fluxodecaixa, card1 = card_total_pagar, card2= card_total_receber )
 
 
 @Contas_Pagar.route("/download/ContasPagar", methods=["GET","POST"])
