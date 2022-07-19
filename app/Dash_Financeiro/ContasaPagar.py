@@ -9,11 +9,24 @@ Contas_Pagar = Blueprint('Contas_Pagar', __name__ , template_folder='templates',
 
 @Contas_Pagar.route("/dashboard/financeiro/ContasPagar", methods=["GET","POST"])
 def Contas_a_Pagar():
+
     locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")  
-    card_valor_total = locale.currency(conta_pagar, grouping= True)
+    
+    empresa_selecionada = ''
+    periodicidade = 30
 
+    if request.method == 'POST':
+        try:
+            periodicidade = int(request.form.get('periodociade'))
+        except:
+            periodicidade = 0
 
-    return render_template('contas_a_pagar.html', page = 1, card2 = card_valor_total )
+    
+
+    #renderizando no front
+    card_total_pagar = locale.currency(conta_pagar, grouping= True)
+
+    return render_template('contas_a_pagar.html', page = 1, card2 = card_total_pagar )
 
 
 @Contas_Pagar.route("/download/ContasPagar", methods=["GET","POST"])
