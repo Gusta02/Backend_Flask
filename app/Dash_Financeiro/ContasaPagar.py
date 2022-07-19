@@ -34,23 +34,23 @@ def Contas_a_Pagar():
     return render_template('contas_a_pagar.html', page = 1, card= fluxodecaixa, card1 = card_total_pagar, card2= card_total_receber, filtro_empresa = filtro_empresas, selecionar_empresa = selecionar_empresa )
 
 
-@Contas_Pagar.route("/download/ContasPagar", methods=["GET","POST"])
-def PagarDownload_excel():
-    quinze =  Pagar_15dias()
-    trinta =  Pagar_30dias()
-    sessenta = Pagar_60dias()
-    noventa = Pagar_90dias()
-    doze = Pagar_12meses()
+# @Contas_Pagar.route("", methods=["GET","POST"])
+# def PagarDownload_excel():
+#     quinze =  Pagar_15dias()
+#     trinta =  Pagar_30dias()
+#     sessenta = Pagar_60dias()
+#     noventa = Pagar_90dias()
+#     doze = Pagar_12meses()
     
-    buffer = io.BytesIO()
-    with pd.ExcelWriter(buffer) as writer:
-        quinze.to_excel(writer, sheet_name = '15Dias', index = False)
-        trinta.to_excel(writer, sheet_name = '30Dias', index = False)
-        sessenta.to_excel(writer, sheet_name = '60Dias', index = False)
-        noventa.to_excel(writer, sheet_name = '90Dias', index = False)
-        doze.to_excel(writer, sheet_name = '12Meses', index = False)
-    headers = {
-    'Content-Disposition': 'attachment; filename=Dados_a_Pagar.xlsx',
-    'Content-type': 'application/vnd.ms-excel'
-    }
-    return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
+#     buffer = io.BytesIO()
+#     with pd.ExcelWriter(buffer) as writer:
+#         quinze.to_excel(writer, sheet_name = '15Dias', index = False)
+#         trinta.to_excel(writer, sheet_name = '30Dias', index = False)
+#         sessenta.to_excel(writer, sheet_name = '60Dias', index = False)
+#         noventa.to_excel(writer, sheet_name = '90Dias', index = False)
+#         doze.to_excel(writer, sheet_name = '12Meses', index = False)
+#     headers = {
+#     'Content-Disposition': 'attachment; filename=Dados_a_Pagar.xlsx',
+#     'Content-type': 'application/vnd.ms-excel'
+#     }
+#     return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)

@@ -129,9 +129,9 @@
                 <select class="custom-select custom-select-sm mb-3" name="empresa">
 
                   {% if not selecionar_empresa %}             
-                  <option selected disabled value="Todas"> Todas Empresas</option>
+                  <option selected disabled value=''> Todas Empresas</option>
                   {% else %} 
-                 <option selected disabled value=''>{{marca_selecionada}}</option>
+                 <option selected disabled value=''>{{selecionar_empresa}}</option>
                  {% endif %}
                   <option value="Todas">Todas Empresas</option>
                   <option value="{{filtro_empresa[0]}}">{{filtro_empresa[0]}}</option>
@@ -161,18 +161,8 @@
           </div>
 
           <!-- CARDS -->
+          <!-- card -->
           <div class="card-deck">
-            <!-- CARD1 -->
-            <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
-              <div class="bg-holder bg-card">
-              </div>
-              <div class="card-body position-relative">
-                <h5> <center> UHome </center><span class="badge badge-soft-warning rounded-capsule ml-2"></span></h5>
-                <h6> <center> Contas a Pagar </center></h6>
-                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/download/ContasPagar"><center>Download Excel</center></a> </div>
-              </div>
-            </div>
-            <!-- FIM CARD -->
             <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
               <div class="bg-holder bg-card">
               </div>
@@ -181,6 +171,7 @@
                 <div class="display-4 fs-3 mb-2 font-weight-normal text-sans-serif text-light">{{ card }}</div>
               </div>
             </div>
+          <!--fim card-->
             <!-- CARD1 -->
             <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
               <div class="bg-holder bg-card">
