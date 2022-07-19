@@ -79,3 +79,5 @@ Artse = Empresa('app/Dash_Financeiro/planilhas/artse.xlsx')
 uhome = Empresa('app/Dash_Financeiro/planilhas/uhome.xlsx')
 
 valor_pagar = uhome.calcula_tipo(tipo='CONTAS A PAGAR')
+
+artse = Empresa('app/Dash_Financeiro/planilhas/artse.xlsx')
