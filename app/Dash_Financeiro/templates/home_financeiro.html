@@ -401,6 +401,8 @@
            <!-- Gráfico Top3 Skus mais vendidos -->
             <script>
 
+        
+
           Chart.register(ChartDataLabels);
           var ctx3 = document.getElementById("ChartVendasTop3SKU").getContext("2d");
           var ChartVendas = new Chart(ctx3, {
@@ -487,7 +489,90 @@
             });
         </script>
            <!--Gráfico Top3 SKU-->   
-          
+
+          <!--Gráfico de SKUs unicos-->
+
+          <canvas id="ChartSKUsUnicos"></canvas>
+          <script>
+            Chart.register(ChartDataLabels);
+            var ctx4 = document.getElementById("ChartSKUsUnicos").getContext("2d")
+            var ChartVendas = new Chart(ctx4, {
+              plugins: [ChartDataLabels],
+              data: {
+                labels: {{ labels_SKUs_unicos | safe }},
+                datasets: [
+                  {
+                    // label: "R$",
+                    data: {{ values_SKUs_unicos | safe }},
+                    //fill: false,
+                    borderColor: "red",
+                    backgroundColor: "red",  
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        color: 'blue',
+                        // formatter: function(value) {
+                        //   return 'R$ ' + Number(value).toLocaleString();
+                        },
+                    type: 'line'
+                    }
+                    //lineTension: 0.1
+                    //stack: 'combined',
+                    ]
+                  },
+                
+                  options: {
+                  responsive: true,
+                  interaction: {
+                    mode: 'index',
+                    intersect: false,
+                  },
+                  stacked: false,
+                  plugins: {
+                    legend: {
+                    display: false
+                  },
+                    title: {
+                      display: true,
+                      text:  'SKUs Únicos'
+                    },
+                    datalabels: {
+                        // formatter: function(value) {
+                        //   return value + '%';
+                        // },                      
+                      labels: {
+                        title: {
+                          font: {
+                            weight: 'bold'
+                          }
+                        },
+                        value: {
+                          color: 'green'
+                        }
+                      }
+                    },
+                  },
+                // scales: {
+                //       y: {
+                //         type: 'linear',
+                //         display: true,
+                //         position: 'left',
+                //       },
+                //       y1: {
+                //         type: 'linear',
+                //         display: true,
+                //         position: 'right',
+
+                //         // grid line settings
+                //   grid: {
+                //     drawOnChartArea: false, // only want the grid lines for one axis to show up
+                //           },
+                //         },
+                //       },
+                    },
+                });
+          </script>
+        <!--Gráfico de Vendas Total Com %-->
         </div>
       </div>
     </main>
