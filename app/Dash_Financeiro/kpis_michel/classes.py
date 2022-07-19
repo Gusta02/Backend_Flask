@@ -8,8 +8,10 @@ hoje = date.today()
 
 class Empresa():
 
-    def __init__(self, planilha) -> None:
-        self.planilha = self.set_planilha(planilha)    
+    def __init__(self, planilha=None) -> None:
+
+        if planilha:
+            self.planilha = self.set_planilha(planilha)    
     
     def set_planilha(self,planilha):
 
@@ -66,6 +68,9 @@ class Empresa():
 
         return df_todas_empresas
 
+
+
+
 dict_empresas = dict(
 Artse = Empresa('app/Dash_Financeiro/planilhas/artse.xlsx')
 ,Easy = Empresa('app/Dash_Financeiro/planilhas/easy.xlsx')
@@ -75,6 +80,15 @@ Artse = Empresa('app/Dash_Financeiro/planilhas/artse.xlsx')
 ,Uhome = Empresa('app/Dash_Financeiro/planilhas/uhome.xlsx')
 ,Vns = Empresa('app/Dash_Financeiro/planilhas/VNS.xlsx')
 )
+
+lista_planilhas = Empresa.get_todas_empresas(dict_empresas)
+
+todas_empresas = Empresa()
+
+todas_empresas.planilha = lista_planilhas
+
+dict_empresas['Todas'] = todas_empresas
+
 
 uhome = Empresa('app/Dash_Financeiro/planilhas/uhome.xlsx')
 
