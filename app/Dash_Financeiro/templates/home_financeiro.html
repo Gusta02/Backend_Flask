@@ -403,44 +403,53 @@
           Chart.register(ChartDataLabels);
           var ctx3 = document.getElementById("ChartVendasTop3SKU").getContext("2d");
           var ChartVendas = new Chart(ctx3, {
-           // plugins: [ChartDataLabels],
+           plugins: [ChartDataLabels],
+            type: 'bar',    
             data: {
               labels: {{ labels_top3 | safe }},
               datasets: [{
-                  label: {{ marca_top3 | safe }},
+                  //label: 'Mais Vendindos',
                   data: {{values_top3 | safe}},
-                  //data: {{ values_top3 | safe }},
                   //fill: false,
                   //borderCorlor: "blue",
-                  backgroundColor: "rgb(256,244,236)",
-                  // datalabels: {
-                  //     anchor: 'end',
-                  //     align: 'top',
-                  //     color: 'blue',
-                  //     formatter: function(value) {
-                  //       return 'R$ ' + Number(value).toLocaleString();
-                  //     }
-                  type: 'bar'
+                  datalabels: {
+                      anchor: 'end',
+                      align: 'top',
+                      color: 'blue',
+                      font: {
+                          weight: 'bold'
+                        },
+                      formatter: function(value) {
+                        return 'R$ ' + Number(value.y).toLocaleString();
+                      }
+                  },
+                  //yAxisID: 'y',
+                  backgroundColor: "rgb(256,244,236)"
                   }]
                   //lineTension: 0.1
                   //stack: 'combined',
                   
-                  // yAxisID: 'y',
+                   
                   // order: 2
                 },
                 options: {
+                  
                 responsive: true,
                 // stacked: false,
-                // interaction: {
-                //   mode: 'index',
-                //   intersect: false
-                // },
+                
+                interaction: {
+                  mode: 'index',
+                  intersect: false
+                },
                 plugins: {
+                  legend: {
+                    display: false
+                  },
                   tooltip: {
                      callbacks:{
-                      labels: (context) => {
-                        return 'R$ ' + Number(context.value).toLocaleString();
-                        //return `${context.label}, status: ${context.raw.status}`;
+                      label: (context) => {
+                        //return 'R$ ' + Number(context.value).toLocaleString();
+                        return `${context.raw.Produto}, ${context.raw.Marca}`;
 
                       }
                      }
@@ -449,21 +458,21 @@
                     display: true,
                     text: "Top 3 Produtos"
                   }
-                //   datalabels: {
-                //       // formatter: function(value) {
-                //       //   return value + '%';
-                //       // },                      
-                //     labels: {
-                //       title: {
-                //         font: {
-                //           weight: 'bold'
-                //         }
-                //       },
-                //       value: {
-                //         color: 'green'
-                //       }
-                //     }
-                //   },
+                  // datalabels: {
+                  //     formatter: function(value) {
+                  //       return value + '%';
+                  //     },                      
+                  //   labels: {
+                  //     title: {
+                  //       font: {
+                  //         weight: 'bold'
+                  //       }
+                  //     },
+                  //     value: {
+                  //       color: 'green'
+                  //     }
+                  //   }
+                  // },
                 // },
               // scales: {
               //       y: {
