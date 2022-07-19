@@ -150,9 +150,10 @@ class Estoque():
         self.df_vendas_banco_antigo = self.df_vendas_banco_antigo.sort_index(axis=1)
         self.df_vendas_por_mes_por_marca = self.df_vendas_por_mes_por_marca.add(self.df_vendas_banco_antigo,fill_value=0)
         self.marcas = self.df_vendas_por_mes_por_marca.index.get_level_values(0).unique().tolist()
-        self.df_venda_SKU_mensal = sql_to_pd(sql.query_venda_SKU_mensal)
-        self.df_vendas_SKU_banco_antigo = pd.read_csv('app/Dash_Logistica/kpis_luiz/planilha/dados_banco_antigo.csv', 
-                                        usecols=['SKU','Marca','valorTotal','Mes','Ano','NomeProduto'])
+        self.df_venda_SKU_mensal = self.renomeia_marcas_similares((sql_to_pd(sql.query_venda_SKU_mensal)))
+        self.df_vendas_SKU_banco_antigo = self.renomeia_marcas_similares(pd.read_csv('app/Dash_Logistica/kpis_luiz/planilha/dados_banco_antigo.csv', 
+                                        usecols=['SKU','Marca','valorTotal','Mes','Ano','NomeProduto']))
+        # self.df_venda_total_SKU = self.trata_vendas_SKU()
 
     def multiplica_fator(self):
         df1 = pd.read_excel(
@@ -317,19 +318,31 @@ class Estoque():
         return df_marcas_ajustadas
 
     def calcula_top_3 (self,ano=0,marca='',tipo=''):
-        df_venda_total_SKU_banco_novo = self.renomeia_marcas_similares(self.df_venda_SKU_mensal)
-        df_venda_total_SKU_banco_antigo = self.renomeia_marcas_similares(self.df_vendas_SKU_banco_antigo)
+        df_venda_total_SKU_banco_novo = self.df_venda_SKU_mensal
+        df_venda_total_SKU_banco_antigo = self.df_vendas_SKU_banco_antigo
         df_venda_total_SKU_banco_novo = df_venda_total_SKU_banco_novo.loc[:,['SKU','valorTotal','Marca','NomeProduto']].groupby(['SKU','Marca','NomeProduto']).agg('sum')
         df_venda_total_SKU_banco_antigo = df_venda_total_SKU_banco_antigo.loc[:,['SKU','valorTotal','Marca','NomeProduto']].groupby(['SKU','Marca','NomeProduto']).agg('sum')
         df_venda_total_SKU_banco_novo['valorTotal'] = df_venda_total_SKU_banco_novo['valorTotal'].apply(lambda x: float(x))
         df_venda_total_SKU = df_venda_total_SKU_banco_novo.add(df_venda_total_SKU_banco_antigo,fill_value=0)
-        df_venda_total_SKU = self.filtra(df=df_venda_total_SKU,ano=0,marca=marca,tipo='')
-        df_venda_total_SKU = df_venda_total_SKU.sort_values(by=['valorTotal'],ascending=False).head(3)
-        return df_venda_total_SKU
-    
+        df_top_3 = self.filtra(df=df_venda_total_SKU,ano=0,marca=marca,tipo='')
+        df_top_3 = df_top_3.sort_values(by=['valorTotal'],ascending=False).head(3)
+        return df_top_3
+
+    def calcula_SKUs_unicos (self,ano=0,marca='',tipo=''):
+        df_venda_total_SKU_banco_novo = self.df_venda_SKU_mensal
+        df_venda_total_SKU_banco_antigo = self.df_vendas_SKU_banco_antigo
+        df_venda_total_SKU_banco_novo = df_venda_total_SKU_banco_novo.loc[:,['SKU','Marca','Ano','Mes']]
+        df_venda_total_SKU_banco_antigo = df_venda_total_SKU_banco_antigo.loc[:,['SKU','Marca','Ano','Mes']]
+        df_venda_total_SKU = pd.concat([df_venda_total_SKU_banco_novo,df_venda_total_SKU_banco_antigo],ignore_index=True)
+        if marca:
+            df_venda_total_SKU = df_venda_total_SKU.query(f"Marca == '{marca}'")
+        df_unicos = df_venda_total_SKU.pivot_table(values='SKU', index=['SKU'], columns= ['Ano','Mes'], aggfunc='count')
+        df_unicos = self.filtra(df=df_unicos,ano=ano,marca='',tipo='')
+        return df_unicos.sum()
+        
     def retorna_historico_por_SKU_mensal(self):
-        df_venda_total_SKU_banco_novo = self.renomeia_marcas_similares(self.df_venda_SKU_mensal)
-        df_venda_total_SKU_banco_antigo = self.renomeia_marcas_similares(self.df_vendas_SKU_banco_antigo)
+        df_venda_total_SKU_banco_novo = self.df_venda_SKU_mensal
+        df_venda_total_SKU_banco_antigo = self.df_vendas_SKU_banco_antigo
         df_venda_total_SKU_banco_novo['valorTotal'] = df_venda_total_SKU_banco_novo['valorTotal'].apply(lambda x: float(x))
         df_venda_total_SKU_banco_novo = df_venda_total_SKU_banco_novo.groupby(['SKU','Marca','Ano','Mes']).agg('sum')#.unstack(['Ano','Mes'])
         df_venda_total_SKU_banco_antigo = df_venda_total_SKU_banco_antigo.groupby(['SKU','Marca','Ano','Mes']).agg('sum')#.unstack(['Ano','Mes'])

@@ -51,7 +51,6 @@ def home_financeiro():
     df_top3 = estoque.calcula_top_3(ano=ano_selecionado,marca=marca_selecionada)
     labels_top3 = df_top3.index.get_level_values('SKU').to_list()
     top3_sku_vendas = df_top3['valorTotal'].to_list()
-    #nomes_top3 = df_top3.index.to_list()[0]
     nomes_top3 = df_top3.index.get_level_values('NomeProduto').to_list()
     marcas_top3 = df_top3.index.get_level_values('Marca').to_list()
     values_top3 = [
@@ -60,14 +59,23 @@ def home_financeiro():
         {'x':2, 'y':top3_sku_vendas[2], 'Produto': nomes_top3[2], 'Marca': marcas_top3[2]}
         ]
 
+    df_SKUs_unicos = estoque.calcula_SKUs_unicos(ano=ano_selecionado,marca=marca_selecionada)
+
+    if ano_selecionado:
+        meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
+        labels_SKUs_unicos = meses[df_SKUs_unicos.index.get_level_values('Mes').min()-1:df_SKUs_unicos.index.get_level_values('Mes').max()]
+    else:
+        labels_SKUs_unicos = ['2020','2021','2022']
     
- 
+    values_SKUs_unicos = df_SKUs_unicos.tolist()
+    
+
     ################# Dicionário para a geração automática de cards ######################
     dict_variaveis = {
     # 'Inventário': inventario_total
     }
     
-    return render_template('home_financeiro.html',cards = dict_variaveis, inventario_total = inventario_total,venda_total = venda_total,labels_vendas = labels_vendas, values_vendas = values_vendas, marcas = marcas,marca_selecionada = marca_selecionada, values_vendas_pct = values_vendas_pct,venda_total_showroom=venda_total_showroom, values_vendas_cliente=values_vendas_cliente,values_vendas_showroom=values_vendas_showroom,ano_selecionado=ano_selecionado,labels_top3=labels_top3,values_top3=values_top3)
+    return render_template('home_financeiro.html',cards = dict_variaveis, inventario_total = inventario_total,venda_total = venda_total,labels_vendas = labels_vendas, values_vendas = values_vendas, marcas = marcas,marca_selecionada = marca_selecionada, values_vendas_pct = values_vendas_pct,venda_total_showroom=venda_total_showroom, values_vendas_cliente=values_vendas_cliente,values_vendas_showroom=values_vendas_showroom,ano_selecionado=ano_selecionado,labels_top3=labels_top3,values_top3=values_top3,labels_SKUs_unicos=labels_SKUs_unicos, values_SKUs_unicos = values_SKUs_unicos)
 
 @financeiro.route('/download/<df>/<filename>',methods=['GET']) # Gera Arquivos em Excel para Download
 def download_excel(df,filename):
