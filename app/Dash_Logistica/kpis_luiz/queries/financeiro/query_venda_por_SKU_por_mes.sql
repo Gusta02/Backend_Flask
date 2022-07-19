@@ -1,4 +1,5 @@
-SELECT Quantidade*PrecoUnitarioDescontado valorTotal
+	SELECT SUM(Quantidade*PrecoUnitarioDescontado) valorTotal
+		,itens.SKU
 	  ,prodsfornec.NomeFantasia Marca
 	  ,MONTH(itens.DataInserido) Mes
 	  ,YEAR(itens.DataInserido) Ano
@@ -19,10 +20,12 @@ SELECT Quantidade*PrecoUnitarioDescontado valorTotal
 	ON fornec.IdMarca = prods.IdMarca) prodsfornec
 	ON itens.SKU = prodsfornec.SKU
 	AND bitAtivo = 1
+	GROUP BY itens.SKU, MONTH(itens.DataInserido), YEAR(itens.DataInserido), prodsfornec.NomeFantasia
  
   UNION ALL
 
-  SELECT Quantidade*PrecoUnitario valorTotal
+  SELECT SUM(Quantidade*PrecoUnitario) valorTotal
+		,itens.SKU
 	  ,prodsfornec.NomeFantasia Marca
 	  ,MONTH(itens.DataInserido) Mes
 	  ,YEAR(itens.DataInserido) Ano
@@ -43,4 +46,4 @@ SELECT Quantidade*PrecoUnitarioDescontado valorTotal
 	ON fornec.IdMarca = prods.IdMarca) prodsfornec
 	ON itens.SKU = prodsfornec.SKU
 	AND bitAtivo = 1
-  
+	GROUP BY itens.SKU, MONTH(itens.DataInserido), YEAR(itens.DataInserido), prodsfornec.NomeFantasia
