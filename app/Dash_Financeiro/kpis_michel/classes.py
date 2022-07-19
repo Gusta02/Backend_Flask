@@ -4,9 +4,11 @@ import os
 from dateutil.relativedelta import *
 
 
-hoje = date.today() 
+
 
 class Empresa():
+
+    hoje = date.today() 
 
     def __init__(self, planilha=None) -> None:
 
@@ -24,16 +26,16 @@ class Empresa():
 
         return df_contas_pagar
 
-    def filtra_dias(self,dias=0):
+    def filtra_dias(self,dias=0) -> object:
 
         def entre_datas (dia_referencia,dia1,dia2):
 
-            return dia1 <= dia_referencia <= dia2
+           return pd.Timestamp(dia1) <= pd.Timestamp(dia_referencia) <= pd.Timestamp(dia2)
 
         dias_timedelta = timedelta(days=dias)
         periodo = __class__.hoje + dias_timedelta
         
-        mask = self.planilha['DATA_VENCIMENTO'].apply(lambda x: entre_datas(x,hoje,periodo))
+        mask = self.planilha['DATA_VENCIMENTO'].apply(lambda x: entre_datas(x,__class__.hoje,periodo))
         df_filtrada_dias = self.planilha[mask]
 
         return df_filtrada_dias                   
