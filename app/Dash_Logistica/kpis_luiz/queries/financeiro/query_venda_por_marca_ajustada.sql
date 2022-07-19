@@ -1,10 +1,9 @@
-	SELECT SUM(Quantidade*PrecoUnitarioDescontado) valorTotal
-		,itens.SKU
-		,NomeProduto
+SELECT Quantidade*PrecoUnitarioDescontado valorTotal
 	  ,Marca
+	  ,itens.SKU
 	  ,MONTH(itens.DataInserido) Mes
 	  ,YEAR(itens.DataInserido) Ano
-	  --,'cliente' AS Tipo
+	  ,'cliente' AS Tipo
   FROM [HauszMapa].[Pedidos].[ItensFlexy] itens
   JOIN (SELECT CodigoPedido
 			,IdEtapaFlexy
@@ -22,17 +21,15 @@
 	ON itens.SKU = todos.SKU
 	WHERE itens.bitAtivo = 1
 	AND Marca != 'Hausz'
-	GROUP BY itens.SKU, MONTH(itens.DataInserido), YEAR(itens.DataInserido), Marca, NomeProduto
  
   UNION ALL
 
-  SELECT SUM(Quantidade*PrecoUnitario) valorTotal
-		,itens.SKU
-		,NomeProduto Produto
+  SELECT Quantidade*PrecoUnitario valorTotal
 	  ,Marca
+	  ,itens.SKU
 	  ,MONTH(itens.DataInserido) Mes
 	  ,YEAR(itens.DataInserido) Ano
-	  --,'showroom' AS Tipo
+	  ,'showroom' AS Tipo
   FROM [HauszMapa].[ShowRoom].[ItensPedido] itens
   JOIN (SELECT CodigoPedidoSw
 			,IdEtapaFlexy
@@ -40,7 +37,7 @@
 		WHERE IdEtapaFlexy != 11 -- remove cancelados
 		) pedidos
 	ON itens.CodigoPedidoSw = pedidos.CodigoPedidoSw
-	JOIN	(Select SKU,Marca,NomeProduto FROM (Select SKU, NomeProduto, IdMarca from HauszMapa.Produtos.ProdutoBasico
+	JOIN(Select SKU,Marca,NomeProduto FROM (Select SKU, NomeProduto, IdMarca from HauszMapa.Produtos.ProdutoBasico
 
 	Union 
 
@@ -50,5 +47,4 @@
 	ON itens.SKU = todos.SKU
 	WHERE itens.bitAtivo = 1
 	AND Marca != 'Hausz'
-	GROUP BY itens.SKU, MONTH(itens.DataInserido), YEAR(itens.DataInserido), NomeProduto, Marca
-	
+  

@@ -10,13 +10,18 @@ SELECT Quantidade*PrecoUnitarioDescontado valorTotal
 		WHERE IdEtapaFlexy != 11 -- remove cancelados
 		) pedidos
 	ON itens.CodigoPedido = pedidos.CodigoPedido
-	JOIN (SELECT SKU, NomeProduto, marca.Marca
-		FROM HauszMapa.Produtos.ProdutoBasico prod
-		JOIN [HauszMapa].[Produtos].[Marca] marca ON prod.IdMarca = marca.IdMarca
-		WHERE prod.IdMarca NOT IN (71)
-		) prods
-	ON itens.SKU = prods.SKU
-	AND bitAtivo = 1
+	LEFT JOIN (SELECT SKU, NomeProduto
+		FROM HauszMapa.Produtos.ProdutoBasico
+		WHERE IdMarca NOT IN (71)
+		) prodsb
+	ON itens.SKU = prodsb.SKU
+	LEFT JOIN (SELECT SKU, marca.Marca
+	FROM HauszMapa.Produtos.ProdutoDetalhe prod
+	JOIN [HauszMapa].[Produtos].[Marca] marca ON prod.IdMarca = marca.IdMarca
+	WHERE prod.IdMarca NOT IN (71)
+		) prodsd
+	ON itens.SKU = prodsd.SKU
+	WHERE itens.bitAtivo = 1
  
   UNION ALL
 
@@ -32,11 +37,16 @@ SELECT Quantidade*PrecoUnitarioDescontado valorTotal
 		WHERE IdEtapaFlexy != 11 -- remove cancelados
 		) pedidos
 	ON itens.CodigoPedidoSw = pedidos.CodigoPedidoSw
-	JOIN (SELECT SKU, NomeProduto, marca.Marca
-		FROM HauszMapa.Produtos.ProdutoBasico prod
-		JOIN [HauszMapa].[Produtos].[Marca] marca ON prod.IdMarca = marca.IdMarca
-		WHERE prod.IdMarca NOT IN (71)
-		) prods
-	ON itens.SKU = prods.SKU
-	AND bitAtivo = 1
+	LEFT JOIN (SELECT SKU, NomeProduto
+		FROM HauszMapa.Produtos.ProdutoBasico
+		WHERE IdMarca NOT IN (71)
+		) prodsb
+	ON itens.SKU = prodsb.SKU
+	LEFT JOIN (SELECT SKU, marca.Marca
+	FROM HauszMapa.Produtos.ProdutoDetalhe prod
+	JOIN [HauszMapa].[Produtos].[Marca] marca ON prod.IdMarca = marca.IdMarca
+	WHERE prod.IdMarca NOT IN (71)
+		) prodsd
+	ON itens.SKU = prodsd.SKU
+	WHERE itens.bitAtivo = 1
   
