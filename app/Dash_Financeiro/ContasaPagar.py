@@ -19,8 +19,10 @@ def Contas_a_Pagar():
 
     if request.method == 'POST':
         selecionar_empresa =  request.form.get('empresa')
+        periodicidade = int(request.form.get('periodicidade'))
         
     empresa_selecionada = dict_empresas[selecionar_empresa]
+    empresa_selecionada.planilha = empresa_selecionada.filtra_dias(periodicidade)
 
     filtro_empresas = list(dict_empresas.keys())
 
