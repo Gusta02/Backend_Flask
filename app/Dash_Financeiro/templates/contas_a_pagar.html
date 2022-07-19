@@ -124,12 +124,17 @@
           <!-- DropDown de Empresas -->
           <div class="row text-white align-items-left no-gutters">
             <div class="col-auto d-none d-sm-block">
-              <form method="POST" action="">
+              <form method="POST" action="/dashboard/financeiro/ContasPagar">
 
                 <select class="custom-select custom-select-sm mb-3" name="empresa">
-                  <option selected disabled value=""> Todas Empresas</option>
-
-                  <option  value="">Todas Empresas</option>
+                  <!-- <option selected disabled value="Artse"> Todas Empresas</option>
+                  
+                  <option value="">Todas Empresas</option> -->
+                  <option value="{{filtro_empresa[0]}}">{{filtro_empresa[0]}}</option>
+                  {% for empresa in filtro_empresa[1:] %}
+                    <option value="{{empresa}}">{{empresa}}</option>
+                  {% endfor %}
+                                    
                 </select>
               
             </div>
@@ -143,7 +148,7 @@
                   <option value="30"> 30 Dias </option>
                   <option value="60"> 60 Dias </option>
                   <option value="90"> 12 Meses </option>  
-
+                    
                 </select>       
                 <button type="submit"> Filtrar </button>         
               </form>

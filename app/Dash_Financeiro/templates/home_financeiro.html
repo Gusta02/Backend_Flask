@@ -135,12 +135,8 @@
                   {% for marca in marcas[1:] %}
                     <option value="{{marca}}">{{marca}}</option>
                   {% endfor %}
-              </select>
+              </select>           
               
-  
-        </div>
-        <div class="col-auto d-none d-sm-block">
-            
             <select class="custom-select custom-select-sm mb-3" name="ano">
                  {% if not ano_selecionado %} 
                  <option selected disabled value="">Todos Anos</option>  
