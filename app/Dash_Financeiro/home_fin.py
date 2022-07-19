@@ -32,28 +32,42 @@ def home_financeiro():
     if request.method == 'POST':
         marca_selecionada = request.form.get('marca')
 
-    venda_total_showroom = locale.currency(estoque.calcula_venda_total(ano=ano_selecionado,marca=marca_selecionada,tipo='showroom'), grouping=True)
-    venda_total = locale.currency(estoque.calcula_venda_total(ano=ano_selecionado,marca=marca_selecionada), grouping=True)
+    venda_total_showroom = locale.currency(estoque.calcula_venda_total(df=estoque.df_vendas_por_mes_por_marca,ano=ano_selecionado,marca=marca_selecionada,tipo='showroom'), grouping=True)
+    venda_total = locale.currency(estoque.calcula_venda_total(df=estoque.df_vendas_por_mes_por_marca,ano=ano_selecionado,marca=marca_selecionada), grouping=True)
     
     if ano_selecionado:
         meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
-        labels_vendas = meses[estoque.filtra(ano=ano_selecionado).columns.get_level_values('Mes').min()-1:estoque.filtra(ano=ano_selecionado).columns.get_level_values('Mes').max()]
+        labels_vendas = meses[estoque.filtra(df=estoque.df_vendas_por_mes_por_marca,ano=ano_selecionado).columns.get_level_values('Mes').min()-1:estoque.filtra(df=estoque.df_vendas_por_mes_por_marca,ano=ano_selecionado).columns.get_level_values('Mes').max()]
     else:
         labels_vendas = ['2020','2021','2022']
-
-    values_vendas = estoque.calcula_venda_mensal(marca=marca_selecionada,ano=ano_selecionado).tolist()
-    values_vendas_pct = estoque.calcula_pct(ano = ano_selecionado, marca = marca_selecionada)
-    values_vendas_cliente = estoque.calcula_venda_mensal(marca= marca_selecionada,ano=ano_selecionado,tipo='cliente').tolist()
-    values_vendas_showroom = estoque.calcula_venda_mensal(marca= marca_selecionada,ano=ano_selecionado,tipo='showroom').tolist()
+    
+    values_vendas = estoque.calcula_venda_mensal(df=estoque.df_vendas_por_mes_por_marca,marca=marca_selecionada,ano=ano_selecionado).tolist()
+    values_vendas_cliente = estoque.calcula_venda_mensal(df=estoque.df_vendas_por_mes_por_marca,marca= marca_selecionada,ano=ano_selecionado,tipo='cliente').tolist()
+    values_vendas_showroom = estoque.calcula_venda_mensal(df=estoque.df_vendas_por_mes_por_marca,marca= marca_selecionada,ano=ano_selecionado,tipo='showroom').tolist()
+    values_vendas_pct = estoque.calcula_pct(df=estoque.df_vendas_por_mes_por_marca,ano = ano_selecionado, marca = marca_selecionada)
     marcas = estoque.marcas
     inventario_total = locale.currency(estoque.inventario(marca=marca_selecionada).Inventário.sum(), grouping=True)
+
+    df_top3 = estoque.calcula_top_3(ano=ano_selecionado,marca=marca_selecionada)
+    labels_top3 = df_top3.index.get_level_values('SKU').to_list()
+    top3_sku_vendas = df_top3['valorTotal'].to_list()
+    #nomes_top3 = df_top3.index.to_list()[0]
+    nomes_top3 = df_top3.index.get_level_values('NomeProduto').to_list()
+    marcas_top3 = df_top3.index.get_level_values('Marca').to_list()
+    values_top3 = [
+        {'x':0, 'y':top3_sku_vendas[0], 'Produto': nomes_top3[0], 'Marca': marcas_top3[0]}, 
+        {'x':1, 'y':top3_sku_vendas[1], 'Produto': nomes_top3[1], 'Marca': marcas_top3[1]}, 
+        {'x':2, 'y':top3_sku_vendas[2], 'Produto': nomes_top3[2], 'Marca': marcas_top3[2]}
+        ]
+
+    
  
     ################# Dicionário para a geração automática de cards ######################
     dict_variaveis = {
     # 'Inventário': inventario_total
     }
     
-    return render_template('home_financeiro.html',cards = dict_variaveis, inventario_total = inventario_total,venda_total = venda_total,labels_vendas = labels_vendas, values_vendas = values_vendas, marcas = marcas,marca_selecionada = marca_selecionada, values_vendas_pct = values_vendas_pct,venda_total_showroom=venda_total_showroom, values_vendas_cliente=values_vendas_cliente,values_vendas_showroom=values_vendas_showroom,ano_selecionado=ano_selecionado)
+    return render_template('home_financeiro.html',cards = dict_variaveis, inventario_total = inventario_total,venda_total = venda_total,labels_vendas = labels_vendas, values_vendas = values_vendas, marcas = marcas,marca_selecionada = marca_selecionada, values_vendas_pct = values_vendas_pct,venda_total_showroom=venda_total_showroom, values_vendas_cliente=values_vendas_cliente,values_vendas_showroom=values_vendas_showroom,ano_selecionado=ano_selecionado,labels_top3=labels_top3,values_top3=values_top3)
 
 @financeiro.route('/download/<df>/<filename>',methods=['GET']) # Gera Arquivos em Excel para Download
 def download_excel(df,filename):

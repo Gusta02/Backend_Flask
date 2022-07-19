@@ -393,7 +393,100 @@
                 },);
           </script>
         <!--Gráfico de Vendas Showroom/Cliente-->
-              
+
+        <!--Gráfico Top3 SKU-->
+
+        <canvas id="ChartVendasTop3SKU"></canvas> <!--width="500" height="300"-->
+
+           <!-- Gráfico Top3 Skus mais vendidos -->
+            <script>
+
+          Chart.register(ChartDataLabels);
+          var ctx3 = document.getElementById("ChartVendasTop3SKU").getContext("2d");
+          var ChartVendas = new Chart(ctx3, {
+           plugins: [ChartDataLabels],
+            type: 'bar',    
+            data: {
+              labels: {{ labels_top3 | safe }},
+              datasets: [{
+                  //label: 'Mais Vendindos',
+                  data: {{values_top3 | safe}},
+                  //fill: false,
+                  //borderCorlor: "blue",
+                  datalabels: {
+                      anchor: 'end',
+                      align: 'top',
+                      color: 'blue',
+                      font: {
+                          weight: 'bold'
+                        },
+                      formatter: function(value) {
+                        return 'R$ ' + Number(value.y).toLocaleString();
+                      }
+                  },
+                  //yAxisID: 'y',
+                  backgroundColor: "rgb(256,244,236)"
+                  }]
+                  //lineTension: 0.1
+                  //stack: 'combined',
+                  
+                   
+                  // order: 2
+                },
+                options: {
+                  
+                responsive: true,
+                // stacked: false,
+                
+                interaction: {
+                  mode: 'index',
+                  intersect: false
+                },
+                plugins: {
+                  legend: {
+                    display: false
+                  },
+                  tooltip: {
+                     callbacks:{
+                      label: (context) => {
+                        //return 'R$ ' + Number(context.value).toLocaleString();
+                        return `${context.raw.Produto}, ${context.raw.Marca}`;
+
+                      }
+                     }
+                  },
+                  title: {
+                    display: true,
+                    text: "Top 3 Produtos"
+                  }
+                  // datalabels: {
+                  //     formatter: function(value) {
+                  //       return value + '%';
+                  //     },                      
+                  //   labels: {
+                  //     title: {
+                  //       font: {
+                  //         weight: 'bold'
+                  //       }
+                  //     },
+                  //     value: {
+                  //       color: 'green'
+                  //     }
+                  //   }
+                  // },
+                // },
+              // scales: {
+              //       y: {
+              //         type: 'linear',
+              //         display: true,
+              //         position: 'left',
+              //       },
+              //       },
+                  }
+              }
+            });
+        </script>
+           <!--Gráfico Top3 SKU-->   
           
         </div>
       </div>
