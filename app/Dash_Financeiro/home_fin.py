@@ -50,7 +50,13 @@ def home_financeiro():
 
     df_top3 = estoque.calcula_top_3(ano=ano_selecionado,marca=marca_selecionada)
     labels_top3 = df_top3.index.get_level_values('SKU').to_list()
-    values_top3 = df_top3['valorTotal'].to_list()
+    top3_sku_vendas = df_top3['valorTotal'].to_list()
+    values_top3 = [
+        {'x':0, 'y':top3_sku_vendas[0], 'status': 'nome1'}, 
+        {'x':1, 'y':top3_sku_vendas[1], 'status': 'nome2'}, 
+        {'x':2, 'y':top3_sku_vendas[2], 'status': 'nome3'}
+        ]
+
     marca_top3 = df_top3.index.to_list()[0]
  
     ################# Dicionário para a geração automática de cards ######################
