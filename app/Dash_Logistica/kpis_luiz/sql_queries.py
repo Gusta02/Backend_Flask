@@ -328,7 +328,7 @@ SELECT pp.[SKU]
 	AND IdEstoque IN (1,5)
 '''
 
-with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query_venda_por_marca.sql')) as f:
+with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query_venda_por_marca_ajustada.sql')) as f:
 	query_vendas_ano_atual = f.read()
 
 with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query_venda_por_SKU_por_mes_com_nome.sql')) as f:
