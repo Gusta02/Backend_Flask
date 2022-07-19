@@ -15,8 +15,8 @@ class Empresa():
 
         df_contas_pagar = pd.read_excel(planilha)
 
-        df_contas_pagar.columns = ['DATA_EMITIDA','DATA_VENCIMENTO','TIPO','ORIGEM','SITUACAO','GRUPO','CATEGORIA',
-        'CLIENTE_FORNECEDOR','CNPJ_CPF','OBSERVACAO_CONTA','DOCUMENTO_TIPO','VALOR_CONTA','PAGO_RECEBIDO','A_RECEBER_PAGAR']
+        df_contas_pagar.columns =  ['DATA_EMITIDA','DATA_VENCIMENTO','TIPO','ORIGEM','SITUACAO','GRUPO','CATEGORIA',
+        'OBSERVACAO_CONTA','DOCUMENTO_TIPO','VALOR_CONTA','PAGO_RECEBIDO','A_RECEBER_PAGAR']
 
         df_contas_pagar.loc[:,'TIPO'] = df_contas_pagar.loc[:,'TIPO'].apply(lambda x: str(x).split('.')[-1].strip().upper())
 
@@ -66,12 +66,16 @@ class Empresa():
 
         return df_todas_empresas
 
-      
 dict_empresas = dict(
-uhome = Empresa('app/Dash_Financeiro/planilhas/pivot_202207.xlsx')
-,easy = Empresa('app/Dash_Financeiro/planilhas/pivot_202207.xlsx')
-,implantadora = Empresa('app/Dash_Financeiro/planilhas/pivot_202207.xlsx')
+Artse = Empresa('app/Dash_Financeiro/planilhas/artse.xlsx')
+,Easy = Empresa('app/Dash_Financeiro/planilhas/easy.xlsx')
+,Hausz = Empresa('app/Dash_Financeiro/planilhas/hausz.xlsx')
+,Logz = Empresa('app/Dash_Financeiro/planilhas/logz.xlsx')
+,Supply = Empresa('app/Dash_Financeiro/planilhas/supply.xlsx')
+,Uhome = Empresa('app/Dash_Financeiro/planilhas/uhome.xlsx')
+,Vns = Empresa('app/Dash_Financeiro/planilhas/VNS.xlsx')
 )
-uhome = Empresa('app/Dash_Financeiro/planilhas/pivot_202207.xlsx')
 
-valor_pagar = uhome.calcula_tipo('CONTAS A PAGAR')
+uhome = Empresa('app/Dash_Financeiro/planilhas/uhome.xlsx')
+
+valor_pagar = uhome.calcula_tipo(tipo='CONTAS A PAGAR')

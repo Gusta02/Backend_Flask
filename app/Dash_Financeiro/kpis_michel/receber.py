@@ -30,14 +30,14 @@ doze =  (hoje) + relativedelta(months= 12)
 doze_meses =  doze.strftime('%Y-%m-%d')
 
 #tabela excel
-data = pd.read_excel('app/Dash_Financeiro/planilhas/pivot_202207.xlsx')
+data = pd.read_excel('app/Dash_Financeiro/planilhas/uhome.xlsx')
 
 # filtro os dados do dia atual até os proximos 15 dias
 def Receber_15dias():
-    data = pd.read_excel('app/Dash_Financeiro/planilhas/pivot_202207.xlsx')
+    data = pd.read_excel('app/Dash_Financeiro/planilhas/uhome.xlsx')
     
     data.columns =  ['DATA_EMITIDA','DATA_VENCIMENTO','TIPO','ORIGEM','SITUACAO','GRUPO','CATEGORIA',
-    'CLIENTE_FORNECEDOR','CNPJ_CPF','OBSERVACAO_CONTA','DOCUMENTO_TIPO','VALOR_CONTA','PAGO_RECEBIDO','A_RECEBER_PAGAR']
+        'OBSERVACAO_CONTA','DOCUMENTO_TIPO','VALOR_CONTA','PAGO_RECEBIDO','A_RECEBER_PAGAR']
 
     data.loc[:,'TIPO'] = data.loc[:,'TIPO'].apply(lambda x: str(x).split('.')[-1].strip().upper())
     data['DATA_VENCIMENTO'] = data['DATA_VENCIMENTO'].apply(lambda k: str(k).split()[0])
@@ -55,10 +55,10 @@ def Receber_15dias():
 
 # filtro os dados do dia atual até os proximos 30 dias
 def Receber_30dias():
-    data = pd.read_excel('app/Dash_Financeiro/planilhas/pivot_202207.xlsx')
+    data = pd.read_excel('app/Dash_Financeiro/planilhas/uhome.xlsx')
     
     data.columns =  ['DATA_EMITIDA','DATA_VENCIMENTO','TIPO','ORIGEM','SITUACAO','GRUPO','CATEGORIA',
-    'CLIENTE_FORNECEDOR','CNPJ_CPF','OBSERVACAO_CONTA','DOCUMENTO_TIPO','VALOR_CONTA','PAGO_RECEBIDO','A_RECEBER_PAGAR']
+        'OBSERVACAO_CONTA','DOCUMENTO_TIPO','VALOR_CONTA','PAGO_RECEBIDO','A_RECEBER_PAGAR']
 
     data.loc[:,'TIPO'] = data.loc[:,'TIPO'].apply(lambda x: str(x).split('.')[-1].strip().upper())
     data['DATA_VENCIMENTO'] = data['DATA_VENCIMENTO'].apply(lambda k: str(k).split()[0])
@@ -76,10 +76,10 @@ def Receber_30dias():
 
 # filtro os dados do dia atual até os proximos 60 dias
 def Receber_60dias():
-    data = pd.read_excel('app/Dash_Financeiro/planilhas/pivot_202207.xlsx')
+    data = pd.read_excel('app/Dash_Financeiro/planilhas/uhome.xlsx')
     
     data.columns =  ['DATA_EMITIDA','DATA_VENCIMENTO','TIPO','ORIGEM','SITUACAO','GRUPO','CATEGORIA',
-    'CLIENTE_FORNECEDOR','CNPJ_CPF','OBSERVACAO_CONTA','DOCUMENTO_TIPO','VALOR_CONTA','PAGO_RECEBIDO','A_RECEBER_PAGAR']
+        'OBSERVACAO_CONTA','DOCUMENTO_TIPO','VALOR_CONTA','PAGO_RECEBIDO','A_RECEBER_PAGAR']
 
     data.loc[:,'TIPO'] = data.loc[:,'TIPO'].apply(lambda x: str(x).split('.')[-1].strip().upper())
     data['DATA_VENCIMENTO'] = data['DATA_VENCIMENTO'].apply(lambda k: str(k).split()[0])
@@ -97,10 +97,10 @@ def Receber_60dias():
 
 # filtro os dados do dia atual até os proximos 90dias
 def Receber_90dias():
-    data = pd.read_excel('app/Dash_Financeiro/planilhas/pivot_202207.xlsx')
+    data = pd.read_excel('app/Dash_Financeiro/planilhas/uhome.xlsx')
     
     data.columns =  ['DATA_EMITIDA','DATA_VENCIMENTO','TIPO','ORIGEM','SITUACAO','GRUPO','CATEGORIA',
-    'CLIENTE_FORNECEDOR','CNPJ_CPF','OBSERVACAO_CONTA','DOCUMENTO_TIPO','VALOR_CONTA','PAGO_RECEBIDO','A_RECEBER_PAGAR']
+        'OBSERVACAO_CONTA','DOCUMENTO_TIPO','VALOR_CONTA','PAGO_RECEBIDO','A_RECEBER_PAGAR']
 
     data.loc[:,'TIPO'] = data.loc[:,'TIPO'].apply(lambda x: str(x).split('.')[-1].strip().upper())
     data['DATA_VENCIMENTO'] = data['DATA_VENCIMENTO'].apply(lambda k: str(k).split()[0])
@@ -118,10 +118,10 @@ def Receber_90dias():
 
 # filtro os dados do dia atual até os proximos 12 meses
 def Receber_12meses():
-    data = pd.read_excel('app/Dash_Financeiro/planilhas/pivot_202207.xlsx')
+    data = pd.read_excel('app/Dash_Financeiro/planilhas/uhome.xlsx')
     
     data.columns =  ['DATA_EMITIDA','DATA_VENCIMENTO','TIPO','ORIGEM','SITUACAO','GRUPO','CATEGORIA',
-    'CLIENTE_FORNECEDOR','CNPJ_CPF','OBSERVACAO_CONTA','DOCUMENTO_TIPO','VALOR_CONTA','PAGO_RECEBIDO','A_RECEBER_PAGAR']
+        'OBSERVACAO_CONTA','DOCUMENTO_TIPO','VALOR_CONTA','PAGO_RECEBIDO','A_RECEBER_PAGAR']
 
     data.loc[:,'TIPO'] = data.loc[:,'TIPO'].apply(lambda x: str(x).split('.')[-1].strip().upper())
     data['DATA_VENCIMENTO'] = data['DATA_VENCIMENTO'].apply(lambda k: str(k).split()[0])
