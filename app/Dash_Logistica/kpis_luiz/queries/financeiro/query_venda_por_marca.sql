@@ -1,5 +1,6 @@
 SELECT Quantidade*PrecoUnitarioDescontado valorTotal
 	  ,Marca
+	  ,itens.SKU
 	  ,MONTH(itens.DataInserido) Mes
 	  ,YEAR(itens.DataInserido) Ano
 	  ,'cliente' AS Tipo
@@ -10,23 +11,22 @@ SELECT Quantidade*PrecoUnitarioDescontado valorTotal
 		WHERE IdEtapaFlexy != 11 -- remove cancelados
 		) pedidos
 	ON itens.CodigoPedido = pedidos.CodigoPedido
-	LEFT JOIN (SELECT SKU, NomeProduto
-		FROM HauszMapa.Produtos.ProdutoBasico
-		WHERE IdMarca NOT IN (71)
-		) prodsb
-	ON itens.SKU = prodsb.SKU
-	LEFT JOIN (SELECT SKU, marca.Marca
-	FROM HauszMapa.Produtos.ProdutoDetalhe prod
-	JOIN [HauszMapa].[Produtos].[Marca] marca ON prod.IdMarca = marca.IdMarca
-	WHERE prod.IdMarca NOT IN (71)
-		) prodsd
-	ON itens.SKU = prodsd.SKU
+	JOIN	(Select SKU,Marca,NomeProduto FROM (Select SKU, NomeProduto, IdMarca from HauszMapa.Produtos.ProdutoBasico
+
+	Union 
+
+	Select SKU,NomeProduto,IdMarca from HauszMapa.ShowRoom.ProdutoBasico) todosprodutos
+	JOIN (SELECT IdMarca,Marca from HauszMapa.Produtos.Marca) marca
+	ON todosprodutos.IdMarca = marca.IdMarca) todos
+	ON itens.SKU = todos.SKU
 	WHERE itens.bitAtivo = 1
+	AND Marca != 'Hausz'
  
   UNION ALL
 
   SELECT Quantidade*PrecoUnitario valorTotal
 	  ,Marca
+	  ,itens.SKU
 	  ,MONTH(itens.DataInserido) Mes
 	  ,YEAR(itens.DataInserido) Ano
 	  ,'showroom' AS Tipo
@@ -37,16 +37,14 @@ SELECT Quantidade*PrecoUnitarioDescontado valorTotal
 		WHERE IdEtapaFlexy != 11 -- remove cancelados
 		) pedidos
 	ON itens.CodigoPedidoSw = pedidos.CodigoPedidoSw
-	LEFT JOIN (SELECT SKU, NomeProduto
-		FROM HauszMapa.Produtos.ProdutoBasico
-		WHERE IdMarca NOT IN (71)
-		) prodsb
-	ON itens.SKU = prodsb.SKU
-	LEFT JOIN (SELECT SKU, marca.Marca
-	FROM HauszMapa.Produtos.ProdutoDetalhe prod
-	JOIN [HauszMapa].[Produtos].[Marca] marca ON prod.IdMarca = marca.IdMarca
-	WHERE prod.IdMarca NOT IN (71)
-		) prodsd
-	ON itens.SKU = prodsd.SKU
+	JOIN(Select SKU,Marca,NomeProduto FROM (Select SKU, NomeProduto, IdMarca from HauszMapa.Produtos.ProdutoBasico
+
+	Union 
+
+	Select SKU,NomeProduto,IdMarca from HauszMapa.ShowRoom.ProdutoBasico) todosprodutos
+	JOIN (SELECT IdMarca,Marca from HauszMapa.Produtos.Marca) marca
+	ON todosprodutos.IdMarca = marca.IdMarca) todos
+	ON itens.SKU = todos.SKU
 	WHERE itens.bitAtivo = 1
+	AND Marca != 'Hausz'
   

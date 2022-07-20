@@ -5,6 +5,7 @@ Created on Wed Jun 29 14:23:23 2022
 @author: Luiz Gagliardi
 
 """
+import openpyxl
 from app.Dash_Logistica.kpis_luiz import sql_queries as sql
 from app.Dash_Logistica.kpis_luiz.data_extractor import sql_to_pd
 from datetime import datetime, date
@@ -313,8 +314,8 @@ class Estoque():
     def renomeia_marcas_similares(self,df):
 
         df_marcas_ajustadas = df
-        lista_nomes_originais = ['NCM Deco','Deca Louças','Desso','Roca Louças Metais','Roca Pisos Revestimentos','Incepa Louças Metais','Incepa Pisos Revestimentos','Loja do Movel','HR','Docol Louças','Docol Metais','Level','MINIZI','MVK','KERAMUS DESIGN','KÉRAMUS DESIGN']
-        lista_nomes_ajustados = ['Gart','Deca','Tarkett','Roca','Roca','Incepa','Incepa','Planejados','Planejados','Docol','Docol','Stato Dell Arte','Mobiliário','Mobiliário','Manufatti','Manufatti']
+        lista_nomes_originais = ['NCM Deco','Deca Louças','Desso','Roca Louças Metais','Roca Pisos Revestimentos','Incepa Louças Metais','Incepa Pisos Revestimentos','Loja do Movel','HR','Docol Louças','Docol Metais','Level','MINIZI','MVK','KERAMUS DESIGN','KÉRAMUS DESIGN','Stato Dell Arte Vinilico']
+        lista_nomes_ajustados = ['Gart','Deca','Tarkett','Roca','Roca','Incepa','Incepa','Planejados','Planejados','Docol','Docol','Stato Dell Arte','Mobiliário','Mobiliário','Manufatti','Manufatti','Stato Dell Arte']
         df_marcas_ajustadas = df_marcas_ajustadas.replace(lista_nomes_originais,lista_nomes_ajustados)
         return df_marcas_ajustadas
 
@@ -351,15 +352,17 @@ class Estoque():
         return df_venda_total_SKU
 
     def calcula_projecao(self):
-        X = np.array([20,34,56,78,99]).reshape(-1,1)
-        y = np.array([1000,2000,3000,4000,5000]).reshape(-1,1)
+        # X = np.array([20,34,56,78,99]).reshape(-1,1)
+        # y = np.array([1000,2000,3000,4000,5000]).reshape(-1,1)
 
-        reg = linear_model.LinearRegression()
-        reg.fit(X,y)
+        # reg = linear_model.LinearRegression()
+        # reg.fit(X,y)
 
-        pred = reg.predict(np.array([120]).reshape(-1,1))
+        # pred = reg.predict(np.array([120]).reshape(-1,1))
 
-        return pred
+        pd.read_excel('', engine= openpyxl)
+
+        # return pred
 
 
         

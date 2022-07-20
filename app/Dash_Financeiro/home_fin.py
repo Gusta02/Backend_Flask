@@ -32,17 +32,6 @@ def home_financeiro():
     locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")  # Seleção da moeda brasileira
     #ano = date.today().year
     
-    ########################## Recebendo Filtros do Front ######################################
-
-    # if request.method == 'POST':
-    #     try:
-    #         ano_selecionado = int(request.form.get('ano'))
-    #     except:
-    #         ano_selecionado = 0
-
-    # if request.method == 'POST':
-    #     marca_selecionada = request.form.get('marca')
-
     ########################## Cards de Venda e Inventário Total ######################################
 
     venda_total_showroom = locale.currency(estoque.calcula_venda_total(df=estoque.df_vendas_por_mes_por_marca,ano=ano_selecionado,marca=marca_selecionada,tipo='showroom'), grouping=True)
@@ -91,7 +80,8 @@ def home_financeiro():
 
     ########################## Projeção de Vendas ######################################
 
-
+    labels_projecao = meses
+    values_projecao = list(range(12))
     
 
     ################# Dicionário de Variáveis ######################
@@ -112,6 +102,8 @@ def home_financeiro():
     ,values_top3=values_top3
     ,labels_SKUs_unicos=labels_SKUs_unicos
     ,values_SKUs_unicos = values_SKUs_unicos
+    ,labels_projecao = labels_projecao
+    ,values_projecao = values_projecao
     )
     
     return render_template('home_financeiro.html',**dict_variaveis)
