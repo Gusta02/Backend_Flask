@@ -1,4 +1,4 @@
-from ..Dash_Financeiro.kpis_michel.classes import dict_empresas,resumo_fc,resumo_cr,resumo_cp
+from ..Dash_Financeiro.kpis_michel.classes import dict_empresas,resumo_fc,resumo_cr,resumo_cp,lista_resumo_detalhado
 from flask import Blueprint, render_template, request, Response
 import locale
 import io
@@ -35,6 +35,10 @@ def Contas_a_Pagar():
 @Contas_Pagar.route("/dashboard/financeiro/downloadresumo", methods=["GET","POST"])
 def PagarDownload_excel():
     
+    resumo_fc.rename(columns={360:'12 meses'},inplace=True)
+    resumo_cp.rename(columns={360:'12 meses'},inplace=True)
+    resumo_cr.rename(columns={360:'12 meses'},inplace=True)
+
     buffer = io.BytesIO()
     with pd.ExcelWriter(buffer) as writer:
         resumo_fc.to_excel(writer, sheet_name = 'Fluxo de Caixa')
@@ -42,6 +46,22 @@ def PagarDownload_excel():
         resumo_cp.to_excel(writer, sheet_name = 'Contas a Pagar')
     headers = {
     'Content-Disposition': 'attachment; filename=Resumo_Fluxo_de_Caixa.xlsx',
+    'Content-type': 'application/vnd.ms-excel'
+    }
+    return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
+
+@Contas_Pagar.route("/dashboard/financeiro/download_resumo_detalhado", methods=["GET","POST"])
+def download_resumo_detalhado():
+    
+    buffer = io.BytesIO()
+    with pd.ExcelWriter(buffer) as writer:
+        lista_resumo_detalhado[0].to_excel(writer, sheet_name = '15 dias')
+        lista_resumo_detalhado[1].to_excel(writer, sheet_name = '30 dias')
+        lista_resumo_detalhado[2].to_excel(writer, sheet_name = '60 dias')
+        lista_resumo_detalhado[3].to_excel(writer, sheet_name = '90 dias')
+        lista_resumo_detalhado[4].to_excel(writer, sheet_name = '12 meses')
+    headers = {
+    'Content-Disposition': 'attachment; filename=Fluxo_de_Caixa_Detalhado.xlsx',
     'Content-type': 'application/vnd.ms-excel'
     }
     return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)

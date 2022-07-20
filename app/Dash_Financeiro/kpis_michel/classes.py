@@ -90,7 +90,8 @@ dict_empresas['Todas'] = todas_empresas
 colunas_fc = []
 colunas_cp = []
 colunas_cr = []
-periodos = [0,15,30,60,90,360]
+periodos = [15,30,60,90,360]
+lista_resumo_detalhado = []
 
 for i in periodos:
     linha_fc = []
@@ -104,6 +105,7 @@ for i in periodos:
     colunas_fc.append(linha_fc)
     colunas_cp.append(linha_cp)
     colunas_cr.append(linha_cr)
+    lista_resumo_detalhado.append(dict_empresas['Todas'].filtra_dias(i))
 
 resumo_fc = pd.DataFrame(colunas_fc,index=periodos,columns=dict_empresas.keys())
 resumo_fc = resumo_fc.transpose()
