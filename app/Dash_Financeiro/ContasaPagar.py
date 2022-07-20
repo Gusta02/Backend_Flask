@@ -15,7 +15,7 @@ def Contas_a_Pagar():
     locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")  
     
     selecionar_empresa = 'Todas'
-    periodicidade = 30
+    periodicidade = 0
 
     if request.method == 'POST':
         selecionar_empresa =  request.form.get('empresa')
