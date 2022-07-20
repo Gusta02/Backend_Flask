@@ -10,28 +10,38 @@ import pandas as pd
 financeiro = Blueprint('financeiro', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
 
-@financeiro.route("/dashboard/financeiro", methods=["GET","POST"])
+@financeiro.route("/dashboard/financeiro/", methods=["GET","POST"])
 def home_financeiro():
 
     ################## Back dos Cards de inventário, vendas 2022 e gráfico #########################
 
+
     ########################## Inicialização ######################################
-    marca_selecionada = ''
-    ano_selecionado = 2022
+
+    
+    marca_selecionada = request.args.get('marca')
+    if marca_selecionada is None:
+        marca_selecionada = ''
+
+    try:
+        ano_selecionado = int(request.args.get('ano'))
+    except:
+        ano_selecionado = 2022
+
     meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
     locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")  # Seleção da moeda brasileira
     #ano = date.today().year
     
     ########################## Recebendo Filtros do Front ######################################
 
-    if request.method == 'POST':
-        try:
-            ano_selecionado = int(request.form.get('ano'))
-        except:
-            ano_selecionado = 0
+    # if request.method == 'POST':
+    #     try:
+    #         ano_selecionado = int(request.form.get('ano'))
+    #     except:
+    #         ano_selecionado = 0
 
-    if request.method == 'POST':
-        marca_selecionada = request.form.get('marca')
+    # if request.method == 'POST':
+    #     marca_selecionada = request.form.get('marca')
 
     ########################## Cards de Venda e Inventário Total ######################################
 
