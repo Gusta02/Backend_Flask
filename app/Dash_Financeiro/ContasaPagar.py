@@ -45,7 +45,7 @@ def PagarDownload_excel():
         resumo_cr.to_excel(writer, sheet_name = 'Contas a Receber')
         resumo_cp.to_excel(writer, sheet_name = 'Contas a Pagar')
     headers = {
-    'Content-Disposition': 'attachment; filename=Resumo_Fluxo_de_Caixa.xlsx',
+    'Content-Disposition': 'attachment; filename=Fluxo_de_Caixa-Resumo.xlsx',
     'Content-type': 'application/vnd.ms-excel'
     }
     return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
