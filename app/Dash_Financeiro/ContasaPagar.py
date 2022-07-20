@@ -1,6 +1,4 @@
 from threading import local
-from ..Dash_Financeiro.kpis_michel.pagar import Pagar_15dias, Pagar_30dias, Pagar_60dias, Pagar_90dias, Pagar_12meses
-# from ..Dash_Financeiro.kpis_michel.main import SOMA_TODASEMPRESAS_APAGAR, TODASEMPRESAS_CONTASARECEBER,fluxoCaixa, empresa
 from ..Dash_Financeiro.kpis_michel.classes import dict_empresas,df_fc,df_cr,df_cp
 from flask import Blueprint, render_template, request, Response
 import locale
@@ -26,12 +24,13 @@ def Contas_a_Pagar():
 
     filtro_empresas = list(dict_empresas.keys())
 
+    labels_empresa = dict_empresas
     #renderizando no front
     fluxodecaixa = locale.currency(empresa_selecionada.get_valor(), grouping=True)
     card_total_pagar = locale.currency(empresa_selecionada.calcula_tipo('CONTAS A PAGAR'), grouping= True)
     card_total_receber = locale.currency(empresa_selecionada.calcula_tipo('CONTAS A RECEBER'), grouping= True)
 
-    return render_template('contas_a_pagar.html', page = 1, card= fluxodecaixa, card1 = card_total_pagar, card2= card_total_receber, filtro_empresa = filtro_empresas, selecionar_empresa = selecionar_empresa )
+    return render_template('contas_a_pagar.html', page = 1, card= fluxodecaixa, card1 = card_total_pagar, card2= card_total_receber, filtro_empresa = filtro_empresas, selecionar_empresa = selecionar_empresa, labels_empresa = labels_empresa )
 
 
 @Contas_Pagar.route("/dashboard/financeiro/downloadmichel", methods=["GET","POST"])

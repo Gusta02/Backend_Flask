@@ -36,6 +36,7 @@
     <link href="{{ url_for('financeiro.static', filename='lib/leaflet.markercluster/MarkerCluster.css')}}" rel="stylesheet">
     <link href="{{ url_for('financeiro.static', filename='lib/leaflet.markercluster/MarkerCluster.Default.css')}}" rel="stylesheet">
     <link href="{{ url_for('financeiro.static', filename='css/theme.css')}}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
     <link rel="stylesheet" href="{{ url_for('financeiro.static', filename='css/dropdown_filter.css')}}">
 
   </head>
@@ -170,7 +171,7 @@
               <div class="card-body position-relative">
                 <h6> <center> Fluxo de Caixa </center> </h6>
                 <div class="display-4 fs-3 mb-2 font-weight-normal text-sans-serif text-light">{{ card }}</div>
-                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/dashboard/financeiro/downloadmichel"><center>Download Resumo detalhado</center></a> </div>
+                <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-light"><a class="card-link d-block" href="/dashboard/financeiro/downloadmichel"><center> Resumo detalhado - Download </center></a> </div>
               </div>
             </div>
           <!--fim card-->
@@ -184,6 +185,7 @@
               </div>
             </div>
             <!-- FIM CARD -->
+
             <!-- CARD2 -->
             <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
               <div class="bg-holder bg-card">
@@ -193,6 +195,7 @@
                 <div class="display-4 fs-3 mb-2 font-weight-normal text-sans-serif text-light">{{ card2 }}</div>
               </div>
             </div>
+            
             <!-- FIM CARD -->
             <!-- CARD4 -->
             <!-- <div class="card mb-3 overflow-hidden" style="min-width: 12rem">
@@ -246,7 +249,45 @@
             </div>
           </div> -->
         <!-- FIM DO CARD8 -->
-          </div> 
+          </div>
+          <canvas id="myChart" width="400" height="400"></canvas>
+<script>
+const ctx = document.getElementById('myChart').getContext('2d');
+const myChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script> 
           <!-- FIM DOS CARDS -->
         </div>
       </div>
