@@ -1,7 +1,4 @@
-from threading import local
-from ..Dash_Financeiro.kpis_michel.pagar import Pagar_15dias, Pagar_30dias, Pagar_60dias, Pagar_90dias, Pagar_12meses
-# from ..Dash_Financeiro.kpis_michel.main import SOMA_TODASEMPRESAS_APAGAR, TODASEMPRESAS_CONTASARECEBER,fluxoCaixa, empresa
-from ..Dash_Financeiro.kpis_michel.classes import dict_empresas,df_fc,df_cr,df_cp
+from ..Dash_Financeiro.kpis_michel.classes import dict_empresas,resumo_fc,resumo_cr,resumo_cp,lista_resumo_detalhado
 from flask import Blueprint, render_template, request, Response
 import locale
 import io
@@ -26,24 +23,45 @@ def Contas_a_Pagar():
 
     filtro_empresas = list(dict_empresas.keys())
 
+    labels_empresa = dict_empresas
+    
     #renderizando no front
     fluxodecaixa = locale.currency(empresa_selecionada.get_valor(), grouping=True)
     card_total_pagar = locale.currency(empresa_selecionada.calcula_tipo('CONTAS A PAGAR'), grouping= True)
     card_total_receber = locale.currency(empresa_selecionada.calcula_tipo('CONTAS A RECEBER'), grouping= True)
 
-    return render_template('contas_a_pagar.html', page = 1, card= fluxodecaixa, card1 = card_total_pagar, card2= card_total_receber, filtro_empresa = filtro_empresas, selecionar_empresa = selecionar_empresa )
+    return render_template('contas_a_pagar.html', page = 1, card= fluxodecaixa, card1 = card_total_pagar, card2= card_total_receber, filtro_empresa = filtro_empresas, selecionar_empresa = selecionar_empresa, labels_empresa = labels_empresa )
 
-
-@Contas_Pagar.route("/dashboard/financeiro/downloadmichel", methods=["GET","POST"])
+@Contas_Pagar.route("/dashboard/financeiro/downloadresumo", methods=["GET","POST"])
 def PagarDownload_excel():
+    
+    resumo_fc.rename(columns={360:'12 meses'},inplace=True)
+    resumo_cp.rename(columns={360:'12 meses'},inplace=True)
+    resumo_cr.rename(columns={360:'12 meses'},inplace=True)
+
+    buffer = io.BytesIO()
+    with pd.ExcelWriter(buffer) as writer:
+        resumo_fc.to_excel(writer, sheet_name = 'Fluxo de Caixa')
+        resumo_cr.to_excel(writer, sheet_name = 'Contas a Receber')
+        resumo_cp.to_excel(writer, sheet_name = 'Contas a Pagar')
+    headers = {
+    'Content-Disposition': 'attachment; filename=Fluxo_de_Caixa-Resumo.xlsx',
+    'Content-type': 'application/vnd.ms-excel'
+    }
+    return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
+
+@Contas_Pagar.route("/dashboard/financeiro/download_resumo_detalhado", methods=["GET","POST"])
+def download_resumo_detalhado():
     
     buffer = io.BytesIO()
     with pd.ExcelWriter(buffer) as writer:
-        df_fc.to_excel(writer, sheet_name = 'Fluxo de Caixa')
-        df_cr.to_excel(writer, sheet_name = 'Contas a Receber')
-        df_cp.to_excel(writer, sheet_name = 'Contas a Pagar')
+        lista_resumo_detalhado[0].to_excel(writer, sheet_name = '15 dias')
+        lista_resumo_detalhado[1].to_excel(writer, sheet_name = '30 dias')
+        lista_resumo_detalhado[2].to_excel(writer, sheet_name = '60 dias')
+        lista_resumo_detalhado[3].to_excel(writer, sheet_name = '90 dias')
+        lista_resumo_detalhado[4].to_excel(writer, sheet_name = '12 meses')
     headers = {
-    'Content-Disposition': 'attachment; filename=Resumo_Fluxo_de_Caixa.xlsx',
+    'Content-Disposition': 'attachment; filename=Fluxo_de_Caixa_Detalhado.xlsx',
     'Content-type': 'application/vnd.ms-excel'
     }
     return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)

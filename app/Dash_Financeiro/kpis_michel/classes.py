@@ -1,6 +1,5 @@
 import pandas as pd
 from datetime import  timedelta, date
-import os
 from dateutil.relativedelta import *
 
 class Empresa():
@@ -69,11 +68,6 @@ class Empresa():
         df_todas_empresas = pd.concat(lista_dfs,axis=0)
 
         return df_todas_empresas
-    
-
-
-
-
 
 dict_empresas = dict(
 Artse = Empresa('app/Dash_Financeiro/planilhas/artse.xlsx')
@@ -93,17 +87,11 @@ todas_empresas.planilha = lista_planilhas
 
 dict_empresas['Todas'] = todas_empresas
 
-
-uhome = Empresa('app/Dash_Financeiro/planilhas/uhome.xlsx')
-
-valor_pagar = uhome.calcula_tipo(tipo='CONTAS A PAGAR')
-
-artse = Empresa('app/Dash_Financeiro/planilhas/artse.xlsx')
-
 colunas_fc = []
 colunas_cp = []
 colunas_cr = []
-periodos = [0,15,30,60,90,360]
+periodos = [15,30,60,90,360]
+lista_resumo_detalhado = []
 
 for i in periodos:
     linha_fc = []
@@ -117,12 +105,15 @@ for i in periodos:
     colunas_fc.append(linha_fc)
     colunas_cp.append(linha_cp)
     colunas_cr.append(linha_cr)
+    lista_resumo_detalhado.append(dict_empresas['Todas'].filtra_dias(i))
 
-df_fc = pd.DataFrame(colunas_fc,index=periodos,columns=dict_empresas.keys())
-df_fc = df_fc.transpose()
+resumo_fc = pd.DataFrame(colunas_fc,index=periodos,columns=dict_empresas.keys())
+resumo_fc = resumo_fc.transpose()
 
-df_cp = pd.DataFrame(colunas_cp,index=periodos,columns=dict_empresas.keys())
-df_cp = df_cp.transpose()
+resumo_cp = pd.DataFrame(colunas_cp,index=periodos,columns=dict_empresas.keys())
+resumo_cp = resumo_cp.transpose()
 
-df_cr = pd.DataFrame(colunas_cr,index=periodos,columns=dict_empresas.keys())
-df_cr = df_cr.transpose()
+resumo_cr = pd.DataFrame(colunas_cr,index=periodos,columns=dict_empresas.keys())
+resumo_cr = resumo_cr.transpose()
+
+resumodetalhado = dict_empresas.keys()
