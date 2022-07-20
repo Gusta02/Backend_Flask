@@ -6,33 +6,37 @@ import io
 financeiro = Blueprint('financeiro', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
 
-@financeiro.route("/dashboard/financeiro", methods=["GET","POST"])
+@financeiro.route("/dashboard/financeiro/", methods=["GET","POST"])
 def home_financeiro():
 
-    # teste = grafico_volumeXfinanceiro()
+    ################## Back dos Cards de inventário, vendas 2022 e gráfico #########################
 
-    ################# Seleção da moeda brasileira e do ano atual
-    locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")  
+
+    ########################## Inicialização ######################################
+
+    
+    marca_selecionada = request.args.get('marca')
+    if marca_selecionada is None:
+        marca_selecionada = ''
+
+    try:
+        ano_selecionado = int(request.args.get('ano'))
+    except:
+        ano_selecionado = 2022
+
+    meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
+    locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")  # Seleção da moeda brasileira
     #ano = date.today().year
     
-    ################## Back dos Cards de inventário, vendas 2022 e gráfico #########################
-    marca_selecionada = ''
-    ano_selecionado = 2022
-    
-    if request.method == 'POST':
-        try:
-            ano_selecionado = int(request.form.get('ano'))
-        except:
-            ano_selecionado = 0
-
-    if request.method == 'POST':
-        marca_selecionada = request.form.get('marca')
+    ########################## Cards de Venda e Inventário Total ######################################
 
     venda_total_showroom = locale.currency(estoque.calcula_venda_total(df=estoque.df_vendas_por_mes_por_marca,ano=ano_selecionado,marca=marca_selecionada,tipo='showroom'), grouping=True)
     venda_total = locale.currency(estoque.calcula_venda_total(df=estoque.df_vendas_por_mes_por_marca,ano=ano_selecionado,marca=marca_selecionada), grouping=True)
-    
+    inventario_total = locale.currency(estoque.inventario(marca=marca_selecionada).Inventário.sum(), grouping=True)
+
+    ########################## Gráfico de Vendas Por Mês Por Marca ######################################
+
     if ano_selecionado:
-        meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
         labels_vendas = meses[estoque.filtra(df=estoque.df_vendas_por_mes_por_marca,ano=ano_selecionado).columns.get_level_values('Mes').min()-1:estoque.filtra(df=estoque.df_vendas_por_mes_por_marca,ano=ano_selecionado).columns.get_level_values('Mes').max()]
     else:
         labels_vendas = ['2020','2021','2022']
@@ -42,7 +46,8 @@ def home_financeiro():
     values_vendas_showroom = estoque.calcula_venda_mensal(df=estoque.df_vendas_por_mes_por_marca,marca= marca_selecionada,ano=ano_selecionado,tipo='showroom').tolist()
     values_vendas_pct = estoque.calcula_pct(df=estoque.df_vendas_por_mes_por_marca,ano = ano_selecionado, marca = marca_selecionada)
     marcas = estoque.marcas
-    inventario_total = locale.currency(estoque.inventario(marca=marca_selecionada).Inventário.sum(), grouping=True)
+
+    ########################## Gráfico Top 3 SKUs Mais Vendidos ######################################    
 
     df_top3 = estoque.calcula_top_3(ano=ano_selecionado,marca=marca_selecionada)
     labels_top3 = df_top3.index.get_level_values('SKU').to_list()
@@ -54,24 +59,50 @@ def home_financeiro():
         {'x':1, 'y':top3_sku_vendas[1], 'Produto': nomes_top3[1], 'Marca': marcas_top3[1]}, 
         {'x':2, 'y':top3_sku_vendas[2], 'Produto': nomes_top3[2], 'Marca': marcas_top3[2]}
         ]
+    
+    ########################## Gráfico SKUs Únicos ######################################   
 
     df_SKUs_unicos = estoque.calcula_SKUs_unicos(ano=ano_selecionado,marca=marca_selecionada)
 
     if ano_selecionado:
-        meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
-        labels_SKUs_unicos = meses[df_SKUs_unicos.index.get_level_values('Mes').min()-1:df_SKUs_unicos.index.get_level_values('Mes').max()]
+        try:
+            labels_SKUs_unicos = meses[df_SKUs_unicos.index.get_level_values('Mes').min()-1:df_SKUs_unicos.index.get_level_values('Mes').max()]
+        except:
+            labels_SKUs_unicos = meses
     else:
-        labels_SKUs_unicos = ['2020','2021','2022']
+        labels_SKUs_unicos = list(range(df_SKUs_unicos.index.get_level_values('Ano').min(),df_SKUs_unicos.index.get_level_values('Ano').max()+1))
     
     values_SKUs_unicos = df_SKUs_unicos.tolist()
+
+    ########################## Projeção de Vendas ######################################
+
+    labels_projecao = meses
+    values_projecao = list(range(12))
     
 
-    ################# Dicionário para a geração automática de cards ######################
-    dict_variaveis = {
-    # 'Inventário': inventario_total
-    }
+    ################# Dicionário de Variáveis ######################
+
+    dict_variaveis = dict(
+    inventario_total = inventario_total
+    ,venda_total = venda_total
+    ,labels_vendas = labels_vendas
+    ,values_vendas = values_vendas
+    ,marcas = marcas
+    ,marca_selecionada = marca_selecionada
+    ,values_vendas_pct = values_vendas_pct
+    ,venda_total_showroom=venda_total_showroom
+    ,values_vendas_cliente=values_vendas_cliente
+    ,values_vendas_showroom=values_vendas_showroom
+    ,ano_selecionado=ano_selecionado
+    ,labels_top3=labels_top3
+    ,values_top3=values_top3
+    ,labels_SKUs_unicos=labels_SKUs_unicos
+    ,values_SKUs_unicos = values_SKUs_unicos
+    ,labels_projecao = labels_projecao
+    ,values_projecao = values_projecao
+    )
     
-    return render_template('home_financeiro.html',cards = dict_variaveis, inventario_total = inventario_total,venda_total = venda_total,labels_vendas = labels_vendas, values_vendas = values_vendas, marcas = marcas,marca_selecionada = marca_selecionada, values_vendas_pct = values_vendas_pct,venda_total_showroom=venda_total_showroom, values_vendas_cliente=values_vendas_cliente,values_vendas_showroom=values_vendas_showroom,ano_selecionado=ano_selecionado,labels_top3=labels_top3,values_top3=values_top3,labels_SKUs_unicos=labels_SKUs_unicos, values_SKUs_unicos = values_SKUs_unicos)
+    return render_template('home_financeiro.html',**dict_variaveis)
 
 @financeiro.route('/download/<df>/<filename>',methods=['GET']) # Gera Arquivos em Excel para Download
 def download_excel(df,filename):
