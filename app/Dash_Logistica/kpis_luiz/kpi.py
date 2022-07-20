@@ -13,6 +13,7 @@ import math
 import pandas as pd
 import locale
 import numpy as np
+from sklearn import linear_model
 
 
 locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")
@@ -153,7 +154,7 @@ class Estoque():
         self.df_venda_SKU_mensal = self.renomeia_marcas_similares((sql_to_pd(sql.query_venda_SKU_mensal)))
         self.df_vendas_SKU_banco_antigo = self.renomeia_marcas_similares(pd.read_csv('app/Dash_Logistica/kpis_luiz/planilha/dados_banco_antigo.csv', 
                                         usecols=['SKU','Marca','valorTotal','Mes','Ano','NomeProduto']))
-        # self.df_venda_total_SKU = self.trata_vendas_SKU()
+        self.df_projecao_unidades = None
 
     def multiplica_fator(self):
         df1 = pd.read_excel(
@@ -348,6 +349,17 @@ class Estoque():
         df_venda_total_SKU_banco_antigo = df_venda_total_SKU_banco_antigo.groupby(['SKU','Marca','Ano','Mes']).agg('sum')#.unstack(['Ano','Mes'])
         df_venda_total_SKU = df_venda_total_SKU_banco_novo.add(df_venda_total_SKU_banco_antigo,fill_value=0).reset_index()
         return df_venda_total_SKU
+
+    def calcula_projecao(self):
+        X = np.array([20,34,56,78,99]).reshape(-1,1)
+        y = np.array([1000,2000,3000,4000,5000]).reshape(-1,1)
+
+        reg = linear_model.LinearRegression()
+        reg.fit(X,y)
+
+        pred = reg.predict(np.array([120]).reshape(-1,1))
+
+        return pred
 
 
         
