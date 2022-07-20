@@ -3,9 +3,6 @@ from datetime import  timedelta, date
 import os
 from dateutil.relativedelta import *
 
-
-
-
 class Empresa():
 
     hoje = date.today() 

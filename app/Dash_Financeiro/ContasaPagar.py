@@ -1,6 +1,6 @@
 from threading import local
 from ..Dash_Financeiro.kpis_michel.pagar import Pagar_15dias, Pagar_30dias, Pagar_60dias, Pagar_90dias, Pagar_12meses
-from ..Dash_Financeiro.kpis_michel.main import SOMA_TODASEMPRESAS_APAGAR, TODASEMPRESAS_CONTASARECEBER,fluxoCaixa, empresa
+# from ..Dash_Financeiro.kpis_michel.main import SOMA_TODASEMPRESAS_APAGAR, TODASEMPRESAS_CONTASARECEBER,fluxoCaixa, empresa
 from ..Dash_Financeiro.kpis_michel.classes import dict_empresas,df_fc,df_cr,df_cp
 from flask import Blueprint, render_template, request, Response
 import locale
@@ -43,7 +43,7 @@ def PagarDownload_excel():
         df_cr.to_excel(writer, sheet_name = 'Contas a Receber')
         df_cp.to_excel(writer, sheet_name = 'Contas a Pagar')
     headers = {
-    'Content-Disposition': 'attachment; filename=Dados_a_Pagar.xlsx',
+    'Content-Disposition': 'attachment; filename=Resumo_Fluxo_de_Caixa.xlsx',
     'Content-type': 'application/vnd.ms-excel'
     }
     return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
