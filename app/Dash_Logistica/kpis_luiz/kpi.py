@@ -14,8 +14,6 @@ import math
 import pandas as pd
 import locale
 import numpy as np
-from sklearn import linear_model
-
 
 locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")
 
