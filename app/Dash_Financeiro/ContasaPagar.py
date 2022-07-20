@@ -1,5 +1,4 @@
-from threading import local
-from ..Dash_Financeiro.kpis_michel.classes import dict_empresas,df_fc,df_cr,df_cp
+from ..Dash_Financeiro.kpis_michel.classes import dict_empresas,resumo_fc,resumo_cr,resumo_cp
 from flask import Blueprint, render_template, request, Response
 import locale
 import io
@@ -25,6 +24,7 @@ def Contas_a_Pagar():
     filtro_empresas = list(dict_empresas.keys())
 
     labels_empresa = dict_empresas
+    
     #renderizando no front
     fluxodecaixa = locale.currency(empresa_selecionada.get_valor(), grouping=True)
     card_total_pagar = locale.currency(empresa_selecionada.calcula_tipo('CONTAS A PAGAR'), grouping= True)
@@ -32,15 +32,14 @@ def Contas_a_Pagar():
 
     return render_template('contas_a_pagar.html', page = 1, card= fluxodecaixa, card1 = card_total_pagar, card2= card_total_receber, filtro_empresa = filtro_empresas, selecionar_empresa = selecionar_empresa, labels_empresa = labels_empresa )
 
-
-@Contas_Pagar.route("/dashboard/financeiro/downloadmichel", methods=["GET","POST"])
+@Contas_Pagar.route("/dashboard/financeiro/downloadresumo", methods=["GET","POST"])
 def PagarDownload_excel():
     
     buffer = io.BytesIO()
     with pd.ExcelWriter(buffer) as writer:
-        df_fc.to_excel(writer, sheet_name = 'Fluxo de Caixa')
-        df_cr.to_excel(writer, sheet_name = 'Contas a Receber')
-        df_cp.to_excel(writer, sheet_name = 'Contas a Pagar')
+        resumo_fc.to_excel(writer, sheet_name = 'Fluxo de Caixa')
+        resumo_cr.to_excel(writer, sheet_name = 'Contas a Receber')
+        resumo_cp.to_excel(writer, sheet_name = 'Contas a Pagar')
     headers = {
     'Content-Disposition': 'attachment; filename=Resumo_Fluxo_de_Caixa.xlsx',
     'Content-type': 'application/vnd.ms-excel'
