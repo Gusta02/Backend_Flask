@@ -1,7 +1,7 @@
 from threading import local
 from ..Dash_Financeiro.kpis_michel.pagar import Pagar_15dias, Pagar_30dias, Pagar_60dias, Pagar_90dias, Pagar_12meses
 from ..Dash_Financeiro.kpis_michel.main import SOMA_TODASEMPRESAS_APAGAR, TODASEMPRESAS_CONTASARECEBER,fluxoCaixa, empresa
-from ..Dash_Financeiro.kpis_michel.classes import dict_empresas
+from ..Dash_Financeiro.kpis_michel.classes import dict_empresas,df_fc,df_cr,df_cp
 from flask import Blueprint, render_template, request, Response
 import locale
 import io
@@ -22,7 +22,7 @@ def Contas_a_Pagar():
         periodicidade = int(request.form.get('periodicidade'))
         
     empresa_selecionada = dict_empresas[selecionar_empresa]
-    empresa_selecionada.planilha = empresa_selecionada.filtra_dias(periodicidade)
+    empresa_selecionada.filtra_dias(periodicidade)
 
     filtro_empresas = list(dict_empresas.keys())
 
@@ -34,23 +34,16 @@ def Contas_a_Pagar():
     return render_template('contas_a_pagar.html', page = 1, card= fluxodecaixa, card1 = card_total_pagar, card2= card_total_receber, filtro_empresa = filtro_empresas, selecionar_empresa = selecionar_empresa )
 
 
-# @Contas_Pagar.route("", methods=["GET","POST"])
-# def PagarDownload_excel():
-#     quinze =  Pagar_15dias()
-#     trinta =  Pagar_30dias()
-#     sessenta = Pagar_60dias()
-#     noventa = Pagar_90dias()
-#     doze = Pagar_12meses()
+@Contas_Pagar.route("/dashboard/financeiro/downloadmichel", methods=["GET","POST"])
+def PagarDownload_excel():
     
-#     buffer = io.BytesIO()
-#     with pd.ExcelWriter(buffer) as writer:
-#         quinze.to_excel(writer, sheet_name = '15Dias', index = False)
-#         trinta.to_excel(writer, sheet_name = '30Dias', index = False)
-#         sessenta.to_excel(writer, sheet_name = '60Dias', index = False)
-#         noventa.to_excel(writer, sheet_name = '90Dias', index = False)
-#         doze.to_excel(writer, sheet_name = '12Meses', index = False)
-#     headers = {
-#     'Content-Disposition': 'attachment; filename=Dados_a_Pagar.xlsx',
-#     'Content-type': 'application/vnd.ms-excel'
-#     }
-#     return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
+    buffer = io.BytesIO()
+    with pd.ExcelWriter(buffer) as writer:
+        df_fc.to_excel(writer, sheet_name = 'Fluxo de Caixa')
+        df_cr.to_excel(writer, sheet_name = 'Contas a Receber')
+        df_cp.to_excel(writer, sheet_name = 'Contas a Pagar')
+    headers = {
+    'Content-Disposition': 'attachment; filename=Dados_a_Pagar.xlsx',
+    'Content-type': 'application/vnd.ms-excel'
+    }
+    return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)

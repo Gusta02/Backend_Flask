@@ -13,7 +13,8 @@ class Empresa():
     def __init__(self, planilha=None) -> None:
 
         if planilha:
-            self.planilha = self.set_planilha(planilha)    
+            self.planilha = self.set_planilha(planilha)
+            self.planilha_filtrada = self.planilha 
     
     def set_planilha(self,planilha):
 
@@ -38,17 +39,19 @@ class Empresa():
         mask = self.planilha['DATA_VENCIMENTO'].apply(lambda x: entre_datas(x,__class__.hoje,periodo))
         df_filtrada_dias = self.planilha[mask]
 
+        self.planilha_filtrada = df_filtrada_dias
+
         return df_filtrada_dias                   
    
     def get_valor(self):
         
-        soma = self.planilha['VALOR_CONTA'].sum()
+        soma = self.planilha_filtrada['VALOR_CONTA'].sum()
         return soma
 
     def filtra_tipo(self, tipo:str=''):
         
         if tipo:
-            df_tipoconta = self.planilha.query(f'TIPO == "{tipo}"')
+            df_tipoconta = self.planilha_filtrada.query(f'TIPO == "{tipo}"')
 
         return df_tipoconta
 
@@ -69,6 +72,8 @@ class Empresa():
         df_todas_empresas = pd.concat(lista_dfs,axis=0)
 
         return df_todas_empresas
+    
+
 
 
 
@@ -97,3 +102,30 @@ uhome = Empresa('app/Dash_Financeiro/planilhas/uhome.xlsx')
 valor_pagar = uhome.calcula_tipo(tipo='CONTAS A PAGAR')
 
 artse = Empresa('app/Dash_Financeiro/planilhas/artse.xlsx')
+
+colunas_fc = []
+colunas_cp = []
+colunas_cr = []
+periodos = [15,30,60,90,360]
+
+for i in periodos:
+    linha_fc = []
+    linha_cp = []
+    linha_cr = []
+    for j in dict_empresas.values():
+        j.filtra_dias(i)
+        linha_fc.append(j.get_valor())
+        linha_cp.append(j.calcula_tipo('CONTAS A PAGAR'))
+        linha_cr.append(j.calcula_tipo('CONTAS A RECEBER'))
+    colunas_fc.append(linha_fc)
+    colunas_cp.append(linha_cp)
+    colunas_cr.append(linha_cr)
+
+df_fc = pd.DataFrame(colunas_fc,index=periodos,columns=dict_empresas.keys())
+df_fc = df_fc.transpose()
+
+df_cp = pd.DataFrame(colunas_cp,index=periodos,columns=dict_empresas.keys())
+df_cp = df_cp.transpose()
+
+df_cr = pd.DataFrame(colunas_cr,index=periodos,columns=dict_empresas.keys())
+df_cr = df_cr.transpose()
