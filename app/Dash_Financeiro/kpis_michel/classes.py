@@ -103,7 +103,7 @@ artse = Empresa('app/Dash_Financeiro/planilhas/artse.xlsx')
 colunas_fc = []
 colunas_cp = []
 colunas_cr = []
-periodos = [15,30,60,90,360]
+periodos = [0,15,30,60,90,360]
 
 for i in periodos:
     linha_fc = []
