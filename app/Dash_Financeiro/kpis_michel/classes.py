@@ -56,6 +56,13 @@ class Empresa():
         somatipo = self.filtra_tipo(tipo).VALOR_CONTA.sum()
 
         return  somatipo
+
+    def ranking(self):
+
+        df_filtratop = self.planilha_filtrada.loc[:,['CATEGORIA','VALOR_CONTA']].groupby(['CATEGORIA','VALOR_CONTA']).agg('sum')
+        df_top = df_filtratop.sort_values(by=['VALOR_CONTA'],ascending=False).head(3) 
+
+        return df_top
     
     @staticmethod
     def get_todas_empresas(dicionario):
@@ -117,3 +124,5 @@ resumo_cr = pd.DataFrame(colunas_cr,index=periodos,columns=dict_empresas.keys())
 resumo_cr = resumo_cr.transpose()
 
 resumodetalhado = dict_empresas.keys()
+
+rank =  todas_empresas.ranking()

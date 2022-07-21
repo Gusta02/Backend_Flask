@@ -56,7 +56,7 @@ def create_app():
         from .Dash_Logistica.home_log import home
         from .Dash_Logistica.transporte import transporte
         from .Dash_Financeiro.home_fin import financeiro
-        from .Dash_Financeiro.ContasaPagar import Contas_Pagar
+        from .Dash_Financeiro.fluxodecaixa import Contas_Pagar
         # from .Dash_Financeiro.ContasaReceber import Contas_Receber
         # from .uploads.uploads import uploads
         # from .relatorios.relatorios import relatorios
