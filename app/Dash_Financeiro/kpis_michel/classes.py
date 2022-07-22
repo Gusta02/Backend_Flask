@@ -61,10 +61,11 @@ class Empresa():
 
     def ranking(self):
 
-        df_filtratop = self.planilha_filtrada.loc[:,['CATEGORIA','VALOR_CONTA']].groupby(['CATEGORIA','VALOR_CONTA']).agg('sum')
-        df_top = df_filtratop.sort_values(by=['VALOR_CONTA'],ascending=False).head(10) 
+        df_filtratop = self.planilha_filtrada.loc[:,['CATEGORIA','VALOR_CONTA']].groupby(['CATEGORIA']).agg('sum')
+        
+        df_top = df_filtratop.sort_values(by=['VALOR_CONTA'],ascending=False).head(5) 
 
-        return df_top
+        return df_top.reset_index()
     
     @staticmethod
     def get_todas_empresas(dicionario):
@@ -128,3 +129,6 @@ resumo_cr = resumo_cr.transpose()
 resumodetalhado = dict_empresas.keys()
 
 rank =  todas_empresas.ranking()
+
+indexlabel = rank['CATEGORIA'].to_list()
+valuesindex = rank['VALOR_CONTA'].to_list()

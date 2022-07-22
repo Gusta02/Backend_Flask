@@ -1,4 +1,4 @@
-from .kpis_michel.classes import dict_empresas,resumo_fc,resumo_cr,resumo_cp,lista_resumo_detalhado, rank
+from .kpis_michel.classes import dict_empresas,resumo_fc,resumo_cr,resumo_cp,lista_resumo_detalhado, indexlabel, valuesindex
 from flask import Blueprint, render_template, request, Response
 import locale
 import io
@@ -25,23 +25,25 @@ def Contas_a_Pagar():
 
     #labels grafico
 
-    primeiro = rank.index[0][0]
-    valor_pri = rank.index[0][1]
+    primeiro = indexlabel[0]
+    valor_primeiro= valuesindex[0]
 
-    segundo = rank.index[2][0]
-    valor_seg = rank.index[2][1]
+    segundo = indexlabel[1]
+    valor_segundo = valuesindex[1]
 
-    terceiro = rank.index[3][0]
-    valor_ter = rank.index[3][1]
+    terceiro = indexlabel[2]
+    valor_terceiro= valuesindex[2]
 
-    quarto= rank.index[6][0]
-    valor_quar = rank.index[6][1]
+    quarto = indexlabel[3]
+    valor_quarto = valuesindex[3]
 
-    quint= rank.index[7][0]
-    valor_quin = rank.index[7][1]
+    quinto = indexlabel[4]
+    valor_quint = valuesindex[4]
 
-    labels_empresa = [primeiro,segundo, terceiro, quarto, quint]
-    values_empresa = [valor_pri,valor_seg, valor_ter, valor_quar, valor_quin]
+    top5_index = [primeiro, segundo, terceiro, quarto, quinto]
+    top5_values = [valor_primeiro, valor_segundo, valor_terceiro, valor_quarto, valor_quint]
+
+    
 
     #fim grafico
     #renderizando no front
@@ -50,7 +52,7 @@ def Contas_a_Pagar():
     card_total_receber = locale.currency(empresa_selecionada.calcula_tipo('CONTAS A RECEBER'), grouping= True)
 
     return render_template('contas_a_pagar.html', page = 1, card= fluxodecaixa, card1 = card_total_pagar, card2= card_total_receber, 
-    filtro_empresa = filtro_empresas, selecionar_empresa = selecionar_empresa, labels_empresa = labels_empresa, values_empresa = values_empresa )
+    filtro_empresa = filtro_empresas, selecionar_empresa = selecionar_empresa, labels_empresa = top5_index, values_empresa = top5_values )
 
 @Contas_Pagar.route("/dashboard/financeiro/downloadresumo", methods=["GET","POST"])
 def PagarDownload_excel():
