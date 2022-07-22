@@ -18,8 +18,10 @@ class Empresa():
 
         df_contas_pagar.columns =  ['DATA_EMITIDA','DATA_VENCIMENTO','TIPO','ORIGEM','SITUACAO','GRUPO','CATEGORIA',
         'OBSERVACAO_CONTA','DOCUMENTO_TIPO','VALOR_CONTA','PAGO_RECEBIDO','A_RECEBER_PAGAR']
+        
 
         df_contas_pagar.loc[:,'TIPO'] = df_contas_pagar.loc[:,'TIPO'].apply(lambda x: str(x).split('.')[-1].strip().upper())
+        df_contas_pagar.loc[:,'CATEGORIA'] = df_contas_pagar.loc[:,'CATEGORIA'].apply(lambda x: str(x).split('-')[-1].strip().upper())
 
         return df_contas_pagar
 
@@ -60,7 +62,7 @@ class Empresa():
     def ranking(self):
 
         df_filtratop = self.planilha_filtrada.loc[:,['CATEGORIA','VALOR_CONTA']].groupby(['CATEGORIA','VALOR_CONTA']).agg('sum')
-        df_top = df_filtratop.sort_values(by=['VALOR_CONTA'],ascending=False).head(3) 
+        df_top = df_filtratop.sort_values(by=['VALOR_CONTA'],ascending=False).head(10) 
 
         return df_top
     

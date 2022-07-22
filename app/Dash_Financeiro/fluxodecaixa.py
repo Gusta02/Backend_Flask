@@ -31,11 +31,17 @@ def Contas_a_Pagar():
     segundo = rank.index[2][0]
     valor_seg = rank.index[2][1]
 
-    terceiro = "Clientes - Revenda de Mercadoria"
-    valor_ter = 40000.05
+    terceiro = rank.index[3][0]
+    valor_ter = rank.index[3][1]
 
-    labels_empresa = [primeiro,segundo, terceiro]
-    values_empresa = [valor_pri,valor_seg, valor_ter ]
+    quarto= rank.index[6][0]
+    valor_quar = rank.index[6][1]
+
+    quint= rank.index[7][0]
+    valor_quin = rank.index[7][1]
+
+    labels_empresa = [primeiro,segundo, terceiro, quarto, quint]
+    values_empresa = [valor_pri,valor_seg, valor_ter, valor_quar, valor_quin]
 
     #fim grafico
     #renderizando no front
