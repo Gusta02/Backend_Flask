@@ -88,10 +88,13 @@ def home_financeiro():
 
     if ano_previsao==2022:
         labels_projecao = meses[6:12]
+        titulo_projecao = 'Projeção de Vendas X Unidade 2022 ' + marca_selecionada
     elif ano_previsao:
         labels_projecao = meses
+        titulo_projecao = 'Projeção de Vendas X Unidade ' + str(ano_previsao) + ' ' + marca_selecionada
     else:
         labels_projecao = ['2022','2023','2024']
+        titulo_projecao = 'Projeção de Vendas X Unidade ' + marca_selecionada
 
     values_projecao,pct_projecao = estoque.calcula_projecao(ano = ano_previsao, marca = marca_selecionada)
     
@@ -118,6 +121,7 @@ def home_financeiro():
     ,values_projecao = values_projecao
     ,title_projecao = 'Projeção de Vendas' + str(ano_previsao)
     ,pct_projecao = pct_projecao
+    ,titulo_projecao = titulo_projecao
     )
     
     return render_template('home_financeiro.html',**dict_variaveis)
