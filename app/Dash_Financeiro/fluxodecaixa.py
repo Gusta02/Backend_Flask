@@ -24,28 +24,21 @@ def Contas_a_Pagar():
     filtro_empresas = list(dict_empresas.keys())
 
     #labels grafico
-
     primeiro = indexlabel[0]
     valor_primeiro= valuesindex[0]
-
     segundo = indexlabel[1]
     valor_segundo = valuesindex[1]
-
     terceiro = indexlabel[2]
     valor_terceiro= valuesindex[2]
-
     quarto = indexlabel[3]
     valor_quarto = valuesindex[3]
-
     quinto = indexlabel[4]
     valor_quint = valuesindex[4]
-
     top5_index = [primeiro, segundo, terceiro, quarto, quinto]
     top5_values = [valor_primeiro, valor_segundo, valor_terceiro, valor_quarto, valor_quint]
 
     
-
-    #fim grafico
+    #fim grafico    
     #renderizando no front
     fluxodecaixa = locale.currency(empresa_selecionada.get_valor(), grouping=True)
     card_total_pagar = locale.currency(empresa_selecionada.calcula_tipo('CONTAS A PAGAR'), grouping= True)
