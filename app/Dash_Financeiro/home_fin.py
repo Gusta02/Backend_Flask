@@ -87,12 +87,12 @@ def home_financeiro():
         titulo_projecao = 'Projeção de Vendas X Unidade 2022 ' + marca_selecionada
     elif ano_previsao:
         labels_projecao = meses
-        titulo_projecao = 'Projeção de Vendas X Unidade ' + str(ano_previsao) + ' ' + marca_selecionada
+        titulo_projecao = 'Projeção de Vendas X Unidades ' + str(ano_previsao) + ' ' + marca_selecionada
     else:
         labels_projecao = ['2022','2023','2024']
-        titulo_projecao = 'Projeção de Vendas X Unidade ' + marca_selecionada
+        titulo_projecao = 'Projeção de Vendas X Unidades ' + marca_selecionada
 
-    values_projecao,pct_projecao = estoque.calcula_projecao(ano = ano_previsao, marca = marca_selecionada)
+    values_projecao,qt_unidades = estoque.calcula_projecao(ano = ano_previsao, marca = marca_selecionada)
     
 
     ################# Dicionário de Variáveis ######################
@@ -116,7 +116,7 @@ def home_financeiro():
     ,labels_projecao = labels_projecao
     ,values_projecao = values_projecao
     ,title_projecao = 'Projeção de Vendas' + str(ano_previsao)
-    ,pct_projecao = pct_projecao
+    ,qt_unidades = qt_unidades
     ,titulo_projecao = titulo_projecao
     )
     

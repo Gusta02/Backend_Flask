@@ -593,7 +593,7 @@
                     labels: {{ labels_projecao | safe }},
                     datasets: [
                       {
-                        label: "R$",
+                        label: "Vendas",
                         data: {{ values_projecao | safe }},
                         //fill: false,
                         //borderCorlor: "blue",
@@ -601,6 +601,7 @@
                         datalabels: {
                             anchor: 'end',
                             align: 'top',
+                            offset: 30,
                             color: 'blue',
                             formatter: function(value) {
                               return 'R$ ' + Number(value).toLocaleString();
@@ -614,19 +615,18 @@
                       },
                       {
                         type: 'line',
-                        label: "%",
-                        data: {{ pct_projecao | safe }},
+                        label: "Unidades",
+                        data: {{ qt_unidades | safe }},
                         //fill: false,
                         datalabels: {
                             anchor: 'end',
                             align: 'top',
-                            offset: 20,
+                            // offset: 20,
                             display: 'auto',
                             color: 'green',
                             //clip: true,
-                            formatter: function(value) {
-                              return value + '%';
-                            }
+                            // formatter: function(value) {
+                            //   return value + '%';
                         },
                         borderColor: "red",
                         backgroundColor: "red",  

@@ -379,16 +379,18 @@ class Estoque():
         pred = pred.tolist()
         pred = list(itertools.chain.from_iterable(pred))
 
-        df_pred = pd.Series(pred)
-        pct = df_pred.pct_change().apply(lambda x: round(x*100,1)).fillna(0)
-        pct = pct.replace([np.inf, -np.inf], 0)
-        pct = pct.tolist()
-        try:
-            pct[0] = 0
-        except:
-            pass
+        # df_pred = pd.Series(pred)
+        # pct = df_pred.pct_change().apply(lambda x: round(x*100,1)).fillna(0)
+        # pct = pct.replace([np.inf, -np.inf], 0)
+        # pct = pct.tolist()
+        # try:
+        #     pct[0] = 0
+        # except:
+        #     pass
         
-        return pred,pct
+        qt_unidades = df_unidades_filtradas.values.tolist()
+
+        return pred, qt_unidades
 
 
         
