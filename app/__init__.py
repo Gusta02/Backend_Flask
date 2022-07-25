@@ -56,8 +56,8 @@ def create_app():
         from .Dash_Logistica.home_log import home
         from .Dash_Logistica.transporte import transporte
         from .Dash_Financeiro.home_fin import financeiro
-        from .Dash_Financeiro.ContasaPagar import Contas_Pagar
-        from .Dash_Financeiro.ContasaReceber import Contas_Receber
+        from .Dash_Financeiro.fluxodecaixa import Contas_Pagar
+        # from .Dash_Financeiro.ContasaReceber import Contas_Receber
         # from .uploads.uploads import uploads
         # from .relatorios.relatorios import relatorios
         # from .admin_app.admin_app import admin_app
@@ -72,7 +72,7 @@ def create_app():
         app.register_blueprint(home)
         app.register_blueprint(transporte)
         app.register_blueprint(financeiro)
-        app.register_blueprint(Contas_Receber)
+        # app.register_blueprint(Contas_Receber)
         app.register_blueprint(Contas_Pagar)
         #app.register_blueprint(relatorios)
         #app.register_blueprint(admin_app)

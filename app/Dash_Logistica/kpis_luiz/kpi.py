@@ -17,7 +17,6 @@ import numpy as np
 import itertools
 from sklearn import linear_model
 
-
 locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")
 
 class Entregas():
