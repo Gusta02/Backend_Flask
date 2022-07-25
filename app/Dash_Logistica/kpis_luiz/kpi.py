@@ -14,6 +14,8 @@ import math
 import pandas as pd
 import locale
 import numpy as np
+import itertools
+from sklearn import linear_model
 
 locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")
 
@@ -349,18 +351,44 @@ class Estoque():
         df_venda_total_SKU = df_venda_total_SKU_banco_novo.add(df_venda_total_SKU_banco_antigo,fill_value=0).reset_index()
         return df_venda_total_SKU
 
-    def calcula_projecao(self):
-        # X = np.array([20,34,56,78,99]).reshape(-1,1)
-        # y = np.array([1000,2000,3000,4000,5000]).reshape(-1,1)
+    def calcula_projecao(self,ano=0,marca=''):
 
-        # reg = linear_model.LinearRegression()
-        # reg.fit(X,y)
+        df_unidades = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/unidades_hausz_previsao.xlsx', engine= 'openpyxl')
 
-        # pred = reg.predict(np.array([120]).reshape(-1,1))
+        df_vendas = self.calcula_venda_mensal(self.df_vendas_por_mes_por_marca,ano=2022,marca=marca)
+        df_vendas_ate_junho = df_vendas['valorTotal'].iloc[0:6]
+        df_unidades_ate_junho = df_unidades['inauguracoes'].iloc[0:6]
 
-        pd.read_excel('', engine= openpyxl)
+        X = np.array(df_unidades_ate_junho).reshape(-1,1)
+        y = np.array(df_vendas_ate_junho).reshape(-1,1)
 
-        # return pred
+        reg = linear_model.LinearRegression()
+        reg.fit(X,y)
+
+        if ano:
+            df_unidades_filtradas = df_unidades.query(f'Ano == {ano}')
+            if ano == 2022:
+                df_unidades_filtradas = df_unidades_filtradas.iloc[6:12]
+        else:
+            df_unidades_filtradas = df_unidades[['Ano','inauguracoes']].groupby('Ano').agg('sum')
+        
+        df_unidades_filtradas = df_unidades_filtradas['inauguracoes']
+
+        pred = reg.predict(np.array(df_unidades_filtradas).reshape(-1,1))
+
+        pred = pred.tolist()
+        pred = list(itertools.chain.from_iterable(pred))
+
+        df_pred = pd.Series(pred)
+        pct = df_pred.pct_change().apply(lambda x: round(x*100,1)).fillna(0)
+        pct = pct.replace([np.inf, -np.inf], 0)
+        pct = pct.tolist()
+        try:
+            pct[0] = 0
+        except:
+            pass
+        
+        return pred,pct
 
 
         
