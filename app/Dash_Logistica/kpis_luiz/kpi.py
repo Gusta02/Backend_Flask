@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jun 29 14:23:23 2022
-
-@author: Luiz Gagliardi
-
-"""
 import openpyxl
 from app.Dash_Logistica.kpis_luiz import sql_queries as sql
 from app.Dash_Logistica.kpis_luiz.data_extractor import sql_to_pd
