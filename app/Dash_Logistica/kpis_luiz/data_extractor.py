@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jun  9 14:30:23 2022
-
-@author: Hausz
-"""
-#from asyncio import exceptions
 from config import get_connection
 from sqlalchemy import text
 import pandas as pd

@@ -1,4 +1,3 @@
-
 from app.Dash_Logistica.kpis_luiz import sql_queries as sql
 from app.Dash_Logistica.kpis_luiz.data_extractor import sql_to_pd
 from app.Dash_Logistica.kpis_luiz.kpi import Entregas, LeadTime, SemEtapas,PedidoPerfeito,IndicadorPerformance,DockStockTime,Estoque

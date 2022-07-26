@@ -1,6 +1,5 @@
 import os
 
-
 with open(os.path.abspath('app/Dash_Logistica/kpis_luiz/queries/financeiro/query_frete_recebido.sql')) as f:
 	query_frete_recebido= f.read()
 

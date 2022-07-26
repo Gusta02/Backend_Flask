@@ -24,7 +24,7 @@ def select_log_wms_pedidos():
                 SELECT  lgpedido.[IdLog],lgpedido.[DeIdEtapaFlexy],lgpedido.[ParaIdEtapaFlexy]
                 ,lgpedido.[CodigoPedido],format(pflexy.DataInserido, 'd', 'pt-BR') as datainserido
                 ,format(pflexy.DataInseridoOmie, 'd', 'pt-BR') as datainseridoomie
-                ,pflexy.IdEtapaFlexy,etflexy.NomeEtapa,etflexy.NomeEtapaFlexy
+                ,pflexy.IdEtapaFlexy,etflexy.NomeEtapa,etflexy.NomeEtapa
                 ,format(pflexy.PrevisaoEntrega, 'd', 'pt-BR') as previsaodeentrega
                 ,pflexy.StatusPedido,lgpedido.[EnviadoWpp]
                 ,format(lgpedido.[DataAtualizacao], 'd', 'pt-BR') as dataatualizacao

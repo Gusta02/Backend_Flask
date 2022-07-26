@@ -300,7 +300,7 @@ def select_log_wms_pedidos():
                 SELECT  lgpedido.[IdLog],lgpedido.[DeIdEtapaFlexy],lgpedido.[ParaIdEtapaFlexy]
                 ,lgpedido.[CodigoPedido],pflexy.DataInserido as datainserido
                 ,pflexy.DataInseridoOmie as datainseridoomie
-                ,pflexy.IdEtapaFlexy,etflexy.NomeEtapa,etflexy.NomeEtapaFlexy
+                ,pflexy.IdEtapaFlexy,etflexy.NomeEtapa,etflexy.NomeEtapa
                 ,pflexy.PrevisaoEntrega as previsaodeentrega
                 ,pflexy.StatusPedido,lgpedido.[EnviadoWpp]
                 ,lgpedido.[DataAtualizacao] as dataatualizacao
