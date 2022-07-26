@@ -1,4 +1,4 @@
-from turtle import position
+# from turtle import position
 from flask import Blueprint, render_template,current_app, jsonify, request
 import os
 from ..controllers.relatorios_index_controller import (select_pedidos_data_atual)
