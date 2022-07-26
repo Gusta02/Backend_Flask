@@ -24,9 +24,11 @@ def home_financeiro():
     except:
         ano_selecionado = 2022
 
-    if ano_selecionado>=2022:
+    if ano_selecionado>2022:
         ano_previsao = ano_selecionado
         ano_selecionado = 0
+    elif ano_selecionado==2022:
+        ano_previsao = ano_selecionado
     else:
         ano_previsao = 0
 
@@ -60,11 +62,22 @@ def home_financeiro():
     top3_sku_vendas = df_top3['valorTotal'].to_list()
     nomes_top3 = df_top3.index.get_level_values('NomeProduto').to_list()
     marcas_top3 = df_top3.index.get_level_values('Marca').to_list()
-    values_top3 = [
-        {'x':0, 'y':top3_sku_vendas[0], 'Produto': nomes_top3[0], 'Marca': marcas_top3[0]}, 
-        {'x':1, 'y':top3_sku_vendas[1], 'Produto': nomes_top3[1], 'Marca': marcas_top3[1]}, 
-        {'x':2, 'y':top3_sku_vendas[2], 'Produto': nomes_top3[2], 'Marca': marcas_top3[2]}
-        ]
+    try:
+        values_top3 = [
+            {'x':0, 'y':top3_sku_vendas[0], 'Produto': nomes_top3[0], 'Marca': marcas_top3[0]}, 
+            {'x':1, 'y':top3_sku_vendas[1], 'Produto': nomes_top3[1], 'Marca': marcas_top3[1]}, 
+            {'x':2, 'y':top3_sku_vendas[2], 'Produto': nomes_top3[2], 'Marca': marcas_top3[2]}
+            ]
+    except:
+        try:
+            values_top3 = [
+                {'x':0, 'y':top3_sku_vendas[0], 'Produto': nomes_top3[0], 'Marca': marcas_top3[0]}, 
+                {'x':1, 'y':top3_sku_vendas[1], 'Produto': nomes_top3[1], 'Marca': marcas_top3[1]}, 
+                ]
+        except:
+            values_top3 = [
+            {'x':0, 'y':top3_sku_vendas[0], 'Produto': nomes_top3[0], 'Marca': marcas_top3[0]}, 
+            ]
     
     ########################## Gráfico SKUs Únicos ######################################   
 
