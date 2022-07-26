@@ -352,8 +352,8 @@ class Estoque():
         df_vendas_ate_junho = df_vendas['valorTotal'].iloc[0:6]
         df_unidades_ate_junho = df_unidades['inauguracoes'].iloc[0:6]
 
-        if marca in ['Belgotex', 'Comunicação Visual', 'Dune', 'Durafloor', 'Eletronicos', 'Elettromec', 'Embramaco', 'Franke', 'Gyotoku', 'Incepa', 'Moldurama', 'Porto Ferreira', 'Quick Step', 'Sense', 'Tarkett', 'Unilux']:
-            df_vendas_ate_junho = df_vendas_ate_junho.sort_values()
+        #if marca in ['Belgotex', 'Comunicação Visual', 'Dune', 'Durafloor', 'Eletronicos', 'Elettromec', 'Embramaco', 'Franke', 'Gyotoku', 'Incepa', 'Moldurama', 'Porto Ferreira', 'Quick Step', 'Sense', 'Tarkett', 'Unilux']:
+        df_vendas_ate_junho = df_vendas_ate_junho.sort_values()
 
         X = np.array(df_unidades_ate_junho).reshape(-1,1)
         y = np.array(df_vendas_ate_junho).reshape(-1,1)
@@ -366,7 +366,7 @@ class Estoque():
             if ano == 2022:
                 df_unidades_filtradas = df_unidades_filtradas.iloc[6:12]
         else:
-            df_unidades_filtradas = df_unidades[['Ano','inauguracoes']].groupby('Ano').agg('sum')
+            df_unidades_filtradas = df_unidades[['Ano','inauguracoes']].groupby('Ano').agg('max')
         
         df_unidades_filtradas = df_unidades_filtradas['inauguracoes']
 
