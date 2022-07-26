@@ -14,7 +14,7 @@ SELECT
 			left join (  SELECT DISTINCT entrega.CodigoPedido
 				,DataFoiParaSeparacao
 				,MAX(entrega.[DataAtualizacao]) OVER (PARTITION BY entrega.codigopedido) DataDeEntrega
-				,MAX(separacao.Prazo) OVER (PARTITION BY entrega.codigopedido) Prazo --para pedidos que a aplicação atualizou o prazo mais que uma vez
+				,MAX(separacao.Prazo) OVER (PARTITION BY entrega.codigopedido) Prazo --para pedidos que a aplicacao atualizou o prazo mais que uma vez
 				  FROM [HauszMapa].[Pedidos].[LogPedidos] entrega
 				  JOIN  (SELECT CodigoPedido
 						,ParaPrazo Prazo
@@ -32,7 +32,7 @@ SELECT
 					ON entrega.CodigoPedido = atualizacao.CodigoPedido
 				  WHERE entrega.ParaIdEtapaFlexy = 9
 				  --AND entrega.IdUsuarioAlteracao = 'Aplicacao' --Remove pedidos que foram dados como entregues mais que uma vez
-				  AND entrega.IdLog = atualizacao.UltimaAtualizacao -- Remove pedidos que após serem entregues voltam para outro status
+				  AND entrega.IdLog = atualizacao.UltimaAtualizacao -- Remove pedidos que apos serem entregues voltam para outro status
 				  AND separacao.Prazo IS NOT NULL) prazo 
 				  ON prazo.CodigoPedido = sr.CodigoPedidoSw
 			where datediff(month,prazo.DataDeEntrega,getdate()) = 1
@@ -56,7 +56,7 @@ SELECT
 			left join (  SELECT DISTINCT entrega.CodigoPedido
 				,DataFoiParaSeparacao
 				,MAX(entrega.[DataAtualizacao]) OVER (PARTITION BY entrega.codigopedido) DataDeEntrega
-				,MAX(separacao.Prazo) OVER (PARTITION BY entrega.codigopedido) Prazo --para pedidos que a aplicação atualizou o prazo mais que uma vez
+				,MAX(separacao.Prazo) OVER (PARTITION BY entrega.codigopedido) Prazo --para pedidos que a aplicacao atualizou o prazo mais que uma vez
 				  FROM [HauszMapa].[Pedidos].[LogPedidos] entrega
 				  JOIN  (SELECT CodigoPedido
 						,ParaPrazo Prazo
@@ -74,7 +74,7 @@ SELECT
 					ON entrega.CodigoPedido = atualizacao.CodigoPedido
 				  WHERE entrega.ParaIdEtapaFlexy = 9
 				  --AND entrega.IdUsuarioAlteracao = 'Aplicacao' --Remove pedidos que foram dados como entregues mais que uma vez
-				  AND entrega.IdLog = atualizacao.UltimaAtualizacao -- Remove pedidos que após serem entregues voltam para outro status
+				  AND entrega.IdLog = atualizacao.UltimaAtualizacao -- Remove pedidos que apos serem entregues voltam para outro status
 				  AND separacao.Prazo IS NOT NULL) prazo 
 				  ON prazo.CodigoPedido = pf.CodigoPedido
 			where datediff(month,prazo.DataDeEntrega,getdate()) = 1

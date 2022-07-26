@@ -1,7 +1,7 @@
 SELECT DISTINCT pedidos.CodigoPedido
 				--,FORMAT(DataFoiParaSeparacao,'d','br') DataFoiParaSeparacao
 				--,FORMAT(MAX(entrega.DataDeEntrega) OVER (PARTITION BY entrega.codigopedido),'d','br') DataDeEntrega
-				--,FORMAT(MAX(separacao.Prazo) OVER (PARTITION BY entrega.codigopedido),'d','br') Prazo --para pedidos que a aplicação atualizou o prazo mais que uma vez
+				--,FORMAT(MAX(separacao.Prazo) OVER (PARTITION BY entrega.codigopedido),'d','br') Prazo --para pedidos que a aplicacao atualizou o prazo mais que uma vez
   FROM [HauszMapa].[Pedidos].[LogPedidos] pedidos
   JOIN  (SELECT CodigoPedido
 		,ParaPrazo Prazo
@@ -26,7 +26,7 @@ SELECT DISTINCT pedidos.CodigoPedido
   AND IdColaborador != 1815
   ) naodesmembrados
   ON naodesmembrados.CodigoPedido = pedidos.CodigoPedido
-  WHERE separacao.Prazo IS NOT NULL -- Casos onde o sistema não atualizou o prazo na etapa 6, mas sim na próxima etapa
+  WHERE separacao.Prazo IS NOT NULL -- Casos onde o sistema nao atualizou o prazo na etapa 6, mas sim na proxima etapa
   AND DATEDIFF(day,DataDeEntrega,Prazo) > 0 --FORMAT(DataDeEntrega,'d') <= FORMAT(Prazo,'d')
   EXCEPT
   SELECT CodigoPedido FROM Logistica.LogReversaOcorrencia
