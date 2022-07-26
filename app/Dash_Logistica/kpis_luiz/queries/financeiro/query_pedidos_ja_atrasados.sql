@@ -2,7 +2,7 @@ SELECT COUNT(pedidosatrados.CodigoPedido) FROM (SELECT DISTINCT pedidos.CodigoPe
 				,UltimaAtualizacao
 				,EtapaAtual
 				,FORMAT(DataFoiParaSeparacao,'d','br') DataFoiParaSeparacao
-				,FORMAT(MAX(separacao.Prazo) OVER (PARTITION BY pedidos.codigopedido),'d','br') Prazo --para pedidos que a aplicação atualizou o prazo mais que uma vez
+				,FORMAT(MAX(separacao.Prazo) OVER (PARTITION BY pedidos.codigopedido),'d','br') Prazo --para pedidos que a aplicacao atualizou o prazo mais que uma vez
   FROM [HauszMapa].[Pedidos].[LogPedidos] pedidos
   JOIN  (SELECT CodigoPedido
 		,ParaPrazo Prazo
@@ -24,6 +24,6 @@ SELECT COUNT(pedidosatrados.CodigoPedido) FROM (SELECT DISTINCT pedidos.CodigoPe
 		FROM [HauszMapa].[Pedidos].[LogPedidos]
 		GROUP BY CodigoPedido) atualizacao
 	ON pedidos.CodigoPedido = atualizacao.CodigoPedido
-  WHERE separacao.Prazo IS NOT NULL -- Casos onde o sistema não atualizou o prazo na etapa 6, mas sim na próxima etapa
+  WHERE separacao.Prazo IS NOT NULL -- Casos onde o sistema nao atualizou o prazo na etapa 6, mas sim na proxima etapa
   AND etapaatual.IdLog = atualizacao.UltimaAtualizacao
   AND GETDATE() > Prazo) pedidosatrados

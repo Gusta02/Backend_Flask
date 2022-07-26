@@ -69,7 +69,7 @@ class Brands:
         lista_nomes = []
         for nome in nomes:
             try:
-                valor = str(nome).strip().replace("nÃ£o","não")
+                valor = str(nome).strip().replace("nÃ£o","nao")
                 lista_nomes.append(valor)
             except:
                 lista_nomes.append("valornaoencontrado")

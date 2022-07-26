@@ -1,7 +1,7 @@
 SELECT DISTINCT pedidos.CodigoPedido
 				,FORMAT(DataFoiParaSeparacao,'d','br') DataFoiParaSeparacao
 				,FORMAT(MAX(DataDepedidos) OVER (PARTITION BY pedidos.codigopedido),'d','br') DataDeEntrega
-				,FORMAT(MAX(separacao.ParaPrazo) OVER (PARTITION BY pedidos.codigopedido),'d','br') DataMax --para pedidos que a aplicação atualizou o prazo mais que uma vez
+				,FORMAT(MAX(separacao.ParaPrazo) OVER (PARTITION BY pedidos.codigopedido),'d','br') DataMax --para pedidos que a aplicacao atualizou o prazo mais que uma vez
 				,FORMAT(DataFoiParaTransito,'d','br') AS DataFoiParaTransito
 				,FORMAT(DataSaiuParaEntrega,'d','br') AS DataSaiuParaEntrega
   FROM [HauszMapa].[Pedidos].[LogPedidos] pedidos
@@ -33,5 +33,5 @@ WHERE ParaIdEtapaFlexy = 9
 AND IdUsuarioAlteracao = 'Aplicacao' --Remove pedidos que foram dados como entregues mais que uma vez
 GROUP BY CodigoPedido) entrega
 ON pedidos.CodigoPedido = entrega.CodigoPedido
-WHERE separacao.ParaPrazo IS NOT NULL -- Casos onde o sistema não atualizou o prazo na etapa 6, mas sim na próxima etapa
+WHERE separacao.ParaPrazo IS NOT NULL -- Casos onde o sistema nao atualizou o prazo na etapa 6, mas sim na proxima etapa
 AND DATEDIFF(Month,DataDepedidos,GETDATE()) = 1
