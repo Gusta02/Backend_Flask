@@ -4,9 +4,9 @@ from flask import Blueprint, render_template, request, Response
 import io
 import pandas as pd
 
-Contas_Pagar = Blueprint('Contas_Pagar', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
+Contas_Pagar = Blueprint('Contas_Pagar', __name__ , template_folder='templates', static_folder='static',  url_prefix='/app/Dash_Logistica/')
 
-@Contas_Pagar.route("/bi/dashboard/financeiro/ContasPagar", methods=["GET","POST"])
+@Contas_Pagar.route("/ContasPagar", methods=["GET","POST"])
 def Contas_a_Pagar():
 
     # locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")  

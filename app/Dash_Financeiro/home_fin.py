@@ -3,10 +3,10 @@ from ..Dash_Logistica.kpis_luiz.main import estoque
 #import locale
 import io
 
-financeiro = Blueprint('financeiro', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
+financeiro = Blueprint('financeiro', __name__ , template_folder='templates', static_folder='static', url_prefix='/app/Dash_Logistica/')
 
 
-@financeiro.route("/bi/dashboard/financeiro/", methods=["GET","POST"])
+@financeiro.route("/financeiro/", methods=["GET","POST"])
 def home_financeiro():
 
     ################## Back dos Cards de inventário, vendas 2022 e gráfico #########################

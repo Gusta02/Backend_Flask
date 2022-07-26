@@ -6,7 +6,7 @@ from datetime import datetime
 #import locale
 from ..Dash_Logistica.kpis_luiz.main import kpi_entregues_no_prazo,kpi_pedidos_ja_atrasados,pct_entregas_sem_etapa_19,pct_entregas_sem_etapa_7,IndicadorPerformance,kpi_leadtime_nacional
 
-transporte = Blueprint('transporte', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
+transporte = Blueprint('transporte', __name__ , template_folder='templates', static_folder='static',  url_prefix='/app/Dash_Logistica/')
 
 def frete_arrecadado():
         #locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")
