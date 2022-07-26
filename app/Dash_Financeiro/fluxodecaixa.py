@@ -56,7 +56,7 @@ def PagarDownload_excel():
 
     buffer = io.BytesIO()
     with pd.ExcelWriter(buffer) as writer:
-        resumo_fc.to_excel(writer, sheet_name = 'Fluxo de Caixa',engine='openpyxl',engine='openpyxl')
+        resumo_fc.to_excel(writer, sheet_name = 'Fluxo de Caixa',engine='openpyxl')
         resumo_cr.to_excel(writer, sheet_name = 'Contas a Receber',engine='openpyxl')
         resumo_cp.to_excel(writer, sheet_name = 'Contas a Pagar',engine='openpyxl')
     headers = {
