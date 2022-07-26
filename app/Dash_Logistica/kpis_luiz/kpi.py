@@ -314,8 +314,8 @@ class Estoque():
     def renomeia_marcas_similares(self,df):
 
         df_marcas_ajustadas = df
-        lista_nomes_originais = ['NCM Deco','Deca Louças','Desso','Roca Louças Metais','Roca Pisos Revestimentos','Incepa Louças Metais','Incepa Pisos Revestimentos','Loja do Movel','HR','Docol Louças','Docol Metais','Level','MINIZI','MVK','KERAMUS DESIGN','KÉRAMUS DESIGN','Stato Dell Arte Vinilico']
-        lista_nomes_ajustados = ['Gart','Deca','Tarkett','Roca','Roca','Incepa','Incepa','Planejados','Planejados','Docol','Docol','Stato Dell Arte','Mobiliário','Mobiliário','Manufatti','Manufatti','Stato Dell Arte']
+        lista_nomes_originais = ['NCM Deco','Deca Louças','Desso','Roca Louças Metais','Roca Pisos Revestimentos','Incepa Louças Metais','Incepa Pisos Revestimentos','Loja do Movel','HR','Docol Louças','Docol Metais','Level','MINIZI','MVK','KERAMUS DESIGN','KÉRAMUS DESIGN','Stato Dell Arte Vinilico','Fiandre']
+        lista_nomes_ajustados = ['Gart','Deca','Tarkett','Roca','Roca','Incepa','Incepa','Planejados','Planejados','Docol','Docol','Stato Dell Arte','Mobiliário','Mobiliário','Manufatti','Manufatti','Stato Dell Arte','Stato Dell Arte']
         df_marcas_ajustadas = df_marcas_ajustadas.replace(lista_nomes_originais,lista_nomes_ajustados)
         return df_marcas_ajustadas
 
@@ -359,11 +359,14 @@ class Estoque():
         df_vendas_ate_junho = df_vendas['valorTotal'].iloc[0:6]
         df_unidades_ate_junho = df_unidades['inauguracoes'].iloc[0:6]
 
+        if marca in ['Belgotex', 'Comunicação Visual', 'Dune', 'Durafloor', 'Eletronicos', 'Elettromec', 'Embramaco', 'Franke', 'Gyotoku', 'Incepa', 'Moldurama', 'Porto Ferreira', 'Quick Step', 'Sense', 'Tarkett', 'Unilux']:
+            df_vendas_ate_junho = df_vendas_ate_junho.sort_values()
+
         X = np.array(df_unidades_ate_junho).reshape(-1,1)
         y = np.array(df_vendas_ate_junho).reshape(-1,1)
 
         reg = linear_model.LinearRegression()
-        reg.fit(X,y)
+        reg.fit(X,y)            
 
         if ano:
             df_unidades_filtradas = df_unidades.query(f'Ano == {ano}')
@@ -391,6 +394,45 @@ class Estoque():
         qt_unidades = df_unidades_filtradas.values.tolist()
 
         return pred, qt_unidades
+
+    ################################## Para ser usado com Python 3.11 ###################################
+
+    # def calcula_projecao2(self,ano=0,marca=''):
+
+    #     df_unidades = pd.read_excel('app/Dash_Logistica/kpis_luiz/planilha/unidades_hausz_previsao.xlsx', engine= 'openpyxl')
+
+    #     df_vendas = self.calcula_venda_mensal(self.df_vendas_por_mes_por_marca,ano=2022,marca=marca)
+    #     df_vendas_ate_junho = df_vendas['valorTotal'].iloc[0:6]
+    #     df_unidades_ate_junho = df_unidades['inauguracoes'].iloc[0:6]
+
+    #     #df_vendas_ate_junho = df_vendas_ate_junho.sort_values()
+
+    #     X = df_unidades_ate_junho.tolist()
+    #     y = df_vendas_ate_junho.tolist()
+
+    #     slope,intercept = linear_regression(X,y,proportional=True)
+        
+    #     if ano:
+    #         df_unidades_filtradas = df_unidades.query(f'Ano == {ano}')
+    #         if ano == 2022:
+    #             df_unidades_filtradas = df_unidades_filtradas.iloc[6:12]
+    #     else:
+    #         df_unidades_filtradas = df_unidades[['Ano','inauguracoes']].groupby('Ano').agg('sum')
+        
+    #     lista_unidades_filtradas = df_unidades_filtradas['inauguracoes'].tolist()
+
+    #     pred = ((u*slope + intercept) for u in lista_unidades_filtradas)
+
+    #     # df_pred = pd.Series(pred)
+    #     # pct = df_pred.pct_change().apply(lambda x: round(x*100,1)).fillna(0)
+    #     # pct = pct.replace([np.inf, -np.inf], 0)
+    #     # pct = pct.tolist()
+    #     # try:
+    #     #     pct[0] = 0
+    #     # except:
+    #     #     pass
+        
+    #     return list(pred), lista_unidades_filtradas
 
 
         
