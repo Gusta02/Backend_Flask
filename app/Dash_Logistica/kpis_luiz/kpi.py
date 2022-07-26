@@ -274,7 +274,7 @@ class Estoque():
 
     def calcula_venda_total(self,df,ano=0,marca='',tipo=''):
 
-        return self.calcula_venda_mensal(df,ano,marca,tipo).sum()
+        return round(self.calcula_venda_mensal(df,ano,marca,tipo).sum(),2)
     
     def filtra(self,df,ano=0,marca='',tipo=''):
 

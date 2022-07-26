@@ -40,7 +40,7 @@ def home_financeiro():
 
     venda_total_showroom = 'R$ ' + str(estoque.calcula_venda_total(df=estoque.df_vendas_por_mes_por_marca,ano=ano_selecionado,marca=marca_selecionada,tipo='showroom')) #locale.currency(estoque.calcula_venda_total(df=estoque.df_vendas_por_mes_por_marca,ano=ano_selecionado,marca=marca_selecionada,tipo='showroom'), grouping=True)
     venda_total = 'R$ ' + str(estoque.calcula_venda_total(df=estoque.df_vendas_por_mes_por_marca,ano=ano_selecionado,marca=marca_selecionada)) #locale.currency(estoque.calcula_venda_total(df=estoque.df_vendas_por_mes_por_marca,ano=ano_selecionado,marca=marca_selecionada), grouping=True)
-    inventario_total = 'R$ ' + str(estoque.inventario(marca=marca_selecionada).Inventário.sum()) #locale.currency(estoque.inventario(marca=marca_selecionada).Inventário.sum(), grouping=True)
+    inventario_total = 'R$ ' + str(round(estoque.inventario(marca=marca_selecionada).Inventário.sum(),2)) #locale.currency(estoque.inventario(marca=marca_selecionada).Inventário.sum(), grouping=True)
 
     ########################## Gráfico de Vendas Por Mês Por Marca ######################################
 
