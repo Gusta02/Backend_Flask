@@ -187,9 +187,9 @@ def NotaItemfaltante():
     ,'LOCALIZACAO_MERCADORIA']
 
     #selecionando linha com valor especifico em uma coluna
-    data['MOTIVO_SOLICITACAO'] == 'Item presente na Nota Fiscal mas não foi entregue'
+    data['MOTIVO_SOLICITACAO'] == 'Item presente na Nota Fiscal mas nao foi entregue'
 
-    NotaDivergente =  data.loc[data['MOTIVO_SOLICITACAO'] == 'Item presente na Nota Fiscal mas não foi entregue',['CODIGO','NUMERO_PV', 'NUMERO_NF','MOTIVO_SOLICITACAO']]
+    NotaDivergente =  data.loc[data['MOTIVO_SOLICITACAO'] == 'Item presente na Nota Fiscal mas nao foi entregue',['CODIGO','NUMERO_PV', 'NUMERO_NF','MOTIVO_SOLICITACAO']] #acento temporariamente tirado do nao para evitar conflitos
 
     #contagem total de itens na situação 'Presente na nota, mas nao entregue'    
     faltandoitem = len(NotaDivergente)
@@ -266,7 +266,7 @@ def media_separacao_sc():
 
 dict_performance_time_logistica = dict(         #função adicionada 07/07
 ind_localizacaoLR = IndicadorPerformance(7,4,5,Localizacao_MediaDias()) #nao consigo incluir a função do michel. Valor aidicionado manualmente
-#,ind_tempocicloLR = IndicadorPerformance(25,20,5,23) #Parece que não está no Asana, remover?
+#,ind_tempocicloLR = IndicadorPerformance(25,20,5,23) #Parece que nao está no Asana, remover?
 ,ind_pedidoperfeito = IndicadorPerformance(80,90,5,kpi_pedido_perfeito*100)
 ,ind_separacao = IndicadorPerformance(24,18,5,(media_separacao_sc()['valor']+media_separacao_sc()['valor'])/2) #posso dar o mesmo peso para SP e SC?
 ,ind_dockstocktime = IndicadorPerformance(3,1.5,4,kpi_dock_stock_time['Media'])

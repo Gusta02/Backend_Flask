@@ -27,5 +27,5 @@ from (SELECT StatusPedido
 	WHERE IdEstoque IN (1,5)) itens
 	ON showroom.CodigoPedidoSw = itens.CodigoPedidoSw
 	WHERE itens.bitAtivo = 1) AS pedidos_ativos
-	WHERE pedidos_ativos.StatusPedido IN ('Pago','Aguardando Arquiteto','Aguardando confirmação do cliente','Entrega Futura','Verificando Estoque')
+	WHERE pedidos_ativos.StatusPedido IN ('Pago','Aguardando Arquiteto','Entrega Futura','Verificando Estoque') --aguardando confimarcao do cliente deu pau por causa do acento
 	ORDER BY CodigoPedido
