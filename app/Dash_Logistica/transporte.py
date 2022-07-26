@@ -81,7 +81,7 @@ kpi_time_transporte = IndicadorPerformance.calcula_kpi_time(dict_performance_tim
 
 
 
-@transporte.route("/dashboard/logistica/transporte", methods=["GET","POST"])
+@transporte.route("/bi/dashboard/logistica/transporte", methods=["GET","POST"])
 def Transporte_rota():
 
     dict_variaveis_transporte = {

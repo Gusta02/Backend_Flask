@@ -6,7 +6,7 @@ import pandas as pd
 
 Contas_Pagar = Blueprint('Contas_Pagar', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
-@Contas_Pagar.route("/dashboard/financeiro/ContasPagar", methods=["GET","POST"])
+@Contas_Pagar.route("/bi/dashboard/financeiro/ContasPagar", methods=["GET","POST"])
 def Contas_a_Pagar():
 
     # locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")  
@@ -47,7 +47,7 @@ def Contas_a_Pagar():
     return render_template('contas_a_pagar.html', page = 1, card= fluxodecaixa, card1 = card_total_pagar, card2= card_total_receber, 
     filtro_empresa = filtro_empresas, selecionar_empresa = selecionar_empresa, labels_empresa = top5_index, values_empresa = top5_values )
 
-@Contas_Pagar.route("/dashboard/financeiro/downloadresumo", methods=["GET","POST"])
+@Contas_Pagar.route("/bi/dashboard/financeiro/downloadresumo", methods=["GET","POST"])
 def PagarDownload_excel():
     
     resumo_fc.rename(columns={360:'12 meses'},inplace=True)
@@ -65,7 +65,7 @@ def PagarDownload_excel():
     }
     return Response(buffer.getvalue(), mimetype='application/vnd.ms-excel', headers=headers)
 
-@Contas_Pagar.route("/dashboard/financeiro/download_resumo_detalhado", methods=["GET","POST"])
+@Contas_Pagar.route("/bi/dashboard/financeiro/download_resumo_detalhado", methods=["GET","POST"])
 def download_resumo_detalhado():
     
     buffer = io.BytesIO()

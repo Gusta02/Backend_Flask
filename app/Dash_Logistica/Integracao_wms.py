@@ -314,7 +314,7 @@ def Nao_integrou_mes():
         fre_log = fre_log['quantidade'][0]
         return fre_log
 
-@wms.route('/dashboard/logistica/integracao_wms/<int:page>', methods=["GET","POST"])
+@wms.route('/bi/dashboard/logistica/integracao_wms/<int:page>', methods=["GET","POST"])
 def Integracao_wms_first_page(page= 1):
         page = page
         tabela = IntegracaoWms.tabela_filtro1(page)
@@ -332,7 +332,7 @@ def Integracao_wms_first_page(page= 1):
         
         return render_template("Integracao_wms.html", card1 = card_1, card2 = card_2 ,card3 = card_3, card4 = card_4, card5 = card_5, card6 = card_6, tabela = tabela, page = page, aaa = aaa, card7 = card_7, card8 = card_8)
 
-@wms.route('/dashboard/logistica/itengracao_wms/filtro', methods=["POST"])
+@wms.route('/bi/dashboard/logistica/itengracao_wms/filtro', methods=["POST"])
 def filtro_tabela(codigoPedido = '', SKU = '', RejeicaoID = '', DataFim = '', DataIni = ''):
         aaa = 0
         codigoPedido = codigoPedido

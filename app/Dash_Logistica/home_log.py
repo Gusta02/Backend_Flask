@@ -274,7 +274,7 @@ ind_localizacaoLR = IndicadorPerformance(7,4,5,Localizacao_MediaDias()) #nao con
 
 kpi_time_logistica = IndicadorPerformance.calcula_kpi_time(dict_performance_time_logistica)
 
-@home.route("/dashboard/logistica", methods=["GET","POST"])
+@home.route("/bi/dashboard/logistica", methods=["GET","POST"])
 def RelatorioGeral():
 
     tabela = leadtime()
@@ -305,7 +305,7 @@ def RelatorioGeral():
     
     return render_template("Relatorio_logistica.html", tabela = tabela, rejeicoes_futuras = rejeicoes_futuras, produtos_ausentes_sistema = produtos_ausentes_sistema, produtos_ausentes_wms = produtos_ausentes_wms, produtos_excesso = produtos_excesso, produtos_falta = produtos_falta,cards = dict_variaveis)
 
-@home.route('/download/<df>/<filename>',methods=['GET']) # this is a job for GET, not POST
+@home.route('/bi/download/<df>/<filename>',methods=['GET']) # this is a job for GET, not POST
 def download_excel(df,filename):
 
     tabela = getattr(estoque, df)

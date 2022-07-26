@@ -6,7 +6,7 @@ import io
 financeiro = Blueprint('financeiro', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
 
 
-@financeiro.route("/dashboard/financeiro/", methods=["GET","POST"])
+@financeiro.route("/bi/dashboard/financeiro/", methods=["GET","POST"])
 def home_financeiro():
 
     ################## Back dos Cards de inventário, vendas 2022 e gráfico #########################
@@ -139,7 +139,7 @@ def home_financeiro():
     
     return render_template('home_financeiro.html',**dict_variaveis)
 
-@financeiro.route('/download/<df>/<filename>',methods=['GET']) # Gera Arquivos em Excel para Download
+@financeiro.route('/bi/download/<df>/<filename>',methods=['GET']) # Gera Arquivos em Excel para Download
 def download_excel(df,filename):
 
     tabela = getattr(estoque, df)
