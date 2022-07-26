@@ -14,14 +14,20 @@ def card1():
         return rejeicaohj
 
 def card2():
-        #dia_percentual é a porcentagem de rejeicao com base no dia anterior - CARD 2
+#dia_percentual é a porcentagem de rejeicao com base no dia anterior - CARD 2
         ontem = IntegracaoWms.card_ontem()
+        ontem =  ontem[0]['quantidade_de_rejeicao']
+        rejeicaohj = IntegracaoWms.card_hoje()
+        rejeicaohj = rejeicaohj[0]['quantidade_de_rejeicao']
 
         try:
-                percentual = card1 / ontem * 100
+                percentual =  rejeicaohj / ontem 
         except:
-                percentual = 0
-        dia_percentual = "{:.0f}".format(percentual)
+                percentual = 0 
+                print(0)
+
+    #dia_percentual é a porcentagem de rejeicao com base no dia anterior - CARD 3
+        dia_percentual = "{:.2%}".format(percentual)
 
         return dia_percentual
 
