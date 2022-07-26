@@ -20,7 +20,7 @@ class Produto:
     def retorna_marca(self):
         if re.search('deca.?',self.path, re.IGNORECASE):
             deca = Deca(self.path)
-            jsons = deca.read_excel(self.path,self.data_atual)
+            jsons = deca.read_excel(self.path,self.data_atual,engine='openpyxl')
             return jsons
 
         if re.search('level.?|leve.?',self.path, re.IGNORECASE): 

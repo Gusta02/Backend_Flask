@@ -56,9 +56,9 @@ def PagarDownload_excel():
 
     buffer = io.BytesIO()
     with pd.ExcelWriter(buffer) as writer:
-        resumo_fc.to_excel(writer, sheet_name = 'Fluxo de Caixa')
-        resumo_cr.to_excel(writer, sheet_name = 'Contas a Receber')
-        resumo_cp.to_excel(writer, sheet_name = 'Contas a Pagar')
+        resumo_fc.to_excel(writer, sheet_name = 'Fluxo de Caixa',engine='openpyxl',engine='openpyxl')
+        resumo_cr.to_excel(writer, sheet_name = 'Contas a Receber',engine='openpyxl')
+        resumo_cp.to_excel(writer, sheet_name = 'Contas a Pagar',engine='openpyxl')
     headers = {
     'Content-Disposition': 'attachment; filename=Fluxo_de_Caixa-Resumo.xlsx',
     'Content-type': 'application/vnd.ms-excel'
@@ -70,11 +70,11 @@ def download_resumo_detalhado():
     
     buffer = io.BytesIO()
     with pd.ExcelWriter(buffer) as writer:
-        lista_resumo_detalhado[0].to_excel(writer, sheet_name = '15 dias')
-        lista_resumo_detalhado[1].to_excel(writer, sheet_name = '30 dias')
-        lista_resumo_detalhado[2].to_excel(writer, sheet_name = '60 dias')
-        lista_resumo_detalhado[3].to_excel(writer, sheet_name = '90 dias')
-        lista_resumo_detalhado[4].to_excel(writer, sheet_name = '12 meses')
+        lista_resumo_detalhado[0].to_excel(writer, sheet_name = '15 dias',engine='openpyxl')
+        lista_resumo_detalhado[1].to_excel(writer, sheet_name = '30 dias',engine='openpyxl')
+        lista_resumo_detalhado[2].to_excel(writer, sheet_name = '60 dias',engine='openpyxl')
+        lista_resumo_detalhado[3].to_excel(writer, sheet_name = '90 dias',engine='openpyxl')
+        lista_resumo_detalhado[4].to_excel(writer, sheet_name = '12 meses',engine='openpyxl')
     headers = {
     'Content-Disposition': 'attachment; filename=Fluxo_de_Caixa_Detalhado.xlsx',
     'Content-type': 'application/vnd.ms-excel'

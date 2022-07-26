@@ -12,7 +12,7 @@ home = Blueprint('home', __name__ , template_folder='templates', static_folder='
 
 #PLANILHA PIPE EXCEL - ATUALIZAR UMA VEZ POR SEMANA
 # data = pd.read_excel('app/Dash_Logistica/planilha/relatorio_kpi3006.xlsx', engine='openpyxl')
-data = pd.read_excel('app/Dash_Logistica/planilha/relatorio_kpi0707.xlsx')
+data = pd.read_excel('app/Dash_Logistica/planilha/relatorio_kpi0707.xlsx',engine='openpyxl')
 
 def leadtime():
     tabela = IntegracaoWms.leadtime_log()
@@ -239,7 +239,7 @@ def Localizacao_MediaDias():
 def media_separacao_sp():
 
     # Sp = pd.read_excel('app/Dash_Logistica/planilha/Producao_SaoPaulo.xlsx', engine='openpyxl')
-    Sp = pd.read_excel('app/Dash_Logistica/planilha/Producao_SaoPaulo.xlsx')
+    Sp = pd.read_excel('app/Dash_Logistica/planilha/Producao_SaoPaulo.xlsx',engine='openpyxl')
     Sp = (Sp['Dt_Conf_Sep'] - Sp['Dt_Inclusao'])
     Sp = Sp.mean()
     Sp = str(Sp)
@@ -252,7 +252,7 @@ def media_separacao_sp():
 def media_separacao_sc():
 
     # Sc = pd.read_excel('app/Dash_Logistica/planilha/Producao_SantaCatarina.xlsx', engine='openpyxl')
-    Sc = pd.read_excel('app/Dash_Logistica/planilha/Producao_SantaCatarina.xlsx')
+    Sc = pd.read_excel('app/Dash_Logistica/planilha/Producao_SantaCatarina.xlsx',engine='openpyxl')
     Sc = (Sc['Dt_Conf_Sep'] - Sc['Dt_Inclusao'])
     Sc = Sc.mean()
     Sc = str(Sc)
@@ -310,7 +310,7 @@ def download_excel(df,filename):
 
     tabela = getattr(estoque, df)
     buffer = io.BytesIO()
-    tabela.to_excel(buffer)
+    tabela.to_excel(buffer,engine='openpyxl')
     headers = {
     'Content-Disposition': 'attachment; filename={}.xlsx'.format(filename),
     'Content-type': 'application/vnd.ms-excel'

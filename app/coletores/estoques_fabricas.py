@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import re
+import openpyxl
 
 from datetime import datetime
 
@@ -80,7 +81,7 @@ class Brands:
         files = os.listdir(self.path)
         for file in files:
             if re.search('tarkett.?', file, re.IGNORECASE):
-                data = pd.read_excel(self.path+file)
+                data = pd.read_excel(self.path+file, engine='openpyxl')
                 data['Codigos'] = self.ajuste_referencia_tarkett(data['Codigos'])
                 data['Saldos'] = self.ajuste_saldos_tarkett(data['Saldos'])
                 data['Nomes'] = self.ajuste_nome_produto_tarkett(data['Nomes'])
@@ -91,7 +92,7 @@ class Brands:
                 data.rename(columns={'Codigos':'SKU','Saldos':'SALDO','Nomes':'NomeProduto'},inplace = True)
                 data = data[['SKU','SALDO','NomeProduto','DATAATUAL','MARCA','PRAZO']]
                 jsons_tarkett = data.to_dict('records')
-                data.to_excel('C:\\Projetoshausz\\apphauszetlsbi\\uploadarquivos\\logs\\tarkett.xlsx')
+                data.to_excel('C:\\Projetoshausz\\apphauszetlsbi\\uploadarquivos\\logs\\tarkett.xlsx',engine='openpyxl')
                 lista_jsons.append(jsons_tarkett)
                
         
@@ -109,7 +110,7 @@ class Brands:
                 data.rename(columns={'Referencia':'SKU','Saldo0':'SALDO','Nome':'NomeProduto'},inplace = True)
                 data = data[['SKU','SALDO','NomeProduto','MARCA','DATAATUAL','PRAZO']]
                 jsons_incepa = data.to_dict('records')
-                data.to_excel('C:\\Projetoshausz\\apphauszetlsbi\\uploadarquivos\\logs\\incepa.xlsx')
+                data.to_excel('C:\\Projetoshausz\\apphauszetlsbi\\uploadarquivos\\logs\\incepa.xlsx',engine='openpyxl')
                 lista_jsons.append(jsons_incepa)
                 
             if re.search('roca.?',file, re.IGNORECASE):
@@ -126,7 +127,7 @@ class Brands:
                 data.rename(columns={'Referencias':'SKU','Saldo0':'SALDO','Nome':'NomeProduto'},inplace = True)
                 data = data[['SKU','SALDO','NomeProduto','DATAATUAL','MARCA','PRAZO']]
                 jsons_roca = data.to_dict('records')
-                data.to_excel('C:\\Projetoshausz\\apphauszetlsbi\\uploadarquivos\\logs\\roca.xlsx')
+                data.to_excel('C:\\Projetoshausz\\apphauszetlsbi\\uploadarquivos\\logs\\roca.xlsx',,engine='openpyxl')
                 lista_jsons.append(jsons_roca)
         
         return lista_jsons

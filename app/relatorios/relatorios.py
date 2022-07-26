@@ -22,7 +22,7 @@ relatorios = Blueprint("relatorios",__name__,
 
 @relatorios.route("/googleshopping", methods=["GET","POST"])
 def precos_google():
-    data = pd.read_excel("D:\\ARQUIVOS GERAIS 0606\\google\\googlehausz0506.xlsx")
+    data = pd.read_excel("D:\\ARQUIVOS GERAIS 0606\\google\\googlehausz0506.xlsx",engine='openpyxl')
     jsons = data.to_dict('records')
  
     return render_template("googleshopping.html", produtos=jsons)

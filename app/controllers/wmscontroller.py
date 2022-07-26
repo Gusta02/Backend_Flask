@@ -59,11 +59,11 @@ def select_log_wms_pedidos():
 def get_informacoes_wms_corpem():
 
     datacorpem1 = pd.read_excel(
-    'D:\\estatisticas_hausz\\arquivosexcelcorpem\\WD6part1.xlsx',skiprows=[0,1,2,3,4,5])
+    'D:\\estatisticas_hausz\\arquivosexcelcorpem\\WD6part1.xlsx',skiprows=[0,1,2,3,4,5],engine='openpyxl')
     datacorpem1.fillna(0, inplace=True)
     datacorpem1['UNIDADECD'] = 'HAUSZ-SC'
     datacorpem2 = pd.read_excel(
-        'D:\\estatisticas_hausz\\arquivosexcelcorpem\\WD6part2.xlsx',skiprows=[0,1,2,3,4,5])
+        'D:\\estatisticas_hausz\\arquivosexcelcorpem\\WD6part2.xlsx',skiprows=[0,1,2,3,4,5],engine='openpyxl')
     datacorpem2.fillna(0, inplace=True)
     datacorpem2['UNIDADECD'] = 'HAUSZ-SP'
 

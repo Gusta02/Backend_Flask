@@ -14,7 +14,7 @@ class Empresa():
     
     def set_planilha(self,planilha):
 
-        df_contas_pagar = pd.read_excel(planilha)
+        df_contas_pagar = pd.read_excel(planilha,engine='openpyxl')
 
         df_contas_pagar.columns =  ['DATA_EMITIDA','DATA_VENCIMENTO','TIPO','ORIGEM','SITUACAO','GRUPO','CATEGORIA',
         'OBSERVACAO_CONTA','DOCUMENTO_TIPO','VALOR_CONTA','PAGO_RECEBIDO','A_RECEBER_PAGAR']

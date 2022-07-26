@@ -140,7 +140,7 @@ def download_excel(df,filename):
 
     tabela = getattr(estoque, df)
     buffer = io.BytesIO()
-    tabela.to_excel(buffer)
+    tabela.to_excel(buffer,engine='openpyxl')
     headers = {
     'Content-Disposition': 'attachment; filename={}.xlsx'.format(filename),
     'Content-type': 'application/vnd.ms-excel'
