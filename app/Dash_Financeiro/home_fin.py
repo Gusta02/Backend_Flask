@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request,  Response
 from ..Dash_Logistica.kpis_luiz.main import estoque
-import locale
+#import locale
 import io
 
 financeiro = Blueprint('financeiro', __name__ , template_folder='templates', static_folder='static',  static_url_path='/app/Dash_Logistica/static/')
@@ -33,14 +33,14 @@ def home_financeiro():
         ano_previsao = 0
 
     meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
-    locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")  # Seleção da moeda brasileira
+    #locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")  # Seleção da moeda brasileira
     #ano = date.today().year
     
     ########################## Cards de Venda e Inventário Total ######################################
 
-    venda_total_showroom = locale.currency(estoque.calcula_venda_total(df=estoque.df_vendas_por_mes_por_marca,ano=ano_selecionado,marca=marca_selecionada,tipo='showroom'), grouping=True)
-    venda_total = locale.currency(estoque.calcula_venda_total(df=estoque.df_vendas_por_mes_por_marca,ano=ano_selecionado,marca=marca_selecionada), grouping=True)
-    inventario_total = locale.currency(estoque.inventario(marca=marca_selecionada).Inventário.sum(), grouping=True)
+    venda_total_showroom = 'R$ ' + str(estoque.calcula_venda_total(df=estoque.df_vendas_por_mes_por_marca,ano=ano_selecionado,marca=marca_selecionada,tipo='showroom')) #locale.currency(estoque.calcula_venda_total(df=estoque.df_vendas_por_mes_por_marca,ano=ano_selecionado,marca=marca_selecionada,tipo='showroom'), grouping=True)
+    venda_total = 'R$ ' + str(estoque.calcula_venda_total(df=estoque.df_vendas_por_mes_por_marca,ano=ano_selecionado,marca=marca_selecionada)) #locale.currency(estoque.calcula_venda_total(df=estoque.df_vendas_por_mes_por_marca,ano=ano_selecionado,marca=marca_selecionada), grouping=True)
+    inventario_total = 'R$ ' + str(estoque.inventario(marca=marca_selecionada).Inventário.sum()) #locale.currency(estoque.inventario(marca=marca_selecionada).Inventário.sum(), grouping=True)
 
     ########################## Gráfico de Vendas Por Mês Por Marca ######################################
 

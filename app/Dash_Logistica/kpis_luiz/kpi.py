@@ -5,12 +5,12 @@ from datetime import datetime, date
 import dateutil.relativedelta
 import math
 import pandas as pd
-import locale
+#import locale
 import numpy as np
 import itertools
 from sklearn import linear_model
 
-locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")
+#locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")
 
 class Entregas():
 
@@ -135,7 +135,7 @@ class Estoque():
         self.df_produtos_nao_encontrados_wms = self.find_produtos_nao_econtrados_wms()
         self.df_produtos_excesso_wms, self.df_produtos_falta_wms = self.count_estoque()
         self.df_inventario_por_marca = self.inventario().loc[:,['NomeFantasia','Inventário']].groupby('NomeFantasia').agg('sum')
-        self.df_inventario_por_marca.Inventário = self.df_inventario_por_marca.Inventário.apply(lambda x: locale.currency(x, grouping=True))
+        self.df_inventario_por_marca.Inventário = self.df_inventario_por_marca.Inventário.apply(lambda x: 'R$ ' + str(x)) #locale.currency(x, grouping=True))
         self.df_vendas_por_mes_por_marca = self.vendas_por_mes_por_marca(sql_to_pd(sql.query_vendas_ano_atual))
         self.df_vendas_banco_antigo = pd.read_csv('app/Dash_Logistica/kpis_luiz/planilha/dados_banco_antigo.csv', 
                                         usecols=['Marca','valorTotal','Mes','Ano'])

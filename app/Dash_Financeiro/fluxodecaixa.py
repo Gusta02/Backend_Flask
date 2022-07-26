@@ -1,6 +1,6 @@
 from .kpis_michel.classes import dict_empresas,resumo_fc,resumo_cr,resumo_cp,lista_resumo_detalhado, indexlabel, valuesindex
 from flask import Blueprint, render_template, request, Response
-import locale
+# import locale
 import io
 import pandas as pd
 
@@ -9,7 +9,7 @@ Contas_Pagar = Blueprint('Contas_Pagar', __name__ , template_folder='templates',
 @Contas_Pagar.route("/dashboard/financeiro/ContasPagar", methods=["GET","POST"])
 def Contas_a_Pagar():
 
-    locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")  
+    # locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")  
     
     selecionar_empresa = 'Todas'
     periodicidade = 0
@@ -40,9 +40,9 @@ def Contas_a_Pagar():
     
     #fim grafico    
     #renderizando no front
-    fluxodecaixa = locale.currency(empresa_selecionada.get_valor(), grouping=True)
-    card_total_pagar = locale.currency(empresa_selecionada.calcula_tipo('CONTAS A PAGAR'), grouping= True)
-    card_total_receber = locale.currency(empresa_selecionada.calcula_tipo('CONTAS A RECEBER'), grouping= True)
+    fluxodecaixa = 'R$ ' + str(empresa_selecionada.get_valor()) #locale.currency(empresa_selecionada.get_valor(), grouping=True)
+    card_total_pagar = 'R$ ' + str(empresa_selecionada.calcula_tipo('CONTAS A PAGAR')) #locale.currency(empresa_selecionada.calcula_tipo('CONTAS A PAGAR'), grouping= True)
+    card_total_receber = 'R$ ' + str(empresa_selecionada.calcula_tipo('CONTAS A RECEBER')) #locale.currency(empresa_selecionada.calcula_tipo('CONTAS A RECEBER'), grouping= True)
 
     return render_template('contas_a_pagar.html', page = 1, card= fluxodecaixa, card1 = card_total_pagar, card2= card_total_receber, 
     filtro_empresa = filtro_empresas, selecionar_empresa = selecionar_empresa, labels_empresa = top5_index, values_empresa = top5_values )
