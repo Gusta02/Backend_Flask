@@ -98,15 +98,19 @@ def home_financeiro():
     if ano_previsao==2022:
         labels_projecao = meses[6:12]
         titulo_projecao = 'Projeção de Vendas X Unidade 2022 ' + marca_selecionada
+        values_projecao,qt_unidades = estoque.calcula_projecao(ano = ano_previsao, marca = marca_selecionada)
     elif ano_previsao:
         labels_projecao = meses
         titulo_projecao = 'Projeção de Vendas X Unidades ' + str(ano_previsao) + ' ' + marca_selecionada
+        values_projecao,qt_unidades = estoque.calcula_projecao(ano = ano_previsao, marca = marca_selecionada)
     else:
         labels_projecao = ['2022','2023','2024']
         titulo_projecao = 'Projeção de Vendas X Unidades ' + marca_selecionada
-
-    values_projecao,qt_unidades = estoque.calcula_projecao(ano = ano_previsao, marca = marca_selecionada)
-    
+        values_projecao2022,qt_unidades = estoque.calcula_projecao(ano = 2022, marca = marca_selecionada)
+        values_projecao2023,qt_unidades = estoque.calcula_projecao(ano = 2023, marca = marca_selecionada)
+        values_projecao2024,qt_unidades = estoque.calcula_projecao(ano = 2024, marca = marca_selecionada)
+        values_projecao,qt_unidades = estoque.calcula_projecao(ano = ano_previsao, marca = marca_selecionada)
+        values_projecao = [sum(values_projecao2022), sum(values_projecao2023),sum(values_projecao2024)]
 
     ################# Dicionário de Variáveis ######################
 
