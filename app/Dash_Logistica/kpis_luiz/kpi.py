@@ -261,6 +261,7 @@ class Estoque():
     def vendas_por_mes_por_marca(self,df)->object:
         
         df_vendas = self.renomeia_marcas_similares(df)
+        df_vendas['valorTotal'] = df_vendas['valorTotal'].fillna(0)
         df_vendas['valorTotal'] = df_vendas['valorTotal'].apply(lambda x: round(float(x),2))
         df_vendas = df_vendas.groupby(['Ano','Mes','Marca','Tipo']).agg('sum').unstack(['Ano','Mes'])
         df_vendas = df_vendas.fillna(0)
